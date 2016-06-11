@@ -16,4 +16,7 @@ void printNewLine();
 /* clear the screen */
 void clear();
 
+/* Makes cursor blink */
+void blinkCursor();
+
 #endif

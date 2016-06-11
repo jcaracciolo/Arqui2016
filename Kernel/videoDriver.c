@@ -19,13 +19,21 @@ void print(const char* msg, char colourCode) {
 		video[++cursor] = colourCode;
 	}
 
-	printCursor();
+	//printCursor();
 }
 
 void printNum(int num, int colorCode) {
 	char str[10];
 	intToString(str, num);
 	print(str, colorCode);
+}
+
+void blinkCursor() {
+	if (video[cursor+1] == 0x70) {
+		video[cursor+1] = 0x07;
+	} else {
+		video[cursor+1] = 0x70;
+	}
 }
 
 void removeCursorMark() {
@@ -113,12 +121,13 @@ void printWithLength(const char* msg, int length, char colourCode) {
 		}
 	}
 	
-	printCursor();
+	//printCursor();
 }
 
 void clear() {
 	int i;
-	for ( i = 0; i < ROWS * COLS - 1; i++) {
+	removeCursorMark();
+	for (i = 0; i < ROWS * COLS; i++) {
 		print(" ", 0x00);
 	}
 	cursor = 0;

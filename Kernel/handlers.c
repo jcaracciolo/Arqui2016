@@ -11,7 +11,7 @@ extern int read_key();
 void irqDispatcher(int irq){	
 	switch(irq) {
 		case 0:
-			//timerTick();
+			blink();
 			break;
 		case 1:
 			onKeyPressed();
@@ -24,11 +24,10 @@ static int counter = 0;
 static int i = 0;
 static char ascii = '0';
 
-void timerTick(){
-	if (counter++ == 18) {	// 2 sec transcurred
+void blink(){
+	if (counter++ == 6) {	// 1/3 sec transcurred
 		counter = 0;
-		video[i++] = ascii++;
-		video[i++] = (char) 0x25;
+		blinkCursor();
 	}
 }
 
