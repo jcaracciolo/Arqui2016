@@ -1,10 +1,31 @@
 #include "videoDriver.h"
 #include "strings.h"
 
+// Colors: backColor_frontColor
+
 static char *video = (char *) 0xB8000;
 const int ROWS = 25;
 const int COLS = 80;
 static int cursor = 0;
+
+#define BLACK 0
+#define BLUE 1
+#define GREEB 2
+#define AQUA 3
+#define RED 4
+#define PURPLE 5
+#define YELLOW 6
+#define WHITE 7
+#define GRAY 8
+#define LIGHT_BLUE 9
+#define LIGHT_GREEN 10
+#define LIGHT_AQUA 11
+#define LIGHT_RED 12
+#define LIGHT_PURPLE 13
+#define LIGHT_YELLOW 14
+#define BRIGHT_WHITE 15
+
+#define cc(a,b) (a)*0x10+(b)
 
 
 /* print '/0' ended string */
@@ -29,15 +50,15 @@ void printNum(int num, int colorCode) {
 }
 
 void blinkCursor() {
-	if (video[cursor+1] == 0x70) {
-		video[cursor+1] = 0x07;
+	if (video[cursor+1] == cc(BLACK,WHITE)) {
+		video[cursor+1] = cc(WHITE,BLACK);
 	} else {
-		video[cursor+1] = 0x70;
+		video[cursor+1] = cc(BLACK,WHITE);
 	}
 }
 
 void removeCursorMark() {
-	video[cursor + 1] = 0x07;
+	video[cursor + 1] = cc(BLACK,WHITE);
 }
 
 void printNewLine() {
@@ -50,7 +71,7 @@ void printNewLine() {
 }
 
 void printCursor() {
-	video[cursor + 1] = 0x70;
+	video[cursor + 1] = cc(WHITE,BLACK);
 }
 
 
@@ -93,7 +114,7 @@ void backspace() {
 	removeCursorMark();
 
 	video[cursor - 2] = ' ';
-	video[cursor - 1] = 0x00;
+	video[cursor - 1] = cc(BLACK,BLACK);
 	cursor -= 2;
 	cursor = cursor < 0 ? 0 : cursor;
 
@@ -105,7 +126,7 @@ void supr() {
 
 	cursor += 2;
 	video[cursor] = ' ';
-	video[cursor + 1] = 0x00;
+	video[cursor + 1] = cc(BLACK,BLACK);
 
 	printCursor();
 }
@@ -128,7 +149,7 @@ void clear() {
 	int i;
 	removeCursorMark();
 	for (i = 0; i < ROWS * COLS; i++) {
-		print(" ", 0x00);
+		print(" ", cc(BLACK,BLACK));
 	}
 	cursor = 0;
 }
