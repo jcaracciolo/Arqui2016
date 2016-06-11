@@ -16,6 +16,9 @@ void _irq02Handler(void);
 void _irq03Handler(void);
 void _irq04Handler(void);
 void _irq05Handler(void);
+void _irq80Handler(void);
+
+void _int_80_hand();
 
 void _cli(void);
 
@@ -25,7 +28,6 @@ void picMasterMask(byte mask);
 
 void picSlaveMask(byte mask);
 
-void int_80_hand();
 
 void lidt(IDTR *idtr);
 

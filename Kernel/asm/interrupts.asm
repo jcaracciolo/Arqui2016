@@ -19,11 +19,14 @@ GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 
+GLOBAL _irq80Handler
+
 
 EXTERN irqDispatcher
+EXTERN syscallHandler
 
 %macro irqHandlerMaster 1
-	;push rdi
+	push rdi
 
 	mov rdi, %1
 	call irqDispatcher
@@ -33,7 +36,7 @@ EXTERN irqDispatcher
 	mov al, 20h
 	out 20h, al
 
-	;pop rdi
+	pop rdi
 	iretq
 %endmacro
 
@@ -112,8 +115,25 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
+_irq80Handler:
 
+    pushState
+    push r9
+    mov r9,r8
+    mov r8, rcx
+    mov rcx, rdx
+    mov rdx, rsi
+    mov rsi, rdi
+    mov rdi, rax
+	call syscallHandler
+	pop r9
+	popState
 
+	;signal pic
+	mov al, 20h
+	out 20h, al
+
+	iretq
 
 haltcpu:
 	cli

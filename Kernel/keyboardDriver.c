@@ -3,11 +3,12 @@
 
 extern char read_key();
 
-char buffer[100];
-int actualIndex=0;
-int lastIndex=0;
+static char buffer[100];
+static int actualIndex=0;
+static int lastIndex=0;
 
 void addToBuffer(){
+
     buffer[lastIndex]=read_key();
     lastIndex=(lastIndex+1)%100;
 }

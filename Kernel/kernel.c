@@ -7,11 +7,8 @@
 #include <types.h>
 #include <interrupts.h>
 
-DESCR_INT *idt = 0x0;	// IDT de 11 entradas
-IDTR idtr;			// IDTR
 
 
-void setup_IDT_entry (int index, byte selector, qword offset, byte access);
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -26,6 +23,8 @@ static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
+
+
 
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
@@ -89,28 +88,6 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-void setup_IDT()
-{
-
-	setup_IDT_entry (0x20, 0x08, (qword)&_irq00Handler, ACS_INT);
-	setup_IDT_entry (0x21, 0x08, (qword)&_irq01Handler, ACS_INT);
-
-	//idtr.base = 0;  
-	//idtr.base +=(dword) &idt;
-	//idtr.limit = sizeof(idt)-1;
-	
-	//_lidt (&idtr);	
-
-
-	//Todas las interrupciones desabilidas.
-	picMasterMask(0xFC); 
-	//picSlaveMask(0xFF);
-        
-	_sti();
-
-
-
-}
 
 int main()
 {	
@@ -135,19 +112,15 @@ int main()
 	ncPrint("[Finished]");
 
 	setup_IDT();
-	
+	setUpSyscalls();
+
 	while(1) {
+
+	    char c=getChar();
+
+	    printNum(8,5);
 	}
 
 	return 0;
 }
 
-void setup_IDT_entry (int index, byte selector, qword offset, byte access) {
-  idt[index].offset_l = offset & 0xFFFF;
-  idt[index].selector = selector;
-  idt[index].zero_byte = 0;
-  idt[index].access = access;
-  idt[index].offset_m = (offset >> 16) & 0xFFFF;
-  idt[index].offset_h = (offset >> 32) & 0xFFFF;
-  idt[index].zero_dword = 0;
-}

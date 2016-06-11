@@ -13,6 +13,7 @@ typedef unsigned char byte;
 typedef short int word;
 typedef int dword;
 typedef unsigned long qword;
+typedef unsigned long U64;
 
 #define NULL 0
 #define EOF -1
