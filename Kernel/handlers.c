@@ -3,6 +3,7 @@
 #include <naiveConsole.h>
 
 #include "videoDriver.h"
+#include "keyboardDriver.h"
 
 static char *video = (char *) 0xb8000;
 
@@ -14,7 +15,7 @@ void irqDispatcher(int irq){
 			blink();
 			break;
 		case 1:
-			onKeyPressed();
+			addToBuffer();
 			break;
 	}
 	return;
@@ -32,6 +33,6 @@ void blink(){
 }
 
 void onKeyPressed(){
-	printKey();
+	addToBuffer();
 }
 

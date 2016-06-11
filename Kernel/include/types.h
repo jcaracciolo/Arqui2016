@@ -14,6 +14,9 @@ typedef short int word;
 typedef int dword;
 typedef unsigned long qword;
 
+#define NULL 0
+#define EOF -1
+
 typedef struct {
 	int x;
 	int y;
