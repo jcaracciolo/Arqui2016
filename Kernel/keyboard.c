@@ -27,7 +27,7 @@ static int mapSize = 90;
 
 void printKey() {
 	int keyCode;
-	keyCode = read_key();
+	keyCode = readBuffer();
 	
 	// Key Pressed
 	if (keyCode >= 0 && keyCode < mapSize) {

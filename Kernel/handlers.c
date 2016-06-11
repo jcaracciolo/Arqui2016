@@ -16,6 +16,7 @@ void irqDispatcher(int irq){
 			break;
 		case 1:
 			addToBuffer();
+			printKey();
 			break;
 	}
 	return;
@@ -30,9 +31,5 @@ void blink(){
 		counter = 0;
 		blinkCursor();
 	}
-}
-
-void onKeyPressed(){
-	addToBuffer();
 }
 
