@@ -7,11 +7,11 @@
 #include <types.h>
 #include <interrupts.h>
 
-DESCR_INT idt[0xA];	// IDT de 11 entradas
+DESCR_INT *idt = 0x0;	// IDT de 11 entradas
 IDTR idtr;			// IDTR
 
 
-void setup_IDT_entry (int index, byte selector, dword offset, byte access);
+void setup_IDT_entry (int index, byte selector, qword offset, byte access);
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -21,8 +21,6 @@ extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
-
-extern char read_key();
 
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
@@ -91,22 +89,22 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
-int setup_IDT()
+void setup_IDT()
 {
 
-	setup_IDT_entry (0x08, 0x08, (dword)&_irq00Handler, ACS_INT);
-	setup_IDT_entry (0x09, 0x08, (dword)&_irq01Handler, ACS_INT);
+	setup_IDT_entry (0x20, 0x08, (qword)&_irq00Handler, ACS_INT);
+	setup_IDT_entry (0x21, 0x08, (qword)&_irq01Handler, ACS_INT);
 
-	idtr.base = 0;  
-	idtr.base +=(dword) &idt;
-	idtr.limit = sizeof(idt)-1;
+	//idtr.base = 0;  
+	//idtr.base +=(dword) &idt;
+	//idtr.limit = sizeof(idt)-1;
 	
-	_lidt (&idtr);	
+	//_lidt (&idtr);	
 
 
 	//Todas las interrupciones desabilidas.
 	picMasterMask(0xFC); 
-	picSlaveMask(0xFF);
+	//picSlaveMask(0xFF);
         
 	_sti();
 
@@ -144,10 +142,12 @@ int main()
 	return 0;
 }
 
-void setup_IDT_entry (int index, byte selector, dword offset, byte access) {
-  idt[index].selector = selector;
+void setup_IDT_entry (int index, byte selector, qword offset, byte access) {
   idt[index].offset_l = offset & 0xFFFF;
-  idt[index].offset_h = offset >> 16;
+  idt[index].selector = selector;
+  idt[index].zero_byte = 0;
   idt[index].access = access;
-  idt[index].cero = 0;
+  idt[index].offset_m = (offset >> 16) & 0xFFFF;
+  idt[index].offset_h = (offset >> 32) & 0xFFFF;
+  idt[index].zero_dword = 0;
 }

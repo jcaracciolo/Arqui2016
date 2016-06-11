@@ -12,6 +12,7 @@
 typedef unsigned char byte;
 typedef short int word;
 typedef int dword;
+typedef unsigned long qword;
 
 typedef struct {
 	int x;
@@ -38,9 +39,11 @@ typedef struct {
 typedef struct {
   word      offset_l,
             selector;
-  byte      cero,
+  byte      zero_byte,
             access;
-  word	    offset_h;
+  word	    offset_m;
+  dword     offset_h,
+            zero_dword;
 } DESCR_INT;
 
 /* IDTR  */

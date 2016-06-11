@@ -9,7 +9,6 @@ GLOBAL _cli
 GLOBAL _sti
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
-GLOBAL int_08_hand
 GLOBAL _lidt
 GLOBAL haltcpu
 
@@ -22,10 +21,9 @@ GLOBAL _irq05Handler
 
 
 EXTERN irqDispatcher
-EXTERN int_08
 
 %macro irqHandlerMaster 1
-	push rdi
+	;push rdi
 
 	mov rdi, %1
 	call irqDispatcher
@@ -35,8 +33,8 @@ EXTERN int_08
 	mov al, 20h
 	out 20h, al
 
-	pop rdi
-	iret
+	;pop rdi
+	iretq
 %endmacro
 
 
@@ -54,31 +52,40 @@ _sti:
 
 
 picMasterMask:
-	push rbp
+    push rbp
     mov rbp, rsp
-    mov ax, [rbp+8]
+
+    mov rax, rdi
     out	21h,al
+
+    mov rsp, rbp
     pop rbp
-    retn
+    ret
 
 picSlaveMask:
-	push    rbp
-    mov     rbp, rsp
-    mov     ax, [rbp+8]  ; ax = mascara de 16 bits
-    out	0A1h,al
-    pop     rbp
-    retn
+    push rbp
+    mov rbp, rsp
+
+    mov rax, rdi
+    out	0A1h, al
+
+    mov rsp, rbp
+    pop rbp
+    ret
 
 _lidt:				; Carga el IDTR
     push    rbp
     mov     rbp, rsp
+
     push    rbx
     mov     rbx, [rbp + 6] ; ds:bx = puntero a IDTR
-	rol	rbx,16
-	lidt    [rbx]          ; carga IDTR
+    rol	    rbx,16
+    lidt    [rbx]          ; carga IDTR
     pop     rbx
+
+    mov     rsp, rbp
     pop     rbp
-    retn
+    ret
 
 
 ;8254 Timer (Timer Tick)

@@ -1,12 +1,15 @@
 
 #include "types.h"
+#include <naiveConsole.h>
 
 static char *video = (char *) 0xb8000;
 
-void irqDispatcher(dword irq){	
+extern int read_key();
+
+void irqDispatcher(int irq){	
 	switch(irq) {
 		case 0:
-			int_08();
+			//int_08();
 			break;
 		case 1:
 			int_09();
@@ -28,6 +31,8 @@ void int_08(){
 }
 
 void int_09(){
+	int a = read_key();
+	ncPrint("[Kernel Main]");
 	video[i++] = 'g';
 	video[i++] = (char) 0x25;
 }
