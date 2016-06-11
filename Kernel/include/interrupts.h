@@ -31,6 +31,8 @@ void picSlaveMask(byte mask);
 
 void lidt(IDTR *idtr);
 
+void setup_IDT();
+
 //Termina la ejecución de la cpu.
 void haltcpu(void);
 

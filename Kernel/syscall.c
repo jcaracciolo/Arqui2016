@@ -13,20 +13,21 @@ typedef qword (*sys)(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword
 static sys sysCalls[SYSTEM_CALL_COUNT];
 void setup_IDT_entry (int , byte , qword , byte );
 
-
+/**
+  *
+ */
 qword sys_read(qword file, qword buffer, qword size, qword r10, qword r8, qword r9){
 
-
-
-       char* charbuffer=(char*)buffer;
-    int i=0;
+   char* charbuffer=(char*)buffer;
+   int i=0;
    while(i<size){
         *(charbuffer+i)=readBuffer();
         i++;
-    }
-    printNum((int)(*(charbuffer)),8);
+
+   }
+     //printNum((int)(*(charbuffer)),8);
     //TODO FILL WITH CODE
-    printNum(5,8);
+    //printNum(5,8);
     return 1;
 }
 
@@ -38,9 +39,10 @@ qword sys_write(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9){
 
 
 void syscallHandler(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9){
+    char* num [5];
+    sysCalls[0](0,(qword)num,5,0,0,0);
+//    sysCalls[rax](rdi,rsi,rdx,r10,r8,r9);
 
-    sysCalls[rax](rdi,rsi,rdx,r10,r8,r9);
-    printNum(5,8);
     if(rax < 0 || rax >= SYSTEM_CALL_COUNT) {
         //TODO this should crash, snow crash.
         return;

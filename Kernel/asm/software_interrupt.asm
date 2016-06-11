@@ -6,7 +6,6 @@ softwareInterrupt:
 
 
 getChar:
-
     mov rax,0
     mov rdi,1
     mov rsi,char

@@ -24,11 +24,14 @@ void blink(){
 void irqDispatcher(int irq){
 	switch(irq) {
 		case 0:
-			blink();
+			//blink();
+
+						printNum(8,5);
+
 			break;
 		case 1:
-			addToBuffer();
-			printNum(8,5);
+			//addToBuffer();
+			//printNum(8,5);
 			break;
 	}
 	return;

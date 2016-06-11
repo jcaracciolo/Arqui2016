@@ -7,7 +7,8 @@
 
 void addToBuffer();
 
-char readBuffer();
+int readBuffer();
+void preFillBuffer();
 
 
 #endif //KEYBOARDDRIVER_H

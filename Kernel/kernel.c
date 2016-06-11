@@ -6,6 +6,8 @@
 #include <defs.h>
 #include <types.h>
 #include <interrupts.h>
+#include <syscall.h>
+#include <videoDriver.h>
 
 
 
@@ -23,6 +25,7 @@ static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
+int readBuffer();
 
 
 
@@ -112,13 +115,19 @@ int main()
 	ncPrint("[Finished]");
 
 	setup_IDT();
-	setUpSyscalls();
+	//setUpSyscalls();
 
+//    preFillBuffer();
+
+    printNum(1,3);
+	int c;
 	while(1) {
+        c=readBuffer();
+//        c=0;
+        if(c!=-1)
+            printNum(c,4);
 
-	    char c=getChar();
 
-	    printNum(8,5);
 	}
 
 	return 0;

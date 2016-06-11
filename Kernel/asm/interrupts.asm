@@ -117,7 +117,6 @@ _irq05Handler:
 
 _irq80Handler:
 
-    pushState
     push r9
     mov r9,r8
     mov r8, rcx
@@ -127,7 +126,6 @@ _irq80Handler:
     mov rdi, rax
 	call syscallHandler
 	pop r9
-	popState
 
 	;signal pic
 	mov al, 20h
