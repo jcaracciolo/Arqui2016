@@ -1,5 +1,6 @@
 #include "videoDriver.h"
 #include "strings.h"
+#include "include/strings.h"
 
 // Colors: backColor_frontColor
 

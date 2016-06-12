@@ -8,8 +8,7 @@
 #include <interrupts.h>
 #include <syscall.h>
 #include <videoDriver.h>
-
-
+#include "include/videoDriver.h"
 
 
 extern uint8_t text;
@@ -28,7 +27,7 @@ typedef int (*EntryPoint)();
 int readBuffer();
 
 
-
+void decreaseTimerTick();
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -119,6 +118,8 @@ int main()
 
 //    preFillBuffer();
 
+    decreaseTimerTick();
+
     printNum(1,3);
 	int c;
 	while(1) {
@@ -132,4 +133,3 @@ int main()
 
 	return 0;
 }
-

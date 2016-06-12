@@ -19,4 +19,6 @@ void clear();
 /* Makes cursor blink */
 void blinkCursor();
 
+void printCursor();
+
 #endif
