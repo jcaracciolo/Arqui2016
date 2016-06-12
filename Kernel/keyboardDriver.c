@@ -1,5 +1,7 @@
 #include "types.h"
 #include "keyboardDriver.h"
+#include "include/types.h"
+#include "include/videoDriver.h"
 
 extern char read_key();
 
@@ -16,15 +18,21 @@ void preFillBuffer(){
 
 void addToBuffer(){
     if(lastIndex!=actualIndex-1){
-        buffer[lastIndex]=read_key();
+        buffer[lastIndex]=2;
+        printNum(lastIndex,2);
+        printNum(actualIndex,2);
         lastIndex=(lastIndex+1)%100;
     }
+
+
 }
 
 int readBuffer(){
 
 
     if(actualIndex!=lastIndex){
+        printNum(lastIndex,8);
+        printNum(actualIndex,8);
         char aux=buffer[actualIndex];
         actualIndex=(actualIndex+1)%100;
         return  aux;

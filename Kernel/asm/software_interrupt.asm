@@ -13,10 +13,10 @@ getChar:
     mov rsi,char
     mov rdx,1
     INT 80h
-    mov rbx,[rax]
-    mov rax,rbx
+    mov rax,0
+    mov rax,[char]
     pop rdi
     ret
 
 section .bss
-char: resb 1
+char: resd 1

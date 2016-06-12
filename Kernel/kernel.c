@@ -121,14 +121,20 @@ int main()
 	setup_IDT();
 	setUpSyscalls();
 
-//    preFillBuffer();
+    //preFillBuffer();
 
     decreaseTimerTick();
 
-    printNum(1,3);
 	int c;
-    //c=getChar();
+//    c=getChar();
+//        printNum(c,3);
+
     while(1) {
+        c=getChar();
+        if (c!=-1){
+            printNum(c,3);
+
+        }
 	}
 
 	return 0;

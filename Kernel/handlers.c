@@ -29,10 +29,11 @@ void irqDispatcher(int irq){
 	switch(irq) {
 		case 0:
 			blink();
-           break;
-		case 1:
-			addToBuffer();
-			break;
+            break;
+        case 1:
+            printNum(7,8);
+            addToBuffer();
+            break;
 	}
 	return;
 }
