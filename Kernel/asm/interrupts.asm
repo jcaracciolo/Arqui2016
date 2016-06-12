@@ -25,6 +25,8 @@ GLOBAL _irq80Handler
 EXTERN irqDispatcher
 EXTERN syscallHandler
 
+EXTERN printNum
+
 
 %macro pushState 0  ; fuente: RowDaBoat/Proyect Wyrm
 	push rax
@@ -67,9 +69,9 @@ EXTERN syscallHandler
     pushState
 
 	mov rdi, %1
+
 	call irqDispatcher
-	
-	
+
 	;signal pic
 	mov al, 20h
 	out 20h, al

@@ -5,7 +5,9 @@
 
 extern char read_key();
 
-static int buffer[100];
+#define BUFFER_SIZE 100
+
+static int buffer[BUFFER_SIZE];
 static int actualIndex=0;
 static int lastIndex=0;
 
@@ -18,10 +20,8 @@ void preFillBuffer(){
 
 void addToBuffer(){
     if(lastIndex!=actualIndex-1){
-        buffer[lastIndex]=2;
-        printNum(lastIndex,2);
-        printNum(actualIndex,2);
-        lastIndex=(lastIndex+1)%100;
+        buffer[lastIndex]=read_key();
+        lastIndex=(lastIndex+1)%BUFFER_SIZE;
     }
 
 
@@ -31,10 +31,8 @@ int readBuffer(){
 
 
     if(actualIndex!=lastIndex){
-        printNum(lastIndex,8);
-        printNum(actualIndex,8);
         char aux=buffer[actualIndex];
-        actualIndex=(actualIndex+1)%100;
+        actualIndex=(actualIndex+1)%BUFFER_SIZE;
         return  aux;
     }
 

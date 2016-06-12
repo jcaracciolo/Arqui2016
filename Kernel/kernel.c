@@ -126,8 +126,8 @@ int main()
     decreaseTimerTick();
 
 	int c;
-//    c=getChar();
 //        printNum(c,3);
+
 
     while(1) {
         c=getChar();

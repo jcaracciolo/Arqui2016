@@ -31,10 +31,10 @@ void irqDispatcher(int irq){
 			blink();
             break;
         case 1:
-            printNum(7,8);
             addToBuffer();
             break;
-	}
+    }
+
 	return;
 }
 
