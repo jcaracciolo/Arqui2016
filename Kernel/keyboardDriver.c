@@ -1,5 +1,6 @@
 #include "types.h"
 #include "keyboardDriver.h"
+#include "include/types.h"
 
 extern char read_key();
 

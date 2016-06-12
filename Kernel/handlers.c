@@ -5,6 +5,10 @@
 #include "interrupts.h"
 #include "videoDriver.h"
 #include "keyboardDriver.h"
+#include "include/videoDriver.h"
+#include "include/interrupts.h"
+#include "include/defs.h"
+#include "include/keyboardDriver.h"
 
 DESCR_INT *idt = 0x0;	// IDT de 11 entradas
 IDTR idtr;			// IDTR
@@ -24,14 +28,11 @@ void blink(){
 void irqDispatcher(int irq){
 	switch(irq) {
 		case 0:
-			//blink();
+			blink();
 
-						printNum(8,5);
-
-			break;
+           break;
 		case 1:
-			//addToBuffer();
-			//printNum(8,5);
+			addToBuffer();
 			break;
 	}
 	return;

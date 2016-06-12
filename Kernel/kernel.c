@@ -9,6 +9,8 @@
 #include <syscall.h>
 #include <videoDriver.h>
 #include "include/videoDriver.h"
+#include "include/naiveConsole.h"
+#include "include/interrupts.h"
 
 
 extern uint8_t text;
@@ -124,9 +126,9 @@ int main()
 	int c;
 	while(1) {
         c=readBuffer();
-//        c=0;
-        if(c!=-1)
-            printNum(c,4);
+        if(c!=-1){
+                printNum(c,4);
+        }
 
 
 	}

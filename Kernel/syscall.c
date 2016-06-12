@@ -3,6 +3,9 @@
 #include "interrupts.h"
 #include "defs.h"
 #include "keyboardDriver.h"
+#include "include/types.h"
+#include "include/videoDriver.h"
+#include "include/keyboardDriver.h"
 
 
 #define SYSTEM_CALL_COUNT 2
