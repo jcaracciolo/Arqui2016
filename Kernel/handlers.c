@@ -29,7 +29,6 @@ void irqDispatcher(int irq){
 	switch(irq) {
 		case 0:
 			blink();
-
            break;
 		case 1:
 			addToBuffer();

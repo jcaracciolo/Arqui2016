@@ -11,6 +11,7 @@
 #include "include/videoDriver.h"
 #include "include/naiveConsole.h"
 #include "include/interrupts.h"
+#include "include/syscall.h"
 
 
 extern uint8_t text;
@@ -19,6 +20,8 @@ extern uint8_t data;
 extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
+
+extern int getChar();
 
 static const uint64_t PageSize = 0x1000;
 
@@ -116,7 +119,7 @@ int main()
 	ncPrint("[Finished]");
 
 	setup_IDT();
-	//setUpSyscalls();
+	setUpSyscalls();
 
 //    preFillBuffer();
 
@@ -124,13 +127,8 @@ int main()
 
     printNum(1,3);
 	int c;
-	while(1) {
-        c=readBuffer();
-        if(c!=-1){
-                printNum(c,4);
-        }
-
-
+    //c=getChar();
+    while(1) {
 	}
 
 	return 0;

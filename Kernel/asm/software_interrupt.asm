@@ -1,11 +1,13 @@
 GLOBAL softwareInterrupt
 GLOBAL getChar
+
 softwareInterrupt:
     INT 80h
     ret
 
 
 getChar:
+    push rdi
     mov rax,0
     mov rdi,1
     mov rsi,char

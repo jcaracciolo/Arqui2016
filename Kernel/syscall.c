@@ -6,6 +6,8 @@
 #include "include/types.h"
 #include "include/videoDriver.h"
 #include "include/keyboardDriver.h"
+#include "include/interrupts.h"
+#include "include/defs.h"
 
 
 #define SYSTEM_CALL_COUNT 2
@@ -20,10 +22,9 @@ void setup_IDT_entry (int , byte , qword , byte );
   *
  */
 qword sys_read(qword file, qword buffer, qword size, qword r10, qword r8, qword r9){
-
-   char* charbuffer=(char*)buffer;
-   int i=0;
-   while(i<size){
+    char* charbuffer=(char*)buffer;
+    int i=0;
+    while(i<size){
         *(charbuffer+i)=readBuffer();
         i++;
 
@@ -43,6 +44,7 @@ qword sys_write(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9){
 
 void syscallHandler(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9){
     char* num [5];
+
     sysCalls[0](0,(qword)num,5,0,0,0);
 //    sysCalls[rax](rdi,rsi,rdx,r10,r8,r9);
 
