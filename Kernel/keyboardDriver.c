@@ -19,13 +19,12 @@ static boolean ralt=false;
 void addToBuffer(){
     int key=read_key();
 
-
-    if(key==0x36){
-        rshift=true;
-    }
-
-    if(key==0x2A){
-        lshift=true;
+    if(key==0x36 || key==-74){
+        rshift=!rshift;
+    }else if(key==0x2A || key==-86){
+        lshift=!lshift;
+    }else if(key==0x38 || lalt==0xB8){
+        lalt=!lalt;
     }
 
     if(lastIndex!=actualIndex-1){

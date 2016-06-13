@@ -33,6 +33,6 @@ void moveCursorLeft();
 void moveCursorDown();
 void moveCursorRight();
 
-void putchar(int c);
+void printChar(int c);
 
 #endif

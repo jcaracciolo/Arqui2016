@@ -21,6 +21,10 @@ extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 
+
+extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
+
+
 extern int getChar();
 
 static const uint64_t PageSize = 0x1000;
@@ -128,11 +132,15 @@ int main()
 	int c;
 //        printNum(c,3);
 
+	char* a="HOLA MUNDO";
+	int80(4,1,a,10,0,0,0);
+
 
     while(1) {
         c=getChar();
         if (c!=-1){
-			putchar(c);
+			printChar(c);
+
 
         }
 	}

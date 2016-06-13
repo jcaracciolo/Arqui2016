@@ -1,8 +1,3 @@
-#include "videoDriver.h"
-#include "types.h"
-#include "interrupts.h"
-#include "defs.h"
-#include "keyboardDriver.h"
 #include "include/types.h"
 #include "include/videoDriver.h"
 #include "include/keyboardDriver.h"
@@ -41,8 +36,12 @@ qword sys_read(qword file, qword buffer, qword size, qword r10, qword r8, qword 
     return 1;
 }
 
-qword sys_write(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9){
-     printNum(5,8);
+qword sys_write(qword rdi, qword buffer, qword size, qword r10, qword r8, qword r9){
+
+    char* charbuffer=(char*)buffer;
+    while(size--){
+        printChar(*charbuffer++);
+     }
      return 1;
  }
 
@@ -60,8 +59,8 @@ void syscallHandler(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword
 
 void setUpSyscalls(){
 
-    sysCalls[0] = &sys_read;
-    sysCalls[1] = &sys_write;
+    sysCalls[3] = &sys_read;
+    sysCalls[4] = &sys_write;
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }

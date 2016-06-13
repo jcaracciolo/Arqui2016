@@ -44,16 +44,15 @@ void print(const char* msg, char colourCode) {
 	//printCursor();
 }
 
-void putchar(int c){
+void printChar(int c){
 	if(c=='\b'){
 		backspace();
 	}else if(c=='\n'){
 		printNewLine();
 	}else{
-	video[cursor++] = c;
+	video[cursor++] = (char)c;
 	video[cursor++] = 0x07;
 	}
-
 }
 
 void printNum(int num, int colorCode) {
