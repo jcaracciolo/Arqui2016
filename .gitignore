@@ -1,0 +1,55 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+
+### C template
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+*.bin
+
+# Debug files
+*.dSYM/
+*.su
+
+.idea/Arqui2016.iml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+CMakeLists.txt
+Kernel/TimerTick.o
+Kernel/asm/software_interrupt.o
+Kernel/asm/timerTick.o
+Kernel/keyboardDriver.o
+Kernel/syscall.o
+
+
+/Image/
+/Toolchain/
