@@ -21,4 +21,18 @@ void blinkCursor();
 
 void printCursor();
 
+void backspace();
+
+void supr();
+
+/* Move Cursor*/
+void moveCursorRight();
+
+void moveCursorUp();
+void moveCursorLeft();
+void moveCursorDown();
+void moveCursorRight();
+
+void putchar(int c);
+
 #endif

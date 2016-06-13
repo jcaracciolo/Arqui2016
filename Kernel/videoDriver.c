@@ -44,6 +44,11 @@ void print(const char* msg, char colourCode) {
 	//printCursor();
 }
 
+void putchar(int c){
+	video[cursor++] = c;
+	video[cursor++] = 0x07;
+}
+
 void printNum(int num, int colorCode) {
 	char str[10];
 	intToString(str, num);

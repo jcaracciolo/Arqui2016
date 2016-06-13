@@ -15,6 +15,7 @@ typedef int dword;
 typedef unsigned long qword;
 typedef unsigned long U64;
 
+typedef char boolean;
 #define true 1
 #define false 0
 #define EOF -1

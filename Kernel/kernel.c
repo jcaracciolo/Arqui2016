@@ -132,7 +132,7 @@ int main()
     while(1) {
         c=getChar();
         if (c!=-1){
-            printNum(c,3);
+			putchar(c);
 
         }
 	}

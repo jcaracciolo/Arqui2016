@@ -1,7 +1,7 @@
-#include "types.h"
-#include "keyboardDriver.h"
+#include "include/types.h"
 #include "include/types.h"
 #include "include/videoDriver.h"
+#include "include/scanCodes.h"
 
 extern char read_key();
 
@@ -11,17 +11,19 @@ static int buffer[BUFFER_SIZE];
 static int actualIndex=0;
 static int lastIndex=0;
 
-void preFillBuffer(){
-    for(int i=0; i<10; i++){
-        buffer[i] = 't';
-    }
-    lastIndex=10;
-}
+static boolean lshift= false;
+static boolean rshift=false;
+static boolean lalt=false;
+static boolean ralt=false;
 
 void addToBuffer(){
+    int key=read_key();
+
     if(lastIndex!=actualIndex-1){
-        buffer[lastIndex]=read_key();
-        lastIndex=(lastIndex+1)%BUFFER_SIZE;
+        if(ASCII_VALUE[key]!=0 && key<0x40 && key>0){
+            buffer[lastIndex] = ASCII_VALUE[key];
+            lastIndex = (lastIndex + 1) % BUFFER_SIZE;
+        }
     }
 
 
@@ -38,3 +40,4 @@ int readBuffer(){
 
     return EOF;
 }
+
