@@ -19,10 +19,28 @@ static boolean ralt=false;
 void addToBuffer(){
     int key=read_key();
 
+
+    if(key==0x36){
+        rshift=true;
+    }
+
+    if(key==0x2A){
+        lshift=true;
+    }
+
     if(lastIndex!=actualIndex-1){
-        if(ASCII_VALUE[key]!=0 && key<0x40 && key>0){
-            buffer[lastIndex] = ASCII_VALUE[key];
-            lastIndex = (lastIndex + 1) % BUFFER_SIZE;
+        if(key<0x40 && key>0){
+            if(ASCII_VALUE[key]!=0){
+                if(lshift || rshift){
+                    buffer[lastIndex] = SHIFT_ASCII_VALUE[key];
+                }else{
+                    buffer[lastIndex] = ASCII_VALUE[key];
+                }
+                lastIndex = (lastIndex + 1) % BUFFER_SIZE;
+            }else{
+
+
+            }
         }
     }
 
