@@ -88,10 +88,12 @@ int main()
 
 //	char* a="HOLA MUNDO";
 		int c;
-	incPixel(0);
 
-    while(1) {
-        c=getChar();
+	//incPixel(0);
+
+	while(1) {
+		putSquare(0,0,1024,768);
+		c=getChar();
         if (c!=-1){
 			printChar(c);
 

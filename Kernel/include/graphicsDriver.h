@@ -18,7 +18,7 @@ struct ModeInfoBlock {
     uint16 pitch; // bytes per scanline
 
     uint16 Xres, Yres;
-    uint8 Wchar, Ychar, planes, bpp, banks;
+    uint8 Wchar, Ychar, planes, bpp, banks; //bpp = bits per pixel
     uint8 memory_model, bank_size, image_pages;
     uint8 reserved0;
 
@@ -38,7 +38,7 @@ typedef struct ModeInfoBlock modeInfo;
 void putPixel(int x, int y);
 void putSquare(int x, int y, int height, int width);
 void incPixel(int m) ;
-
+void putColoredPixel(int x, int y,char color);
 
 
 #endif //ARQUI2016_GRAPHICSDRIVER_H
