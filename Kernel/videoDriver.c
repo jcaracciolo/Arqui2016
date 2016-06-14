@@ -39,6 +39,7 @@ void print(const char* msg, char colourCode) {
 
 		video[cursor] = msg[j++];
 		video[++cursor] = colourCode;
+		cursor = cursor % (ROWS * COLS * 2);
 	}
 
 	//printCursor();
@@ -53,6 +54,7 @@ void printChar(int c){
 	video[cursor++] = (char)c;
 	video[cursor++] = 0x07;
 	}
+	cursor = cursor % (ROWS * COLS * 2);
 }
 
 void printNum(int num, int colorCode) {
