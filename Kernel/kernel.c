@@ -45,7 +45,15 @@ int main()
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
+
+	ncPrint("  Setting up IDT");
+	setup_IDT();
+	ncPrint("  Setting up System Calls");
+	setUpSyscalls();
+
+
 	ncPrint("  Calling the sample code module returned: ");
+	//HERE IT SHOULD CALL SAMPLE MODULE BUT INSTEAD CALL A MODULE ONLY IF COMMAND
 	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
 	ncNewline();
 	ncNewline();
@@ -60,21 +68,26 @@ int main()
 	ncPrint("[Finished]");
 	ncPrint("[Finished]");
 
-	setup_IDT();
-	setUpSyscalls();
+
     //preFillBuffer();
 
     decreaseTimerTick();
 
 	_setTimeZone(-3);
+//
+//	printNum(_getHours(),3);
+//	print(":",3);
+//	printNum(_getMinutes(),3);
+//
+//	_setAlarmHours(10);
+//	_setAlarmMinutes(51);
+//	printNum(_getAlarmHours(),3);
+//	print(":",3);
+//	printNum(_getAlarmMinutes(),3);
 
-	printNum(_getHours(),3);
-	print(":",3);
-	printNum(_getMinutes(),3);
-	int c;
 
 //	char* a="HOLA MUNDO";
-
+		int c;
 	incPixel(0);
 
     while(1) {
@@ -83,7 +96,7 @@ int main()
 			printChar(c);
 
 
-        }
+		}
 	}
 
 	return 0;
