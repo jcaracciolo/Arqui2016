@@ -158,7 +158,11 @@ _irq04Handler:
 	
 ;USB
 _irq05Handler:
-	irqHandlerMaster 5
+	irqHandlerMaster 8
+
+;RTC
+_irq08Handler:
+	irqHandlerMaster 8
 
 _irq80Handler:
 

@@ -74,16 +74,17 @@ int main()
     decreaseTimerTick();
 
 	_setTimeZone(-3);
-//
-//	printNum(_getHours(),3);
-//	print(":",3);
-//	printNum(_getMinutes(),3);
-//
-//	_setAlarmHours(10);
-//	_setAlarmMinutes(51);
-//	printNum(_getAlarmHours(),3);
-//	print(":",3);
-//	printNum(_getAlarmMinutes(),3);
+
+	printNum(_getHours(),3);
+	print(":",3);
+	printNum(_getMinutes(),3);
+
+	_setAlarmHours(_getHours());
+	_setAlarmMinutes(_getMinutes());
+	_setAlarmSeconds(0);
+	printNum(_getAlarmHours(),3);
+	print(":",3);
+	printNum(_getAlarmMinutes(),3);
 
 
 //	char* a="HOLA MUNDO";

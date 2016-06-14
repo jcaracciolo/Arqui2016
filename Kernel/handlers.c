@@ -29,10 +29,13 @@ void irqDispatcher(int irq){
 	switch(irq) {
 		case 0:
 			blink();
+			break;
+		case 1:
+			addToBuffer();
             break;
-        case 1:
-            addToBuffer();
-            break;
+		case 8:
+			printNum(7,5);
+			break;
     }
 
 	return;
@@ -55,6 +58,7 @@ void setup_IDT()
 {
 	setup_IDT_entry (0x20, 0x08, (qword)&_irq00Handler, ACS_INT);
 	setup_IDT_entry (0x21, 0x08, (qword)&_irq01Handler, ACS_INT);
+	setup_IDT_entry (0x28, 0x08, (qword)&_irq05Handler, ACS_INT);
 
 	//idtr.base = 0;
 	//idtr.base +=(dword) &idt;
