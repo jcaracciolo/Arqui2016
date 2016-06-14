@@ -1,4 +1,5 @@
 #include "../../Kernel/include/types.h"
+#include "shell.h"
 
 /* sampleCodeModule.c */
 
@@ -15,9 +16,10 @@ int main() {
 	*v = 'D';
 	*(v+1) = 0x74;
 
+	initShell();
 
-	char* a="HOLA MUNDO!!!!!!!!!!!!!!!!!";
-	int80(4,1,a,20,0,0,0);
+	//char* a="HOLA MUNDO!!!!!!!!!!!!!!!!!";
+	//int80(4,1,a,20,0,0,0);
 
 	//Test if BSS is properly set up
 	if (var1 == 0 && var2 == 0)

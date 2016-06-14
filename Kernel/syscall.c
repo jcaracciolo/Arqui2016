@@ -23,13 +23,14 @@ qword sys_read(qword file, qword buffer, qword size, qword r10, qword r8, qword 
 //    printNum(0,4);
 //    printNum(size,7);
 //    printNum(0,4);
-    int* charbuffer=(int*)buffer;
+    char* charbuffer=(char*)buffer;
     int i=0;
-    int c=readBuffer();
-    while(i<size){
-        *(charbuffer+i)=c;
+    int c;
+    while(i<size-1 && (c=readBuffer())!=EOF){
+	charbuffer[i]=(char)c;
         i++;
    }
+	charbuffer[i]=0;
     //TODO FILL WITH CODE
 
     return 1;
