@@ -13,6 +13,7 @@
 #include "include/interrupts.h"
 #include "include/syscall.h"
 #include "include/graphicsDriver.h"
+#include "include/getTime.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -65,7 +66,11 @@ int main()
 
     decreaseTimerTick();
 
+	_setTimeZone(-3);
 
+	printNum(_getHours(),3);
+	print(":",3);
+	printNum(_getMinutes(),3);
 	int c;
 
 //	char* a="HOLA MUNDO";
