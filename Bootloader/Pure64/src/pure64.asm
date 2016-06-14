@@ -60,6 +60,11 @@ clearcs:
 	mov ax, 0x0003			; Set to normal (80x25 text) video mode
 	int 0x10
 
+	; Set video mode
+       mov ax, 0x4F02
+        mov bx, 0x118
+ ;       int 0x10
+
 ; Disable blinking
 	mov ax, 0x1003
 	mov bx, 0x0000
@@ -86,6 +91,8 @@ clearcs:
 	mov bx, 0x0000			; Page number
 	mov dx, 0x2000			; Row / Column
 	int 0x10
+
+
 
 ; At this point we are done with real mode and BIOS interrupts. Jump to 32-bit mode.
 	lgdt [cs:GDTR32]		; Load GDT register

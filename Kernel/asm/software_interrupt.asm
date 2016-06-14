@@ -39,6 +39,9 @@ GLOBAL int80
 	pop rax
 %endmacro
 
+;
+vesaControllerInfo:
+
 
 
 softwareInterrupt:

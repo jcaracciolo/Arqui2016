@@ -1,4 +1,7 @@
 #include <stdint.h>
+#define MAX_STACK_SIZE 5000
+static unsigned char mem[MAX_STACK_SIZE];
+static char * pointer = mem;
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -47,4 +50,10 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 	}
 
 	return destination;
+}
+
+void * malloc(int bytes){
+	char * temp = pointer;
+	pointer += bytes+1;
+	return pointer;
 }

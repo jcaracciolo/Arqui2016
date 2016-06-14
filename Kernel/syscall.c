@@ -12,7 +12,6 @@ typedef qword (*sys)(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword
 
 static sys sysCalls[SYSTEM_CALL_COUNT];
 void setup_IDT_entry (int , byte , qword , byte );
-
 /**
   *
  */
@@ -56,6 +55,7 @@ void syscallHandler(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword
         return;
     }
 }
+void _irq80Handler(void);
 
 void setUpSyscalls(){
 
