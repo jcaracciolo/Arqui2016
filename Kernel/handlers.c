@@ -16,11 +16,9 @@ IDTR idtr;			// IDTR
 #define MAX_LISTENERS 10
 
 static qword counter = 0;
-static int i = 0;
-static char ascii = '0';
 static int timerListeners =0;
 
-static timerEvent timerEvents[MAX_LISTENERS];
+static timerEventT timerEvents[MAX_LISTENERS];
 static int alarmEvents[MAX_LISTENERS];
 
 void blink(){
@@ -31,10 +29,13 @@ void blink(){
 }
 void timerTick(){
 	counter++;
-	for (int j = 0; j < timerListeners; ++j) {
+	for (int j = 0; j < timerListeners; j++) {
 		if(counter % alarmEvents[j]==0) timerEvents[j]();
 	}
 }
+
+
+
 void irqDispatcher(int irq){
 	switch(irq) {
 		case 0:
@@ -50,13 +51,26 @@ void irqDispatcher(int irq){
 
 
 
-void addTimerListener(timerEvent event, int interval){
+void addTimerListener(timerEventT event, int interval){
 	if(timerListeners >= MAX_LISTENERS) return;
 	else{
 		alarmEvents[timerListeners] = interval;
 		timerEvents[timerListeners] = event;
 		timerListeners++;
  	}
+}
+
+void deleteTimerListener(timerEventT event){
+	for (int j = 0; j < timerListeners; j++) {
+		if(timerEvents[j]==event){
+			timerListeners--;
+			for(int k=0;k<timerListeners;k++){
+				timerEvents[k]=timerEvents[k+1];
+				alarmEvents[k]=alarmEvents[k+1];
+			}
+			break;
+		}
+	}
 }
 
 void setup_IDT_entry (int index, byte selector, qword offset, byte access) {

@@ -73,8 +73,6 @@ int main()
 	//preFillBuffer();
 
 	decreaseTimerTick();
-	addTimerListener(&printSmt,20);
-	addTimerListener(&printSmt2,500);
 
 //	_setTimeZone(-3);
 //

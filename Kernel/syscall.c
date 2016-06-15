@@ -7,7 +7,7 @@
 #include "include/getTime.h"
 
 
-#define SYSTEM_CALL_COUNT 6
+#define SYSTEM_CALL_COUNT 10
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
@@ -55,7 +55,7 @@ qword sys_pixel(qword x, qword y, qword color, qword r10, qword r8, qword r9) {
 	drawCPixel(x,y,hexaToColor(color));
 }
 
-qword sys_time(qword hour, qword min, qword sec, qword year, qword month, qword day) {	
+qword sys_time(qword hour, qword min, qword sec, qword year, qword month, qword day) {
     char* h=(char*)hour;
 	char* mi=(char*)min;
 	char* s=(char*)sec;
@@ -63,7 +63,7 @@ qword sys_time(qword hour, qword min, qword sec, qword year, qword month, qword 
 	char* mo=(char*)month;
 	char* d=(char*)day;
 
-	*(h) =_getHours(); 	
+	*(h) =_getHours();
 	*(mi) =_getMinutes();
 	*(s) = _getSeconds();
 	*(y) = _getYear();
@@ -84,16 +84,36 @@ void syscallHandler(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword
 
 void _irq80Handler(void);
 
+qword sys_removeTimerEvent(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
+
+qword sys_addTimerEvent(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
+
 void setUpSyscalls(){
 	sysCalls[0] = &sys_clear;
 	sysCalls[1] = &sys_pixel;
 	sysCalls[2] = &sys_line;
     sysCalls[3] = &sys_read;
     sysCalls[4] = &sys_write;
-	sysCalls[5] = &sys_time;
+    sysCalls[5] = &sys_time;
 //[6] set_time_zone
+    sysCalls[7] = &sys_addTimerEvent;
+    sysCalls[8] = &sys_removeTimerEvent;
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
+}
+
+qword sys_removeTimerEvent(qword timerEventFunc, qword rsi, qword rdx, qword r10, qword r8, qword r9) {
+    _cli();
+    deleteTimerListener((timerEventT) timerEventFunc);
+    _sti();
+    return 0;
+}
+
+qword sys_addTimerEvent(qword timerEventFunc, qword interval, qword rdx, qword r10, qword r8, qword r9) {
+    _cli();
+    addTimerListener((timerEventT) timerEventFunc,interval);
+    _sti();
+    return 0;
 }
 
 
