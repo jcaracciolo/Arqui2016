@@ -186,5 +186,5 @@ void drawChar(char c, int x, int y) {
 
 void clearScreen(){
     Color temp = {.r = 0x00, .g = 0x00 , .b = 0x0};
-    putCSquare(0,0,inf->Xres,inf->Yres,temp);
+    putCSquare(0,0,inf->Yres,inf->Xres,temp);
 }

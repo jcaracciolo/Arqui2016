@@ -5,8 +5,8 @@
 // Colors: backColor_frontColor
 
 
-#define ROWS 25
-#define COLS 80
+#define ROWS 48
+#define COLS 85
 
 #define BLACK 0
 #define BLUE 1
@@ -28,26 +28,54 @@
 #define cursorY(a) (((a)/COLS)*CHAR_HEIGHT)
 #define cc(a,b) (a)*0x10+(b)
 
-#define MAX_LINE_TO_WRITE 23
+#define MAX_LINE_TO_WRITE 47
 #define LINES_TO_SCROLL 1	// works weird if any other number
 
 static char *video = (char *) 0xB8000;
 static int cursor = 0;
-static char screen[COLS * ROWS] = {2};
+static char screen[COLS * ROWS] = {0};
+static char colors[COLS * ROWS] = {0};
 
 void scroll() {
 	int begincpy = LINES_TO_SCROLL * COLS;
 	int length = COLS * ROWS - begincpy;
-	strcpy(screen, &(screen[begincpy]), length);
-	cursor -= begincpy * 2;
+	//strcpy(screen, &(screen[begincpy]), length);
+	 int j;
+	for (int i = begincpy,j = 0; j < length; i++, j++) {
+		screen[j] = screen[i];
+	}
+	for (j = length; j < ROWS * COLS; j++) {
+		screen[j] = ' ';
+	}
+	
+	//int i;
+	//for (i = 0; i < cursor; i ++) {
+	//	drawChar(screen[i],cursorX(i),cursorY(i));
+	//}	
+	//for (i = (MAX_LINE_TO_WRITE - 1) * COLS; i < COLS * ROWS; i++) {
+	//	drawChar(' ',cursorX(i),cursorY(i));
+	//}
+
+
+	cursor -= begincpy;
+
+	//cursor = 0;
+	//int i;
+	//int j = 0;
+	//for (i = LINES_TO_SCROLL * COLS; i < cursor; i++) {
+	//	screen[j] = screen[i];
+		//printChar(screen[j]);
+	//	printChar('h');
+	//}
+	//for(; i < COLS * ROWS; i++) {
+	//	printChar(' ');
+	//}
 }
 
 /* print '/0' ended string */
 void print(const char* msg, char colourCode) {
 	for (int j = 0; msg[j] != '\0' ; j++) {
 
-//		video[cursor++] = msg[j++];
-//		video[cursor++] = colourCode;
         printChar(msg[j]);
 	}
 
@@ -62,12 +90,11 @@ void printChar(int c){
 	}else{
 		drawChar(c,cursorX(cursor),cursorY(cursor));
 
-		screen[cursor/2] = (char)c;
+		screen[cursor++] = (char)c;
 //		video[cursor++] = (char)c;
 //		video[cursor++] = 0x07;
-        cursor++;
 	}
-	if (cursor/2 >= MAX_LINE_TO_WRITE * COLS) {
+	if (cursor >= MAX_LINE_TO_WRITE * COLS) {
 		clear();
 		scroll();
 		printScreenArray();
@@ -77,15 +104,16 @@ void printChar(int c){
 
 void printScreenArray() {
 
-//	for (int i = 0; i < COLS * ROWS *2; i += 2) {
-//		drawChar(screen[i/2],cursorX(i),cursorY(i));
-////		video[i+1] = cc(BLACK,WHITE);
-//	}
-    cursor = 0;
-	for (int i = 0; i < COLS * ROWS ; i += 1) {
-		printChar(screen[i]);
+	for (int i = 0; i < COLS * ROWS; i ++) {
+		drawChar(screen[i],cursorX(i),cursorY(i));
 //		video[i+1] = cc(BLACK,WHITE);
 	}
+
+    //cursor = 0;
+	//for (int i = 0; i < COLS * ROWS ; i += 1) {
+	//	printChar(screen[i]);
+//		video[i+1] = cc(BLACK,WHITE);
+	//}
 }
 
 void printNum(int num, int colorCode) {
@@ -93,6 +121,7 @@ void printNum(int num, int colorCode) {
 	intToString(str, num);
 	print(str, colorCode);
 }
+
 //TODO REDO
 void blinkCursor() {
 	if (video[cursor+1] == cc(BLACK,WHITE)) {
@@ -110,8 +139,7 @@ void removeCursorMark() {
 void printNewLine() {
 	removeCursorMark();
 
-	cursor = ((int)(cursor / (COLS * 2)) + 1) * COLS * 2;	// * 2 because video[]
-															// reads char and color
+	cursor = ((int)(cursor / COLS) + 1) * COLS;	
 
 	printCursor();
 }
@@ -124,8 +152,8 @@ void printCursor() {
 void moveCursorUp() {
 	removeCursorMark();
 
-	cursor -= COLS * 2;
-	cursor = cursor < 0 ? cursor % (COLS*2) + ROWS * COLS * 2: cursor;
+	cursor -= COLS;
+	cursor = cursor < 0 ? cursor % COLS + ROWS * COLS : cursor;
 
 	printCursor();
 }
@@ -133,8 +161,8 @@ void moveCursorUp() {
 void moveCursorDown() {
 	removeCursorMark();
 
-	cursor += COLS * 2;
-	cursor = cursor > ROWS * COLS * 2 ? cursor % (COLS*2) : cursor;
+	cursor += COLS;
+	cursor = cursor > ROWS * COLS ? cursor % COLS : cursor;
 
 	printCursor();
 }
@@ -142,7 +170,7 @@ void moveCursorDown() {
 void moveCursorLeft() {
 	removeCursorMark();
 
-	cursor -= 2;
+	cursor--;
 	cursor = cursor < 0 ? 0: cursor;
 
 	printCursor();
@@ -150,19 +178,18 @@ void moveCursorLeft() {
 
 void moveCursorRight() {
 	removeCursorMark();
-	cursor += 2;
-	cursor = cursor > ROWS * COLS * 2 ? cursor % COLS : cursor;
+	cursor++;
+	cursor = cursor > ROWS * COLS ? cursor % COLS : cursor;
 
 	printCursor();
 }
 
 void backspace() {
 	removeCursorMark();
-	if(cursor>= 2) cursor -=1;
+	if(cursor>= 1) cursor--;
 	printChar(' ');
 //	video[cursor - 2] = ' ';
 //	video[cursor - 1] = cc(BLACK,BLACK);
-	cursor -= 1;
 	cursor = cursor < 0 ? 0 : cursor;
 
 	printCursor();
@@ -197,6 +224,7 @@ void clear() {
 	int i;
 	removeCursorMark();
 	clearScreen();
+	//cursor = 0;
 }
 
 

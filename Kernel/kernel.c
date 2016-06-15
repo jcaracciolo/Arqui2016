@@ -115,9 +115,15 @@ int main()
 
 
     //Comment this to disable the shell
-    clearScreen();
+    clear();
 	((EntryPoint)sampleCodeModuleAddress)();
 
+	//for (int u = 1; u < 20; u++) {
+	//	printNum(u, 0x05);
+	//	print("Linea de prueba   \n", 65);
+	//}
+	//print("Linea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de prueba", 65);
+	
 	while(1) {
 		c=getChar();
         if (c!=-1){

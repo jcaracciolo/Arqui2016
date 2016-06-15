@@ -14,7 +14,7 @@ char shellBuffer[COLS + 1] = {0};	// + 1 to add '\0' at the end
 int shellIndex = 0;
 
 void initShell() {
-	clearScreen();
+	//clearScreen();
 	printf("-- WELCOME THE SHELL --\n\n  >>");
 
 	while(1) {
