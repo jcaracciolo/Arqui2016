@@ -15,7 +15,7 @@ int shellIndex = 0;
 
 void initShell() {
 	clearScreen();
-	printf("--WELCOME THE SHELL--\n\n  >>");
+	printf("-- WELCOME THE SHELL --\n\n  >>");
 
 	while(1) {
 		int c = getc();
