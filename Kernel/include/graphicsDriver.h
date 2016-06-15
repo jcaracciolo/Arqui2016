@@ -45,6 +45,8 @@ void drawVerticalLine(uint32 x,uint32 y,uint32 length);
 void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2);
 void drawTriangle(uint32 x1, uint32 y1,uint32 x2, uint32 y2,uint32 x3,uint32 y3);
 void fractalTriangle( uint32 x1, uint32 y1, uint32 x2, uint32 y2, uint32 x3, uint32 y3 ,uint32 recursion);
+void drawEquilateral(uint32 x,uint32 y,uint32 size);
+void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion);
 
 
 #endif //ARQUI2016_GRAPHICSDRIVER_H

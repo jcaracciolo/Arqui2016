@@ -4,7 +4,9 @@
 
 #define inBound(x,y) ((x)>=0 && (x)<1024 && (y)>=0 && (y)<768)
 #define abs(n) ((n)>=0?(n):-(n))
-#define round(n) (int)((n) < 0 ? ((n) - 0.5) : ((n) + 0.5));
+#define round(n) ((int)((n) < 0 ? ((n) - 0.5) : ((n) + 0.5)));
+
+#define sqrt3 1.73205080757
 
 #include "include/graphicsDriver.h"
 
@@ -26,7 +28,6 @@ void putSquare(int x, int y, int height, int width){
 
 
 void putPixel(int x, int y){
-
     char * vi =(char*) inf->physbase + inf->pitch *y + x* inf->bpp/8;
     vi[0] = 0xFF;
     vi[1] = 0xFF;
@@ -50,12 +51,13 @@ void incPixel(int m) {
 void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2){
 
 
-    if(x1==x2){
+    if(0 && x1==x2){
         int y=y1>y2?y2:y1;
-        drawVerticalLine(x1,y,abs(y1-y2));
+        int l=abs(y1-y2);
+        drawVerticalLine(x1,y,l);
     }else{
 
-        double m=((double)y2-y1)/((double)x2-x1);
+        double m=((double)y2-y1)/((double)x2-x1+0.01);
         double b=y1-m*x1;
 
         int y;
@@ -67,8 +69,7 @@ void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2){
         }
 
         for(int i=x1;i<x2;i++){
-            int maux=round(m);
-            y=maux*i+b;
+            y=round(m*i+b);
 
             if(!inBound(i,y)) break;
             putPixel(i,y);
@@ -94,10 +95,11 @@ void drawVerticalLine(uint32 x,uint32 y,uint32 length){
 }
 
 void drawTriangle(uint32 x1, uint32 y1,uint32 x2, uint32 y2,uint32 x3,uint32 y3){
+    drawLine(x3,y3,x1,y2);
     drawLine(x1,y1,x2,y2);
     drawLine(x2,y2,x3,y3);
-    drawLine(x3,y3,x1,y2);
 }
+
 
 void fractalTriangle( uint32 x1, uint32 y1, uint32 x2, uint32 y2, uint32 x3, uint32 y3,uint32 recursion )
 {
@@ -115,7 +117,36 @@ void fractalTriangle( uint32 x1, uint32 y1, uint32 x2, uint32 y2, uint32 x3, uin
   //      .       .             (x1+x2)/4 , (y1+y3)/2 | (x1+x2)*3/4 , (y1+y3)/2
  //   .       .       .         x1 , y1 | (x1+x2)/2 y1 | x2,y2
 
-    fractalTriangle(x1,y1,(x1+x2)/2,y1,(x1+x2)/4,(y1+y3)/2,recursion-1);
-    fractalTriangle((x1+x2)/2,y1, x2, y2, (x1+x2)*3/4, (y1+y3)/2,recursion-1 );
-    fractalTriangle((x1+x2)/4,(y1+y3)/2,(x1+x2)*3/4,(y1+y3)/2,x3,y3,recursion-1);
+    int x1x24=round((x1+x2)/4.0);
+    int ym=round((y3+y1)/2.0);
+
+//    fractalTriangle(x1,y1,x1+x2)/2,y1,(x1+x2)/4,(y1+y3)/2,recursion-1);
+//    fractalTriangle((x1+x2)/2,y1, x2, y2, (x1+x2)*3/4, (y1+y3)/2,recursion-1 );
+//    fractalTriangle((x1+x2)/4,(y1+y3)/2,(x1+x2)*3/4,(y1+y3)/2,x3,y3,recursion-1);
+
+    fractalTriangle(x1,y1,x1x24 * 2, y1,x1x24,ym,recursion-1);
+    fractalTriangle(x1x24*2,y1, x2, y2, x1x24*3, ym,recursion-1 );
+    fractalTriangle(x1x24,ym,x1x24*3,ym,x3,y3,recursion-1);
 }
+
+void drawEquilateral(uint32 x,uint32 y,uint32 size){
+
+    int h=round(size*sqrt3/2.0);
+    drawTriangle(x,y,x+size,y,x+size/2,y-h);
+}
+
+void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion){
+    if(recursion==0) return;
+
+    drawEquilateral(x,y,size);
+
+
+    //.      .      .
+
+    int h=round(size*sqrt3/2.0);
+    drawFractalEquilateral(x,y,size/2,recursion-1);
+    drawFractalEquilateral(x+size/2,y,size/2,recursion-1);
+    drawFractalEquilateral(x+size/4,y-h/2,size/2,recursion-1);
+
+}
+

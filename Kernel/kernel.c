@@ -95,7 +95,8 @@ int main()
 
 	//drawTriangle(100,100,200,100,150,150);
 
-	fractalTriangle(0,500,500,500,250,0,20);
+	drawFractalEquilateral(0,700,700,8);
+//drawEquilateral(0,700,700);
 	//putSquare(0,0,10,10);
 
 	while(1) {
