@@ -74,3 +74,12 @@ char getDay() {
 	int80(5, &h, &mi, &s, &y, &mo, &d);
 	return d;
 }
+
+void setTimeZone(int tz) {
+	int80(6, tz, 0, 0, 0, 0, 0);
+}
+
+
+
+
+

@@ -55,6 +55,10 @@ qword sys_pixel(qword x, qword y, qword color, qword r10, qword r8, qword r9) {
 	drawCPixel(x,y,hexaToColor(color));
 }
 
+qword sys_timezone(qword tz, qword rsi, qword rdx, qword r10, qword r8, qword r9) {
+	_setTimeZone(tz);
+}
+
 qword sys_time(qword hour, qword min, qword sec, qword year, qword month, qword day) {
     char* h=(char*)hour;
 	char* mi=(char*)min;
@@ -95,7 +99,7 @@ void setUpSyscalls(){
     sysCalls[3] = &sys_read;
     sysCalls[4] = &sys_write;
     sysCalls[5] = &sys_time;
-//[6] set_time_zone
+	sysCalls[6] = &sys_timezone;
     sysCalls[7] = &sys_addTimerEvent;
     sysCalls[8] = &sys_removeTimerEvent;
 

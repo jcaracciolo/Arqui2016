@@ -6,4 +6,5 @@ char getSeconds();
 char getYear();
 char getMonth();
 char getDay();
+void setTimeZone(int tz);
 #endif

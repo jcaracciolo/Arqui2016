@@ -19,6 +19,7 @@ int shellIndex = 0;
 void initShell() {
 	//clearScreen();
 	printf("-- WELCOME THE SHELL --\n\n  >>");
+	setTimeZone(-3);
 
 	while(1) {
 		int c = getc();
@@ -60,6 +61,10 @@ void execute() {
 		printf("execute!\n");
 	} else if (strcmp(shellBuffer, "clear") == 0) {
 		clearScreen();
+	} else if(strcmp(shellBuffer, "time") == 0) {
+		printf("%d:%d\n", getHours(), getMinutes());
+	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
+		printf("setting time zone...\n");
 	} else {
 		printf("Command not found.\n");
 	}
