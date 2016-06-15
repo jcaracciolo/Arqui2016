@@ -57,6 +57,9 @@ typedef struct {
   dword base;
 } IDTR;
 
+
+#define YRES 768
+#define XRES 1024
 #pragma pack(pop)
 
 #endif /* TYPES_H_ */

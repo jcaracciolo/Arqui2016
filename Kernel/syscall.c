@@ -39,7 +39,8 @@ qword sys_write(qword rdi, qword buffer, qword size, qword r10, qword r8, qword 
         printChar(*charbuffer++);
      }
      return 1;
- }
+}
+
 
 qword sys_clear(qword rdi, qword buffer, qword size, qword r10, qword r8, qword r9) {
 	clearScreen();
@@ -80,6 +81,7 @@ void syscallHandler(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword
         return;
     }
 }
+
 void _irq80Handler(void);
 
 void setUpSyscalls(){
@@ -92,6 +94,8 @@ void setUpSyscalls(){
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }
+
+
 
 
 
