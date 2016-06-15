@@ -92,13 +92,16 @@ int main()
 
 	//incPixel(0);
 
+
+	//drawTriangle(100,100,200,100,150,150);
+
+	fractalTriangle(0,500,500,500,250,0,20);
+	//putSquare(0,0,10,10);
+
 	while(1) {
-		putSquare(0,0,1024,768);
 		c=getChar();
         if (c!=-1){
-			printChar(c);
-
-
+			//printChar(c);
 		}
 	}
 
