@@ -52,7 +52,7 @@ int main()
 	setup_IDT();
 	ncPrint("  Setting up System Calls");
 	setUpSyscalls();
-
+	addTimerListener(&blinkCursor,10);
 
 	ncPrint("  Calling the sample code module returned: ");
 	//HERE IT SHOULD CALL SAMPLE MODULE BUT INSTEAD CALL A MODULE ONLY IF COMMAND

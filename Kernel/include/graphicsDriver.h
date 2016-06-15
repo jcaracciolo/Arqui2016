@@ -14,6 +14,9 @@
 #define GREEN_MASK 0x00FF00
 #define BLUE_MASK 0x0000FF
 
+#define FONT_SCALE 3
+
+
 typedef  unsigned short uint16;
 typedef  unsigned int uint32;
 typedef  unsigned char uint8;

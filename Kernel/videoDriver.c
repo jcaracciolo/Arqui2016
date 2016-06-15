@@ -31,8 +31,12 @@
 #define MAX_LINE_TO_WRITE 47
 #define LINES_TO_SCROLL 3	// works weird if any other number
 
+#define CURSOR_WIDTH (CHAR_WIDTH*FONT_SCALE)
+#define CURSOR_HEIGHT (CHAR_HEIGHT*FONT_SCALE)
+
 static char *video = (char *) 0xB8000;
 static int cursor = 0;
+static boolean on = false;
 static char screen[COLS * ROWS] = {0};
 
 void scroll() {
@@ -121,18 +125,21 @@ void printNum(int num) {
 	print(str);
 }
 
-//TODO REDO
 void blinkCursor() {
-	if (video[cursor+1] == cc(BLACK,WHITE)) {
-		video[cursor+1] = cc(WHITE,BLACK);
-	} else {
-		video[cursor+1] = cc(BLACK,WHITE);
-	}
+	Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
+
+	on = !on;
+	if(on)	drawSquare(cursorX(cursor)*FONT_SCALE,cursorY(cursor)*FONT_SCALE,
+						 CURSOR_HEIGHT,CURSOR_WIDTH);
+	else drawCSquare(cursorX(cursor)*FONT_SCALE,cursorY(cursor)*FONT_SCALE,
+					CURSOR_HEIGHT,CURSOR_WIDTH,black);
 }
 
 //TODO REDO
 void removeCursorMark() {
-	video[cursor + 1] = cc(BLACK,WHITE);
+	Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
+	drawCSquare(cursorX(cursor)*FONT_SCALE,cursorY(cursor)*FONT_SCALE,
+				CURSOR_HEIGHT,CURSOR_WIDTH,black);
 }
 
 void printNewLine() {
@@ -203,7 +210,6 @@ void supr() {
 }
 
 void printWithLength(const char* msg, int length) {
-	int i = cursor;
 
 	for (int j = 0; j < length ; j++) {
         printChar(msg[j]);
@@ -222,5 +228,4 @@ void clearChars() {
 	}
 	cursor = 0;
 }
-
 

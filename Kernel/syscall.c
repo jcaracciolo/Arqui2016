@@ -45,14 +45,17 @@ qword sys_write(qword rdi, qword buffer, qword size, qword r10, qword r8, qword 
 qword sys_clear(qword rdi, qword buffer, qword size, qword r10, qword r8, qword r9) {
 	clearScreen();
 	clearChars();
+    return 0;
 }
 
 qword sys_line(qword origX, qword origY, qword destX, qword destY, qword color, qword r9) {
 	drawCLine(origX,origY,destX,destY, hexaToColor(color));
+    return 0;
 }
 
 qword sys_pixel(qword x, qword y, qword color, qword r10, qword r8, qword r9) {
 	drawCPixel(x,y,hexaToColor(color));
+    return 0;
 }
 
 qword sys_timezone(qword tz, qword rsi, qword rdx, qword r10, qword r8, qword r9) {
@@ -77,6 +80,7 @@ qword sys_time(qword hour, qword min, qword sec, qword year, qword month, qword 
 	*(y) = _getYear();
 	*(mo) = _getMonth();
 	*(d) = _getDayofMonth();
+    return 0;
 }
 
 

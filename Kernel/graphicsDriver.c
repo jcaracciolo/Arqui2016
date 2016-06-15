@@ -8,7 +8,6 @@
 #define round(n) (int)((n) < 0 ? ((n) - 0.5) : ((n) + 0.5));
 #include "fonts.h"
 #define sqrt3 1.73205080757
-#define FONT_SCALE 2
 
 #include "include/graphicsDriver.h"
 
