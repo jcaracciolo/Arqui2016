@@ -13,10 +13,15 @@
 DESCR_INT *idt = 0x0;	// IDT de 11 entradas
 IDTR idtr;			// IDTR
 
-static int counter = 0;
+#define MAX_LISTENERS 10
+
+static qword counter = 0;
 static int i = 0;
 static char ascii = '0';
+static int timerListeners =0;
 
+static timerEvent timerEvents[MAX_LISTENERS];
+static int alarmEvents[MAX_LISTENERS];
 
 void blink(){
 	if (counter++ == 6) {	// 1/3 sec transcurred
@@ -24,11 +29,16 @@ void blink(){
 		blinkCursor();
 	}
 }
-
+void timerTick(){
+	counter++;
+	for (int j = 0; j < timerListeners; ++j) {
+		if(counter % alarmEvents[j]==0) timerEvents[j]();
+	}
+}
 void irqDispatcher(int irq){
 	switch(irq) {
 		case 0:
-			blink();
+			timerTick();
 			break;
 		case 1:
 			addToBuffer();
@@ -39,6 +49,15 @@ void irqDispatcher(int irq){
 }
 
 
+
+void addTimerListener(timerEvent event, int interval){
+	if(timerListeners >= MAX_LISTENERS) return;
+	else{
+		alarmEvents[timerListeners] = interval;
+		timerEvents[timerListeners] = event;
+		timerListeners++;
+ 	}
+}
 
 void setup_IDT_entry (int index, byte selector, qword offset, byte access) {
   idt[index].offset_l = offset & 0xFFFF;

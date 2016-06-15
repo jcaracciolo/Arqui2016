@@ -37,6 +37,8 @@ typedef int (*EntryPoint)();
 
 int readBuffer();
 void decreaseTimerTick();
+void printSmt();
+void printSmt2();
 
 int main()
 {	
@@ -68,9 +70,11 @@ int main()
 	ncPrint("[Finished]");
 
 
-    //preFillBuffer();
+	//preFillBuffer();
 
-    decreaseTimerTick();
+	decreaseTimerTick();
+	addTimerListener(&printSmt,20);
+	addTimerListener(&printSmt2,500);
 
 //	_setTimeZone(-3);
 //
@@ -131,6 +135,13 @@ int main()
 	return 0;
 }
 
+void printSmt(){
+	printNum(4);
+}
+
+void printSmt2(){
+	printNum(8);
+}
 
 
 void clearBSS(void * bssAddress, uint64_t bssSize)

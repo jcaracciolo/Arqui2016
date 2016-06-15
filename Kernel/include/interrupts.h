@@ -33,6 +33,9 @@ void picSlaveMask(byte mask);
 void lidt(IDTR *idtr);
 
 void setup_IDT();
+typedef void (*timerEvent)();
+void addTimerListener(timerEvent event, int interval);
+
 
 //Termina la ejecución de la cpu.
 void haltcpu(void);
