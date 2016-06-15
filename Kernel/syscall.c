@@ -4,6 +4,7 @@
 #include "include/interrupts.h"
 #include "include/defs.h"
 #include "include/graphicsDriver.h"
+#include "include/getTime.h"
 
 
 #define SYSTEM_CALL_COUNT 6
@@ -53,6 +54,21 @@ qword sys_pixel(qword x, qword y, qword color, qword r10, qword r8, qword r9) {
 	drawCPixel(x,y,hexaToColor(color));
 }
 
+qword sys_time(qword hour, qword min, qword sec, qword year, qword month, qword day) {	
+    char* h=(char*)hour;
+	char* mi=(char*)min;
+	char* s=(char*)sec;
+	char* y=(char*)year;
+	char* mo=(char*)month;
+	char* d=(char*)day;
+
+	*(h) =_getHours(); 	
+	*(mi) =_getMinutes();
+	*(s) = _getSeconds();
+	*(y) = _getYear();
+	*(mo) = _getMonth();
+	*(d) = _getDayofMonth();
+}
 
 
 void syscallHandler(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9){
@@ -69,6 +85,7 @@ void _irq80Handler(void);
 void setUpSyscalls(){
 	sysCalls[0] = &sys_pixel;
 	sysCalls[1] = &sys_line;
+	sysCalls[2] = &sys_time;
     sysCalls[3] = &sys_read;
     sysCalls[4] = &sys_write;
 	sysCalls[5] = &sys_clear;

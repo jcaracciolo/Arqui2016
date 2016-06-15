@@ -26,7 +26,7 @@ void initShell() {
 			if (c == '\n') {
 				execute();
 			} else if (c == '\b') {
-				removeKey();				
+				removeKey();
 			} else {
 				addToShellBuffer(c);
 				putc(c);
