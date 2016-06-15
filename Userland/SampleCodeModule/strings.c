@@ -1,8 +1,8 @@
-#include "strings.h"
+#include "include/strings.h"
 
 
 /* Converts num into a '\0' ended string in str parameter*/
-	void intToString(char* str, int num) {
+	int intToString(char* str, int num) {
 	int length = numLength(num);
 	int numLength = length;
 	int i;
@@ -20,6 +20,7 @@
 
 	reverseCharArray(str, length);
 	str[length] = '\0';
+	return length;
 }
 
 int strlen(char* str) {

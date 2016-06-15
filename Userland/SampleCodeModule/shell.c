@@ -1,8 +1,8 @@
-#include "shell.h"
+#include "include/shell.h"
 #include "../../Kernel/include/types.h"
-#include "stdio.h"
-#include "strings.h"
-#include "stdlib.h"
+#include "include/stdio.h"
+#include "include/strings.h"
+#include "include/stdlib.h"
 
 #define ROWS 25
 #define COLS 80
@@ -85,6 +85,7 @@ void execute() {
 	if (strcmp(shellBuffer, "func") == 0) {
 		addStringToScreen("execute!\n");
 		//print("execute!\n",9);
+		printf("hola %d",10);
 	} else if (strcmp(shellBuffer, "clear") == 0) {
 		clearScreen();
 	} else {

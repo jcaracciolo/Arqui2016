@@ -1,5 +1,5 @@
 #include "../../Kernel/include/types.h"
-#include "shell.h"
+#include "include/shell.h"
 
 /* sampleCodeModule.c */
 

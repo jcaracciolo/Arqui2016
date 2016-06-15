@@ -2,7 +2,7 @@
 #define STRINGS_H
 
 /* Converts num into a '\0' ended string in str parameter*/
-void intToString(char* str, int num);
+int intToString(char* str, int num);
 
 /* Reverse str */
 void reverseCharArray(char* str, int length);
