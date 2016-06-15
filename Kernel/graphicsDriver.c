@@ -37,7 +37,7 @@ void putCSquare(int x, int y, int height, int width, Color c){
 
 void putPixel(int x, int y){
 
-    char * vi =(char*) inf->physbase + inf->pitch *y + x* inf->bpp/8;
+    char * vi =(char*) inf->physbase + inf->pitch *y + inf->bpp/8*x;
     vi[0] = color.b;
     vi[1] = color.g;
     vi[2] = color.r;
@@ -60,13 +60,13 @@ void incPixel(int m) {
 void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2){
 
 
-    if(0 && x1==x2){
+    if(x1==x2){
         int y=y1>y2?y2:y1;
         int l=abs(y1-y2);
         drawVerticalLine(x1,y,l);
     }else{
 
-        double m=((double)y2-y1)/((double)x2-x1+0.01);
+        double m=((double)y2-y1)/((double)x2-x1);
         double b=y1-m*x1;
 
         int y;

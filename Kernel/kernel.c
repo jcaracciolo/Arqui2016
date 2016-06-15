@@ -116,7 +116,8 @@ int main()
 
     //Comment this to disable the shell
     clear();
-	((EntryPoint)sampleCodeModuleAddress)();
+	drawLine(500,0,500,768);
+	/// /((EntryPoint)sampleCodeModuleAddress)();
 
 	//for (int u = 1; u < 20; u++) {
 	//	printNum(u, 0x05);
