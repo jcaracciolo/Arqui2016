@@ -4,8 +4,8 @@
 #include "include/strings.h"
 #include "include/stdlib.h"
 
-#define ROWS 25
-#define COLS 80
+#define ROWS 48
+#define COLS 85
 
 char screen[ROWS * COLS] = {0};
 int screenIndex = 0;

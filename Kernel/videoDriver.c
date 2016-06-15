@@ -190,6 +190,7 @@ void backspace() {
 	printChar(' ');
 //	video[cursor - 2] = ' ';
 //	video[cursor - 1] = cc(BLACK,BLACK);
+	cursor--;
 	cursor = cursor < 0 ? 0 : cursor;
 
 	printCursor();
