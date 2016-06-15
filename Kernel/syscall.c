@@ -5,7 +5,7 @@
 #include "include/defs.h"
 #include "include/graphicsDriver.h"
 #include "include/getTime.h"
-
+#include "include/syscall.h"
 
 #define SYSTEM_CALL_COUNT 10
 #define SYSTEM_CALL_START_INDEX 0x80
@@ -59,6 +59,10 @@ qword sys_timezone(qword tz, qword rsi, qword rdx, qword r10, qword r8, qword r9
 	_setTimeZone(tz);
 }
 
+qword sys_sleep(qword time, qword rsi, qword rdx, qword r10, qword r8, qword r9) {
+	sleep(time);
+}
+
 qword sys_time(qword hour, qword min, qword sec, qword year, qword month, qword day) {
     char* h=(char*)hour;
 	char* mi=(char*)min;
@@ -92,19 +96,6 @@ qword sys_removeTimerEvent(qword rdi, qword rsi, qword rdx, qword r10, qword r8,
 
 qword sys_addTimerEvent(qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
 
-void setUpSyscalls(){
-	sysCalls[0] = &sys_clear;
-	sysCalls[1] = &sys_pixel;
-	sysCalls[2] = &sys_line;
-    sysCalls[3] = &sys_read;
-    sysCalls[4] = &sys_write;
-    sysCalls[5] = &sys_time;
-	sysCalls[6] = &sys_timezone;
-    sysCalls[7] = &sys_addTimerEvent;
-    sysCalls[8] = &sys_removeTimerEvent;
-
-    setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
-}
 
 qword sys_removeTimerEvent(qword timerEventFunc, qword rsi, qword rdx, qword r10, qword r8, qword r9) {
     _cli();
@@ -121,7 +112,20 @@ qword sys_addTimerEvent(qword timerEventFunc, qword interval, qword rdx, qword r
 }
 
 
+void setUpSyscalls(){
+	sysCalls[0] = &sys_clear;
+	sysCalls[1] = &sys_pixel;
+	sysCalls[2] = &sys_line;
+    sysCalls[3] = &sys_read;
+    sysCalls[4] = &sys_write;
+    sysCalls[5] = &sys_time;
+	sysCalls[6] = &sys_timezone;
+    sysCalls[7] = &sys_addTimerEvent;
+    sysCalls[8] = &sys_removeTimerEvent;
+	sysCalls[9] = &sys_sleep;
 
+    setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
+}
 
 
 

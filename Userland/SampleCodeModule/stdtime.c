@@ -79,6 +79,10 @@ void setTimeZone(int tz) {
 	int80(6, tz, 0, 0, 0, 0, 0);
 }
 
+void sleep(unsigned int time){
+	int80(9, time, 0, 0, 0, 0, 0);
+}
+
 
 
 

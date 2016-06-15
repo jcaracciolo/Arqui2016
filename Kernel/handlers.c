@@ -10,6 +10,9 @@
 #include "include/defs.h"
 #include "include/keyboardDriver.h"
 
+
+#define FPS 60
+
 DESCR_INT *idt = 0x0;	// IDT de 11 entradas
 IDTR idtr;			// IDTR
 
@@ -21,6 +24,8 @@ static int timerListeners =0;
 static timerEventT timerEvents[MAX_LISTENERS];
 static int alarmEvents[MAX_LISTENERS];
 
+
+static int* sleepCounter;
 void blink(){
 	if (counter++ == 6) {	// 1/3 sec transcurred
 		counter = 0;
@@ -48,6 +53,29 @@ void irqDispatcher(int irq){
 
 	return;
 }
+
+void timerSleep(){
+	(*sleepCounter)++;
+}
+
+void sleep(unsigned int time){
+
+	*sleepCounter=0;
+
+	_cli();
+	addTimerListener(&timerSleep,FPS);
+	_sti();
+
+	while(*sleepCounter<time);
+
+
+	_cli();
+	deleteTimerListener(&timerSleep);
+	_sti();
+
+	return;
+}
+
 
 
 

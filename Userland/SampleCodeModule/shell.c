@@ -63,7 +63,10 @@ void execute() {
 		clearScreen();
 	} else if(strcmp(shellBuffer, "time") == 0) {
 		printf("%d:%d\n", getHours(), getMinutes());
+	} else if(strcmp(shellBuffer, "date") == 0) {
+		printf("%d/%d/%d\n", getDay(), getMonth(), getYear());
 	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
+		sleep(2);
 		printf("setting time zone...\n");
 	} else {
 		printf("Command not found.\n");
@@ -71,7 +74,6 @@ void execute() {
 	printf("  >>");
 	cleanBuffer();
 }
-
 void cleanBuffer() {
 	int i;
 	for (i = 0; i < COLS + 1; i++) {
