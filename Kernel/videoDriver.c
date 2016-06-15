@@ -2,12 +2,9 @@
 #include "strings.h"
 #include "include/strings.h"
 
-// Colors: backColor_frontColor
 
-static char *video = (char *) 0xB8000;
-const int ROWS = 25;
-const int COLS = 80;
-static int cursor = 0;
+#define ROWS 25
+#define COLS 80
 
 #define BLACK 0
 #define BLUE 1
@@ -28,6 +25,19 @@ static int cursor = 0;
 
 #define cc(a,b) (a)*0x10+(b)
 
+#define MAX_LINE_TO_WRITE 23
+#define LINES_TO_SCROLL 1	// works weird if any other number
+
+static char *video = (char *) 0xB8000;
+static int cursor = 0;
+static char screen[COLS * ROWS] = {2};
+
+void scroll() {
+	int begincpy = LINES_TO_SCROLL * COLS;
+	int length = COLS * ROWS - begincpy;
+	strcpy(screen, &(screen[begincpy]), length);
+	cursor -= begincpy * 2;
+}
 
 /* print '/0' ended string */
 void print(const char* msg, char colourCode) {
@@ -36,9 +46,14 @@ void print(const char* msg, char colourCode) {
 		if (cursor >= ROWS * COLS * 2) {
 			cursor = 0;
 		}
-
-		video[cursor] = msg[j++];
-		video[++cursor] = colourCode;
+		screen[cursor/2] = msg[j];
+		video[cursor++] = msg[j++];
+		video[cursor++] = colourCode;
+		if (cursor/2 >= MAX_LINE_TO_WRITE * COLS) {
+		clear();
+		scroll();
+		printScreenArray();
+	}
 		cursor = cursor % (ROWS * COLS * 2);
 	}
 
@@ -51,10 +66,24 @@ void printChar(int c){
 	}else if(c=='\n'){
 		printNewLine();
 	}else{
-	video[cursor++] = (char)c;
-	video[cursor++] = 0x07;
+		screen[cursor/2] = (char)c;
+		video[cursor++] = (char)c;
+		video[cursor++] = 0x07;
+		//screenIndex++;
 	}
-	cursor = cursor % (ROWS * COLS * 2);
+	if (cursor/2 >= MAX_LINE_TO_WRITE * COLS) {
+		clear();
+		scroll();
+		printScreenArray();
+	}
+	//cursor = cursor % (ROWS * COLS * 2);
+}
+
+void printScreenArray() {
+	for (int i = 0; i < COLS * ROWS * 2; i += 2) {
+		video[i] = screen[i/2];
+		video[i+1] = cc(BLACK,WHITE);
+	}
 }
 
 void printNum(int num, int colorCode) {
@@ -126,7 +155,6 @@ void moveCursorRight() {
 
 void backspace() {
 	removeCursorMark();
-
 	video[cursor - 2] = ' ';
 	video[cursor - 1] = cc(BLACK,BLACK);
 	cursor -= 2;
@@ -149,8 +177,9 @@ void printWithLength(const char* msg, int length, char colourCode) {
 	int i = cursor;
 	int j = 0;
 	for (; j < length ; cursor++) {
-		video[cursor] = msg[j++];
-		video[++cursor] = colourCode;
+		//screen[screenIndex++] = msg[j];
+		video[cursor++] = msg[j++];
+		video[cursor++] = colourCode;
 		if (cursor == ROWS * COLS - 1) {
 			cursor = 0;
 		}
@@ -162,10 +191,10 @@ void printWithLength(const char* msg, int length, char colourCode) {
 void clear() {
 	int i;
 	removeCursorMark();
-	for (i = 0; i < ROWS * COLS; i++) {
-		print(" ", cc(BLACK,BLACK));
+	for (i = 0; i < ROWS * COLS * 2; i+=2) {
+		video[i] = ' ';
+		video[i+1] = cc(BLACK,WHITE);
 	}
-	cursor = 0;
 }
 
 

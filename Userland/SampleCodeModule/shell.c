@@ -6,8 +6,6 @@
 
 #define ROWS 25
 #define COLS 80
-#define MAX_LINE_TO_WRITE 20
-#define LINES_TO_SCROLL 2
 
 char screen[ROWS * COLS] = {0};
 int screenIndex = 0;
@@ -17,8 +15,7 @@ int shellIndex = 0;
 
 void initShell() {
 	clearScreen();
-	//print("WELCOME THE SHELL!!\n  >>", 24);
-	addStringToScreen("WELCOME THE SHELL!!\n  >>");
+	printf("-- WELCOME THE SHELL --\n\n  >>");
 
 	while(1) {
 		int c = getc();
@@ -28,72 +25,45 @@ void initShell() {
 			} else if (c == '\b') {
 				removeKey();
 			} else {
-				addKey(c);
+				addToShellBuffer(c);
+				putc(c);
 			}
 		}
-		printScreen();
 	}
 }
 
 void clearScreen() {
 	int i;	
 	for (i = 0; i < ROWS * COLS; i++) {
-		screen[i] = ' ';
+		putc(' ');
 	}
 	shellIndex = 0;
-	screenIndex = 0;
 }
 
 void removeKey() {
 	if (shellIndex != 0) {
 		shellIndex--;
+		putc('\b');
 	}
-	if (screenIndex != 0) {
-		screen[--screenIndex] = ' ';
-	}
-	putc('\b');
 }
 
-void addKey(char c) {
+void addToShellBuffer(char c) {
 	if (shellIndex <= COLS) {
 		shellBuffer[shellIndex++] = c;
-		screen[screenIndex++] = c;
-	}
-}
-
-void addToScreen(char c) {
-	screen[screenIndex++] = c;
-	screenIndex %= COLS * ROWS;
-}
-
-void addStringToScreen(char* str) {
-	while (*str != '\0') {
-		if (*str == '\n') {
-			screenIndex = ((screenIndex / COLS) * COLS + COLS);
-		} else {
-			screen[screenIndex++] = *str;
-		}
-		screenIndex %=ROWS * COLS;
-		str++;
 	}
 }
 
 void execute() {
 	shellBuffer[shellIndex] = '\0';
-	addStringToScreen("\n");
-	//putc('\n');
+	putc('\n');
 	if (strcmp(shellBuffer, "func") == 0) {
-		addStringToScreen("execute!\n");
-		//print("execute!\n",9);
-		printf("hola %d",10);
+		printf("execute!\n");
 	} else if (strcmp(shellBuffer, "clear") == 0) {
 		clearScreen();
 	} else {
-		addStringToScreen("Command not found.\n");
-		//print("Command not found.\n", 19);
+		printf("Command not found.\n");
 	}
-	addStringToScreen("  >>");
-	//print("  >>", 4);
+	printf("  >>");
 	cleanBuffer();
 }
 
@@ -103,24 +73,6 @@ void cleanBuffer() {
 		shellBuffer[i] = '\0';
 	}
 	shellIndex = 0;
-}
-
-
-void printScreen() {
-	int line = screenIndex / COLS;	
-	if (line >= MAX_LINE_TO_WRITE) {
-		scroll();
-	}
-	for (int i = 0; i < ROWS * COLS; i++) {
-		putc(screen[i]);
-	}
-}
-
-void scroll() {
-	int begincpy = LINES_TO_SCROLL * COLS;
-	int length = COLS * ROWS - begincpy;
-	strcpy(screen, &(screen[begincpy]), length);
-	screenIndex -= begincpy;
 }
 
 
