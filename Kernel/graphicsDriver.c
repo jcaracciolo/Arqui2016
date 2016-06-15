@@ -139,6 +139,8 @@ void fractalTriangle( uint32 x1, uint32 y1, uint32 x2, uint32 y2, uint32 x3, uin
 
 void drawEquilateral(uint32 x,uint32 y,uint32 size){
 
+    if(size<2) return;
+
     int h=round(size*sqrt3/2.0);
     drawTriangle(x,y,x+size,y,x+size/2,y-h);
 }
@@ -147,9 +149,6 @@ void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion){
     if(recursion==0) return;
 
     drawEquilateral(x,y,size);
-
-
-    //.      .      .
 
     int h=round(size*sqrt3/2.0);
     drawFractalEquilateral(x,y,size/2,recursion-1);

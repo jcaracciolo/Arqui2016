@@ -116,7 +116,7 @@ int main()
 
     //Comment this to disable the shell
     clear();
-	drawLine(500,0,500,768);
+	drawFractalEquilateral(0,768,768,15);
 	/// /((EntryPoint)sampleCodeModuleAddress)();
 
 	//for (int u = 1; u < 20; u++) {
@@ -126,11 +126,8 @@ int main()
 	//print("Linea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de prueba", 65);
 	
 	while(1) {
-		c=getChar();
-        if (c!=-1){
-			//printChar(c);
-		}
 	}
+
 
 	return 0;
 }
