@@ -4,9 +4,19 @@
 
 #ifndef ARQUI2016_GRAPHICSDRIVER_H
 #define ARQUI2016_GRAPHICSDRIVER_H
+
+#define CHAR_WIDTH 6
+#define CHAR_HEIGHT 8
+
 typedef  unsigned short uint16;
 typedef  unsigned int uint32;
 typedef  unsigned char uint8;
+
+typedef struct {
+	uint8 r;
+	uint8 g;
+	uint8 b;
+} Color;
 
 struct ModeInfoBlock {
     uint16 attributes;
@@ -34,11 +44,15 @@ struct ModeInfoBlock {
 } __attribute__((packed));
 typedef struct ModeInfoBlock modeInfo;
 
+void drawChar(char c, int x, int y);
 
 void putPixel(int x, int y);
 void putSquare(int x, int y, int height, int width);
 void incPixel(int m) ;
-void putColoredPixel(int x, int y,char color);
+void putCPixel(int x, int y,Color color);
+void putCSquare(int x, int y, int height, int width, Color c);
+void setColor(Color c);
+void clearScreen();
 
 void drawStraightLine(uint32 x,uint32 y,uint32 length);
 void drawVerticalLine(uint32 x,uint32 y,uint32 length);

@@ -63,7 +63,7 @@ clearcs:
 	; Set video mode
        mov ax, 0x4F02
         mov bx, 0x118
-       ;int 0x10
+       int 0x10
 
 ; Disable blinking
 	mov ax, 0x1003

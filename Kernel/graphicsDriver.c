@@ -4,18 +4,22 @@
 
 #define inBound(x,y) ((x)>=0 && (x)<1024 && (y)>=0 && (y)<768)
 #define abs(n) ((n)>=0?(n):-(n))
-#define round(n) ((int)((n) < 0 ? ((n) - 0.5) : ((n) + 0.5)));
-
+#define round(n) (int)((n) < 0 ? ((n) - 0.5) : ((n) + 0.5));
+#include "fonts.h"
 #define sqrt3 1.73205080757
-
+#define FONT_SCALE 2
 #include "include/graphicsDriver.h"
 
 
 
-static int color=0;
+static Color color = {.r = 0xFF, .g = 0xFF , .b = 0xFF};
 modeInfo *inf = (modeInfo *)0x5c00;
 
-static int pixel = 0;
+void setColor(Color c){
+    color.r = c.r;
+    color.g = c.g;
+    color.b = c.b;
+}
 
 void putSquare(int x, int y, int height, int width){
     for (int i = x; i < x + width; ++i) {
@@ -23,25 +27,30 @@ void putSquare(int x, int y, int height, int width){
             putPixel(i,j);
         }
     }
-    color+=0x02;
 }
-
+void putCSquare(int x, int y, int height, int width, Color c){
+    Color temp = color;
+    setColor(c);
+    putSquare(x,y,height,width);
+    setColor(temp);
+}
 
 void putPixel(int x, int y){
-    char * vi =(char*) inf->physbase + inf->pitch *y + x* inf->bpp/8;
-    vi[0] = 0xFF;
-    vi[1] = 0xFF;
-    vi[2] = 0xFF;
-}
-
-
-void putColoredPixel(int x, int y,char color){
 
     char * vi =(char*) inf->physbase + inf->pitch *y + x* inf->bpp/8;
-    vi[0] = color;
-    vi[1] = color>>6;
-    vi[2] = color<<6;
+    vi[0] = color.b;
+    vi[1] = color.g;
+    vi[2] = color.r;
 }
+
+void putCPixel(int x, int y,Color c){
+
+    char * vi =(char*) inf->physbase + inf->pitch *y + x* inf->bpp/8;
+    vi[0] = c.b;
+    vi[1] = c.g;
+    vi[2] = c.r;
+}
+
 void incPixel(int m) {
     for (int i = 0; i < inf->Yres; ++i) {
         putPixel(i,5);
@@ -95,11 +104,10 @@ void drawVerticalLine(uint32 x,uint32 y,uint32 length){
 }
 
 void drawTriangle(uint32 x1, uint32 y1,uint32 x2, uint32 y2,uint32 x3,uint32 y3){
-    drawLine(x3,y3,x1,y2);
     drawLine(x1,y1,x2,y2);
     drawLine(x2,y2,x3,y3);
+    drawLine(x3,y3,x1,y2);
 }
-
 
 void fractalTriangle( uint32 x1, uint32 y1, uint32 x2, uint32 y2, uint32 x3, uint32 y3,uint32 recursion )
 {
@@ -150,3 +158,33 @@ void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion){
 
 }
 
+void drawChar(char c, int x, int y) {
+    uint8 i,j;
+    Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
+
+    // Convert the character to an index
+    c = c & 0x7F;
+    if (c < ' ') {
+        c = 0;
+    } else {
+        c -= ' ';
+    }
+    // 'font' is a multidimensional array of [96][char_width]
+    // which is really just a 1D array of size 96*char_width.
+    const uint8* chr = fonts[c];
+    // Draw pixels
+        for (j=0; j<CHAR_WIDTH; j++) {
+            for (i=0; i<CHAR_HEIGHT; i++) {
+
+                if (chr[j] & (1<<i)) {
+//                    putPixel(x+j, y+i);
+                    putSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE);
+                } else putCSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE,black);
+            }
+        }
+}
+
+void clearScreen(){
+    Color temp = {.r = 0x00, .g = 0x00 , .b = 0x0};
+    putCSquare(0,0,inf->Xres,inf->Yres,temp);
+}

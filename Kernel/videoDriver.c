@@ -1,6 +1,8 @@
 #include "videoDriver.h"
 #include "strings.h"
 #include "include/strings.h"
+#include "include/graphicsDriver.h"
+// Colors: backColor_frontColor
 
 
 #define ROWS 25
@@ -22,7 +24,8 @@
 #define LIGHT_PURPLE 13
 #define LIGHT_YELLOW 14
 #define BRIGHT_WHITE 15
-
+#define cursorX(a) (((a)-((a)/COLS)*COLS)*CHAR_WIDTH)
+#define cursorY(a) (((a)/COLS)*CHAR_HEIGHT)
 #define cc(a,b) (a)*0x10+(b)
 
 #define MAX_LINE_TO_WRITE 23
@@ -41,20 +44,11 @@ void scroll() {
 
 /* print '/0' ended string */
 void print(const char* msg, char colourCode) {
-	int j = 0;
-	for (; msg[j] != '\0' ; cursor++) {
-		if (cursor >= ROWS * COLS * 2) {
-			cursor = 0;
-		}
-		screen[cursor/2] = msg[j];
-		video[cursor++] = msg[j++];
-		video[cursor++] = colourCode;
-		if (cursor/2 >= MAX_LINE_TO_WRITE * COLS) {
-		clear();
-		scroll();
-		printScreenArray();
-	}
-		cursor = cursor % (ROWS * COLS * 2);
+	for (int j = 0; msg[j] != '\0' ; j++) {
+
+//		video[cursor++] = msg[j++];
+//		video[cursor++] = colourCode;
+        printChar(msg[j]);
 	}
 
 	//printCursor();
@@ -66,10 +60,12 @@ void printChar(int c){
 	}else if(c=='\n'){
 		printNewLine();
 	}else{
+		drawChar(c,cursorX(cursor),cursorY(cursor));
+
 		screen[cursor/2] = (char)c;
-		video[cursor++] = (char)c;
-		video[cursor++] = 0x07;
-		//screenIndex++;
+//		video[cursor++] = (char)c;
+//		video[cursor++] = 0x07;
+        cursor++;
 	}
 	if (cursor/2 >= MAX_LINE_TO_WRITE * COLS) {
 		clear();
@@ -80,9 +76,15 @@ void printChar(int c){
 }
 
 void printScreenArray() {
-	for (int i = 0; i < COLS * ROWS * 2; i += 2) {
-		video[i] = screen[i/2];
-		video[i+1] = cc(BLACK,WHITE);
+
+//	for (int i = 0; i < COLS * ROWS *2; i += 2) {
+//		drawChar(screen[i/2],cursorX(i),cursorY(i));
+////		video[i+1] = cc(BLACK,WHITE);
+//	}
+    cursor = 0;
+	for (int i = 0; i < COLS * ROWS ; i += 1) {
+		printChar(screen[i]);
+//		video[i+1] = cc(BLACK,WHITE);
 	}
 }
 
@@ -91,7 +93,7 @@ void printNum(int num, int colorCode) {
 	intToString(str, num);
 	print(str, colorCode);
 }
-
+//TODO REDO
 void blinkCursor() {
 	if (video[cursor+1] == cc(BLACK,WHITE)) {
 		video[cursor+1] = cc(WHITE,BLACK);
@@ -100,6 +102,7 @@ void blinkCursor() {
 	}
 }
 
+//TODO REDO
 void removeCursorMark() {
 	video[cursor + 1] = cc(BLACK,WHITE);
 }
@@ -112,7 +115,7 @@ void printNewLine() {
 
 	printCursor();
 }
-
+//TODO REDO
 void printCursor() {
 	video[cursor + 1] = cc(WHITE,BLACK);
 }
@@ -155,34 +158,36 @@ void moveCursorRight() {
 
 void backspace() {
 	removeCursorMark();
-	video[cursor - 2] = ' ';
-	video[cursor - 1] = cc(BLACK,BLACK);
-	cursor -= 2;
+	if(cursor>= 2) cursor -=1;
+	printChar(' ');
+//	video[cursor - 2] = ' ';
+//	video[cursor - 1] = cc(BLACK,BLACK);
+	cursor -= 1;
 	cursor = cursor < 0 ? 0 : cursor;
 
 	printCursor();
 }
 
+//TODO
 void supr() {
 	removeCursorMark();
 
-	cursor += 2;
-	video[cursor] = ' ';
-	video[cursor + 1] = cc(BLACK,BLACK);
+	printChar(' ');
+
+//	video[cursor] = ' ';
+//	video[cursor + 1] = cc(BLACK,BLACK);
 
 	printCursor();
 }
 
 void printWithLength(const char* msg, int length, char colourCode) {
 	int i = cursor;
-	int j = 0;
-	for (; j < length ; cursor++) {
+
+	for (int j = 0; j < length ; j++) {
 		//screen[screenIndex++] = msg[j];
-		video[cursor++] = msg[j++];
-		video[cursor++] = colourCode;
-		if (cursor == ROWS * COLS - 1) {
-			cursor = 0;
-		}
+//		video[cursor++] = msg[j++];
+//		video[cursor++] = colourCode;
+        printChar(msg[j]);
 	}
 	
 	//printCursor();
@@ -191,10 +196,7 @@ void printWithLength(const char* msg, int length, char colourCode) {
 void clear() {
 	int i;
 	removeCursorMark();
-	for (i = 0; i < ROWS * COLS * 2; i+=2) {
-		video[i] = ' ';
-		video[i+1] = cc(BLACK,WHITE);
-	}
+	clearScreen();
 }
 
 

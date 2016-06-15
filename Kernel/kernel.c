@@ -54,7 +54,6 @@ int main()
 
 	ncPrint("  Calling the sample code module returned: ");
 	//HERE IT SHOULD CALL SAMPLE MODULE BUT INSTEAD CALL A MODULE ONLY IF COMMAND
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
 	ncNewline();
 	ncNewline();
 
@@ -73,18 +72,18 @@ int main()
 
     decreaseTimerTick();
 
-	_setTimeZone(-3);
-
-	printNum(_getHours(),3);
-	print(":",3);
-	printNum(_getMinutes(),3);
-
-	_setAlarmHours(_getHours());
-	_setAlarmMinutes(_getMinutes());
-	_setAlarmSeconds(0);
-	printNum(_getAlarmHours(),3);
-	print(":",3);
-	printNum(_getAlarmMinutes(),3);
+//	_setTimeZone(-3);
+//
+//	printNum(_getHours(),3);
+//	print(":",3);
+//	printNum(_getMinutes(),3);
+//
+//	_setAlarmHours(_getHours());
+//	_setAlarmMinutes(_getMinutes());
+//	_setAlarmSeconds(0);
+//	printNum(_getAlarmHours(),3);
+//	print(":",3);
+//	printNum(_getAlarmMinutes(),3);
 
 
 //	char* a="HOLA MUNDO";
@@ -95,9 +94,29 @@ int main()
 
 	//drawTriangle(100,100,200,100,150,150);
 
-	drawFractalEquilateral(0,700,700,8);
-//drawEquilateral(0,700,700);
-	//putSquare(0,0,10,10);
+	//fractalTriangle(0,500,500,500,250,0,20);
+//    drawChar('F',350,400);
+    Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
+    printChar('H');
+    printChar(10);
+	setColor(color);
+    printChar('L');
+    printChar('L');
+    printChar('L');
+    printChar('L');
+    printChar('\b');
+    printChar('A');
+    printChar('A');
+    printChar('A');
+    printChar('A');
+//    print("Hola!",50);
+//    print("Hola!",50);
+//    print("Hola!",50);
+
+
+    //Comment this to disable the shell
+    clearScreen();
+	((EntryPoint)sampleCodeModuleAddress)();
 
 	while(1) {
 		c=getChar();
