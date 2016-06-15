@@ -85,12 +85,13 @@ void syscallHandler(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword
 void _irq80Handler(void);
 
 void setUpSyscalls(){
-	sysCalls[0] = &sys_pixel;
-	sysCalls[1] = &sys_line;
-	sysCalls[2] = &sys_time;
+	sysCalls[0] = &sys_clear;
+	sysCalls[1] = &sys_pixel;
+	sysCalls[2] = &sys_line;
     sysCalls[3] = &sys_read;
     sysCalls[4] = &sys_write;
-	sysCalls[5] = &sys_clear;
+	sysCalls[5] = &sys_time;
+//[6] set_time_zone
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }

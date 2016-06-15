@@ -11,7 +11,7 @@ char getHours() {
 	char y;
 	char mo;
 	char d;
-	int80(2, &h, &mi, &s, &y, &mo, &d);
+	int80(5, &h, &mi, &s, &y, &mo, &d);
 	return h;
 }
 
@@ -23,7 +23,7 @@ char getMinutes() {
 	char y;
 	char mo;
 	char d;
-	int80(2, &h, &mi, &s, &y, &mo, &d);
+	int80(5, &h, &mi, &s, &y, &mo, &d);
 	return mi;
 }
 
@@ -35,7 +35,7 @@ char getSeconds() {
 	char y;
 	char mo;
 	char d;
-	int80(2, &h, &mi, &s, &y, &mo, &d);
+	int80(5, &h, &mi, &s, &y, &mo, &d);
 	return s;
 }
 
@@ -47,7 +47,7 @@ char getYear() {
 	char y;
 	char mo;
 	char d;
-	int80(2, &h, &mi, &s, &y, &mo, &d);
+	int80(5, &h, &mi, &s, &y, &mo, &d);
 	return y;
 }
 
@@ -59,7 +59,7 @@ char getMonth() {
 	char y;
 	char mo;
 	char d;
-	int80(2, &h, &mi, &s, &y, &mo, &d);
+	int80(5, &h, &mi, &s, &y, &mo, &d);
 	return mo;
 }
 
@@ -71,6 +71,6 @@ char getDay() {
 	char y;
 	char mo;
 	char d;
-	int80(2, &h, &mi, &s, &y, &mo, &d);
+	int80(5, &h, &mi, &s, &y, &mo, &d);
 	return d;
 }
