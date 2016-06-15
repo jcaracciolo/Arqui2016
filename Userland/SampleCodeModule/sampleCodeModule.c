@@ -16,7 +16,7 @@ int main() {
 	*v = 'D';
 	*(v+1) = 0x74;
 
-	initShell();
+	//initShell();
 
 	//char* a="HOLA MUNDO!!!!!!!!!!!!!!!!!";
 	//int80(4,1,a,20,0,0,0);

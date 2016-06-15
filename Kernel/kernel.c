@@ -92,13 +92,13 @@ int main()
 
 	//incPixel(0);
 
+	drawLine(0,0,1024,768);
+	putSquare(0,0,10,10);
+
 	while(1) {
-		putSquare(0,0,1024,768);
 		c=getChar();
         if (c!=-1){
 			printChar(c);
-
-
 		}
 	}
 

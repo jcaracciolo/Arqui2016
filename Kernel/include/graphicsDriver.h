@@ -40,5 +40,9 @@ void putSquare(int x, int y, int height, int width);
 void incPixel(int m) ;
 void putColoredPixel(int x, int y,char color);
 
+void drawStraightLine(uint32 x,uint32 y,uint32 length);
+void drawVerticalLine(uint32 x,uint32 y,uint32 length);
+void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2);
+
 
 #endif //ARQUI2016_GRAPHICSDRIVER_H
