@@ -5,8 +5,14 @@
 #ifndef ARQUI2016_GRAPHICSDRIVER_H
 #define ARQUI2016_GRAPHICSDRIVER_H
 
+#include "types.h"
+
 #define CHAR_WIDTH 6
 #define CHAR_HEIGHT 8
+
+#define RED_MASK 0x00FF0000
+#define GREEN_MASK 0x00FF00
+#define BLUE_MASK 0x0000FF
 
 typedef  unsigned short uint16;
 typedef  unsigned int uint32;
@@ -46,17 +52,18 @@ typedef struct ModeInfoBlock modeInfo;
 
 void drawChar(char c, int x, int y);
 
-void putPixel(int x, int y);
-void putSquare(int x, int y, int height, int width);
+void drawPixel(int x, int y);
+void drawSquare(int x, int y, int height, int width);
 void incPixel(int m) ;
-void putCPixel(int x, int y,Color color);
-void putCSquare(int x, int y, int height, int width, Color c);
+void drawCPixel(int x, int y,Color color);
+void drawCSquare(int x, int y, int height, int width, Color c);
 void setColor(Color c);
 void clearScreen();
-
+Color hexaToColor(qword color);
 void drawStraightLine(uint32 x,uint32 y,uint32 length);
 void drawVerticalLine(uint32 x,uint32 y,uint32 length);
 void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2);
+void drawCLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2, Color c);
 void drawTriangle(uint32 x1, uint32 y1,uint32 x2, uint32 y2,uint32 x3,uint32 y3);
 void fractalTriangle( uint32 x1, uint32 y1, uint32 x2, uint32 y2, uint32 x3, uint32 y3 ,uint32 recursion);
 void drawEquilateral(uint32 x,uint32 y,uint32 size);

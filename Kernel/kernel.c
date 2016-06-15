@@ -113,11 +113,10 @@ int main()
 //    print("Hola!",50);
 //    print("Hola!",50);
 
-
     //Comment this to disable the shell
-    clear();
-	drawFractalEquilateral(0,768,768,15);
-	/// /((EntryPoint)sampleCodeModuleAddress)();
+    //clear();
+//	drawFractalEquilateral(0,768,768,15);
+	((EntryPoint)sampleCodeModuleAddress)();
 
 	//for (int u = 1; u < 20; u++) {
 	//	printNum(u, 0x05);

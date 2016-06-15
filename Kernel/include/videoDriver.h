@@ -2,19 +2,22 @@
 #define VIDEODRIVER_H
 
 /* print msg ('\0' given string) with given coe color */
-void print(const char* msg, char colourCode);
+void print(const char* msg);
 
 /* print any string whith given color */
-void printWithLength(const char* msg, int length, char colourCode);
+void printWithLength(const char* msg, int length);
 
 /* prints a number */
-void printNum(int num, int colorCode);
+void printNum(int num);
 
 /* prints a new line */
 void printNewLine();
 
 /* clear the screen */
 void clear();
+
+/* clears the matrix of chars */
+void clearChars();
 
 void printScreenArray();
 

@@ -29,12 +29,11 @@
 #define cc(a,b) (a)*0x10+(b)
 
 #define MAX_LINE_TO_WRITE 47
-#define LINES_TO_SCROLL 1	// works weird if any other number
+#define LINES_TO_SCROLL 3	// works weird if any other number
 
 static char *video = (char *) 0xB8000;
 static int cursor = 0;
 static char screen[COLS * ROWS] = {0};
-static char colors[COLS * ROWS] = {0};
 
 void scroll() {
 	int begincpy = LINES_TO_SCROLL * COLS;
@@ -73,7 +72,7 @@ void scroll() {
 }
 
 /* print '/0' ended string */
-void print(const char* msg, char colourCode) {
+void print(const char* msg) {
 	for (int j = 0; msg[j] != '\0' ; j++) {
 
         printChar(msg[j]);
@@ -116,10 +115,10 @@ void printScreenArray() {
 	//}
 }
 
-void printNum(int num, int colorCode) {
+void printNum(int num) {
 	char str[10];
 	intToString(str, num);
-	print(str, colorCode);
+	print(str);
 }
 
 //TODO REDO
@@ -188,8 +187,6 @@ void backspace() {
 	removeCursorMark();
 	if(cursor>= 1) cursor--;
 	printChar(' ');
-//	video[cursor - 2] = ' ';
-//	video[cursor - 1] = cc(BLACK,BLACK);
 	cursor--;
 	cursor = cursor < 0 ? 0 : cursor;
 
@@ -202,30 +199,28 @@ void supr() {
 
 	printChar(' ');
 
-//	video[cursor] = ' ';
-//	video[cursor + 1] = cc(BLACK,BLACK);
-
 	printCursor();
 }
 
-void printWithLength(const char* msg, int length, char colourCode) {
+void printWithLength(const char* msg, int length) {
 	int i = cursor;
 
 	for (int j = 0; j < length ; j++) {
-		//screen[screenIndex++] = msg[j];
-//		video[cursor++] = msg[j++];
-//		video[cursor++] = colourCode;
         printChar(msg[j]);
 	}
-	
-	//printCursor();
 }
 
 void clear() {
 	int i;
 	removeCursorMark();
 	clearScreen();
-	//cursor = 0;
+}
+
+void clearChars() {
+	for (int i = 0; i < COLS * ROWS; i++) {
+		screen[i] = 0;
+	}
+	cursor = 0;
 }
 
 

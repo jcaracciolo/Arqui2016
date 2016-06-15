@@ -1,6 +1,7 @@
 //
 // Created by julian on 6/13/16.
 //http://www.delorie.com/djgpp/doc/ug/graphics/vesa.html
+#include "include/types.h"
 
 #define inBound(x,y) ((x)>=0 && (x)<1024 && (y)>=0 && (y)<768)
 #define abs(n) ((n)>=0?(n):-(n))
@@ -8,6 +9,7 @@
 #include "fonts.h"
 #define sqrt3 1.73205080757
 #define FONT_SCALE 2
+
 #include "include/graphicsDriver.h"
 
 
@@ -21,21 +23,21 @@ void setColor(Color c){
     color.b = c.b;
 }
 
-void putSquare(int x, int y, int height, int width){
+void drawSquare(int x, int y, int height, int width){
     for (int i = x; i < x + width; ++i) {
         for (int j = y; j < y + height; ++j) {
-            putPixel(i,j);
+            drawPixel(i,j);
         }
     }
 }
-void putCSquare(int x, int y, int height, int width, Color c){
+void drawCSquare(int x, int y, int height, int width, Color c){
     Color temp = color;
     setColor(c);
-    putSquare(x,y,height,width);
+    drawSquare(x,y,height,width);
     setColor(temp);
 }
 
-void putPixel(int x, int y){
+void drawPixel(int x, int y){
 
     char * vi =(char*) inf->physbase + inf->pitch *y + inf->bpp/8*x;
     vi[0] = color.b;
@@ -43,7 +45,7 @@ void putPixel(int x, int y){
     vi[2] = color.r;
 }
 
-void putCPixel(int x, int y,Color c){
+void drawCPixel(int x, int y,Color c){
 
     char * vi =(char*) inf->physbase + inf->pitch *y + x* inf->bpp/8;
     vi[0] = c.b;
@@ -53,7 +55,7 @@ void putCPixel(int x, int y,Color c){
 
 void incPixel(int m) {
     for (int i = 0; i < inf->Yres; ++i) {
-        putPixel(i,5);
+        drawPixel(i,5);
     }
 }
 
@@ -81,7 +83,7 @@ void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2){
             y=round(m*i+b);
 
             if(!inBound(i,y)) break;
-            putPixel(i,y);
+            drawPixel(i,y);
         }
 
     }
@@ -93,13 +95,13 @@ void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2){
 
 void drawStraightLine(uint32 x,uint32 y,uint32 length){
     while(inBound(x,y) && length-->0){
-        putPixel(x++,y);
+        drawPixel(x++,y);
     }
 }
 
 void drawVerticalLine(uint32 x,uint32 y,uint32 length){
     while(inBound(x,y) && length-->0){
-        putPixel(x,y++);
+        drawPixel(x,y++);
     }
 }
 
@@ -145,6 +147,14 @@ void drawEquilateral(uint32 x,uint32 y,uint32 size){
     drawTriangle(x,y,x+size,y,x+size/2,y-h);
 }
 
+
+void drawCLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2, Color c) {
+	Color temp = color;
+    setColor(c);
+    drawLine(x1,y1,x2,y2);
+    setColor(temp);
+}
+
 void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion){
     if(recursion==0) return;
 
@@ -155,6 +165,11 @@ void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion){
     drawFractalEquilateral(x+size/2,y,size/2,recursion-1);
     drawFractalEquilateral(x+size/4,y-h/2,size/2,recursion-1);
 
+}
+
+Color hexaToColor(qword color) {
+	Color c = {.r = (color & RED_MASK) >>16, .g = (color & GREEN_MASK) >> 8, .b = color & BLUE_MASK};
+	return c;
 }
 
 void drawChar(char c, int x, int y) {
@@ -176,14 +191,14 @@ void drawChar(char c, int x, int y) {
             for (i=0; i<CHAR_HEIGHT; i++) {
 
                 if (chr[j] & (1<<i)) {
-//                    putPixel(x+j, y+i);
-                    putSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE);
-                } else putCSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE,black);
+//                    drawPixel(x+j, y+i);
+                    drawSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE);
+                } else drawCSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE,black);
             }
         }
 }
 
 void clearScreen(){
     Color temp = {.r = 0x00, .g = 0x00 , .b = 0x0};
-    putCSquare(0,0,inf->Yres,inf->Xres,temp);
+    drawCSquare(0,0,inf->Yres,inf->Xres,temp);
 }

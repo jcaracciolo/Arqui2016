@@ -3,9 +3,12 @@
 #include "include/stdio.h"
 #include "include/strings.h"
 #include "include/stdlib.h"
+#include "include/stdvid.h"
 
 #define ROWS 48
 #define COLS 85
+
+extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
 
 char screen[ROWS * COLS] = {0};
 int screenIndex = 0;
@@ -23,7 +26,7 @@ void initShell() {
 			if (c == '\n') {
 				execute();
 			} else if (c == '\b') {
-				removeKey();
+				removeKey();				
 			} else {
 				addToShellBuffer(c);
 				putc(c);
@@ -33,10 +36,7 @@ void initShell() {
 }
 
 void clearScreen() {
-	int i;	
-	for (i = 0; i < ROWS * COLS; i++) {
-		putc(' ');
-	}
+	clear();
 	shellIndex = 0;
 }
 
