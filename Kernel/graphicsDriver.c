@@ -161,15 +161,23 @@ void  setupFonts(int fontNumber){
 void clearScreen(){
 //    Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
 //    drawCSquare(0,0,inf->Yres,inf->Xres,black);
-    char * vi;
-    for (int i = 0; i < inf->Yres; ++i) {
-        for (int j = 0; j < inf->Xres; ++j) {
+//    char * vi;
+//    for (int i = 0; i < inf->Xres; ++i) {
+//        for (int j = 0; j < inf->Yres; ++j) {
+//
+//            vi =(char*) inf->physbase + inf->pitch *j + inf->bpp/8*i;
+//            vi[0] = 0x00;
+//            vi[1] = 0x00;
+//            vi[2] = 0x00;
+//
+//        }
+//    }
 
-            vi =(char*) inf->physbase + inf->pitch *j + inf->bpp/8*i;
-            vi[0] = 0x00;
-            vi[1] = 0x00;
-            vi[2] = 0x00;
-
-        }
+    int size=inf->Yres*inf->Xres*3;
+    char* vi =(char*) inf->physbase;
+    for(int i=0;i<size;i+=3){
+        vi[i]=0;
+        vi[i+1]=0;
+        vi[i+2]=0;
     }
 }
