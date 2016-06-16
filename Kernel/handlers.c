@@ -54,8 +54,9 @@ void irqDispatcher(int irq){
 	return;
 }
 
+
 void timerSleep(){
-	(*sleepCounter)++;
+	(*sleepCounter) += 16;	// 1s/60fps = 16ms per frame
 }
 
 void sleep(unsigned int time){
@@ -63,7 +64,7 @@ void sleep(unsigned int time){
 	*sleepCounter=0;
 
 	_cli();
-	addTimerListener(&timerSleep,FPS);
+	addTimerListener(&timerSleep,1);
 	_sti();
 
 	while(*sleepCounter<time);
