@@ -12,7 +12,7 @@ void printFrame(){
         clear();
 
 
-        for (int i = 0; i < 14; ++i) {
+        for (int i = 0; i < 13; ++i) {
             printf(sw_frames[frameIndex++]);
         }
     }

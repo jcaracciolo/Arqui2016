@@ -217,6 +217,17 @@ void  setupFonts(int fontNumber){
 }
 
 void clearScreen(){
-    Color temp = {.r = 0x00, .g = 0x00 , .b = 0x0};
-    drawCSquare(0,0,inf->Yres,inf->Xres,temp);
+//    Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
+//    drawCSquare(0,0,inf->Yres,inf->Xres,black);
+    char * vi;
+    for (int i = 0; i < inf->Yres; ++i) {
+        for (int j = 0; j < inf->Xres; ++j) {
+
+            vi =(char*) inf->physbase + inf->pitch *j + inf->bpp/8*i;
+            vi[0] = 0x00;
+            vi[1] = 0x00;
+            vi[2] = 0x00;
+
+        }
+    }
 }
