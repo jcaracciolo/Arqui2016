@@ -99,18 +99,7 @@ int main()
 	//fractalTriangle(0,500,500,500,250,0,20);
 //    drawChar('F',350,400);
     Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
-    printChar('H');
-    printChar(10);
 	setColor(color);
-    printChar('L');
-    printChar('L');
-    printChar('L');
-    printChar('L');
-    printChar('\b');
-    printChar('A');
-    printChar('A');
-    printChar('A');
-    printChar('A');
 //    print("Hola!",50);
 //    print("Hola!",50);
 //    print("Hola!",50);
