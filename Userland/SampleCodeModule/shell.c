@@ -4,6 +4,7 @@
 #include "include/strings.h"
 #include "include/stdlib.h"
 #include "include/stdvid.h"
+#include "include/sw.h"
 
 #define ROWS 48
 #define COLS 85
@@ -68,7 +69,9 @@ void execute() {
 	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
 		sleep(2);
 		printf("setting time zone...\n");
-	} else {
+	} else if(strcmp(shellBuffer, "star wars") == 0) {
+		printFrame();
+	}else {
 		printf("Command not found.\n");
 	}
 	printf("  >>");

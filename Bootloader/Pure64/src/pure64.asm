@@ -60,7 +60,7 @@ clearcs:
 	mov ax, 0x0003			; Set to normal (80x25 text) video mode
 	int 0x10
 
-	; Set video mode
+	; Set video mode http://www.ctyme.com/intr/int-10.htm
        mov ax, 0x4F02
         mov bx, 0x118
        int 0x10

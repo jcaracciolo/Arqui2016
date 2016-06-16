@@ -14,6 +14,7 @@
 #include "include/syscall.h"
 #include "include/graphicsDriver.h"
 #include "include/getTime.h"
+#include "../Userland/SampleCodeModule/include/sw.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -30,6 +31,7 @@ extern int getChar();
 static const uint64_t PageSize = 0x1000;
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
+
 typedef int (*EntryPoint)();
 
 
@@ -37,87 +39,36 @@ typedef int (*EntryPoint)();
 
 int readBuffer();
 void decreaseTimerTick();
-void printSmt();
-void printSmt2();
+void setupEverything();
 
 int main()
-{	
-	ncPrint("[Kernel Main]");
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-
-	ncPrint("  Setting up IDT");
-	setup_IDT();
-	ncPrint("  Setting up System Calls");
-	setUpSyscalls();
-	addTimerListener(&blinkCursor,10);
-
-	ncPrint("  Calling the sample code module returned: ");
-	//HERE IT SHOULD CALL SAMPLE MODULE BUT INSTEAD CALL A MODULE ONLY IF COMMAND
-	ncNewline();
-	ncNewline();
-
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
-	ncNewline();
-
-	ncPrint("[Finished]");
-	ncPrint("[Finished]");
+{
+	setupEverything();
+//	ncPrint("[Kernel Main]");
+//	ncNewline();
+//	ncPrint("  Sample code module at 0x");
+//	ncPrintHex((uint64_t)sampleCodeModuleAddress);
+//	ncNewline();
 
 
-	//preFillBuffer();
-
-	decreaseTimerTick();
-
-//	_setTimeZone(-3);
+//	ncPrint("  Calling the sample code module returned: ");
+//	//HERE IT SHOULD CALL SAMPLE MODULE BUT INSTEAD CALL A MODULE ONLY IF COMMAND
+//	ncNewline();
+//	ncNewline();
 //
-//	printNum(_getHours(),3);
-//	print(":",3);
-//	printNum(_getMinutes(),3);
+//	ncPrint("  Sample data module at 0x");
+//	ncPrintHex((uint64_t)sampleDataModuleAddress);
+//	ncNewline();
+//	ncPrint("  Sample data module contents: ");
+//	ncPrint((char*)sampleDataModuleAddress);
+//	ncNewline();
 //
-//	_setAlarmHours(_getHours());
-//	_setAlarmMinutes(_getMinutes());
-//	_setAlarmSeconds(0);
-//	printNum(_getAlarmHours(),3);
-//	print(":",3);
-//	printNum(_getAlarmMinutes(),3);
+//	ncPrint("[Finished]");
+//	ncPrint("[Finished]");
 
 
-//	char* a="HOLA MUNDO";
-		int c;
-
-	//incPixel(0);
-
-
-	//drawTriangle(100,100,200,100,150,150);
-
-	//fractalTriangle(0,500,500,500,250,0,20);
-//    drawChar('F',350,400);
-    Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
-    printChar('H');
-    printChar(10);
-	setColor(color);
-    printChar('L');
-    printChar('L');
-    printChar('L');
-    printChar('L');
-    printChar('\b');
-    printChar('A');
-    printChar('A');
-    printChar('A');
-    printChar('A');
-//    print("Hola!",50);
-//    print("Hola!",50);
-//    print("Hola!",50);
-
-    //Comment this to disable the shell
-    //clear();
 //	drawFractalEquilateral(0,768,768,15);
+	//Call shell
 	((EntryPoint)sampleCodeModuleAddress)();
 
 	//for (int u = 1; u < 20; u++) {
@@ -201,4 +152,22 @@ void * initializeKernelBinary()
 	ncNewline();
 	ncNewline();
 	return getStackBase();
+}
+
+void setupEverything(){
+    Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
+
+	setupFonts(3);
+	print("  Setting up Fonts ....\n");
+	print("  Giving life some color....\n");
+	setColor(color);
+	print("  Setting up IDT....\n");
+	setup_IDT();
+	print("  Setting up System Calls.....\n");
+	setUpSyscalls();
+	print("  Giving listeners ears.....\n");
+	addTimerListener(&blinkCursor,10);
+	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n\n");
+	decreaseTimerTick();
+
 }

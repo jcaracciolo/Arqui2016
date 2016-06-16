@@ -28,6 +28,8 @@ void printCursor();
 
 void backspace();
 
+void setupFonts(int fontNumber);
+
 void supr();
 
 /* Move Cursor*/

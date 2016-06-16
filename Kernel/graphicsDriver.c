@@ -10,7 +10,8 @@
 #define sqrt3 1.73205080757
 
 #include "include/graphicsDriver.h"
-
+Font fonts[MAX_FONTS];
+int selectedFont = 4;
 
 
 static Color color = {.r = 0xFF, .g = 0xFF , .b = 0xFF};
@@ -182,9 +183,10 @@ void drawChar(char c, int x, int y) {
     } else {
         c -= ' ';
     }
+
     // 'font' is a multidimensional array of [96][char_width]
     // which is really just a 1D array of size 96*char_width.
-    const uint8* chr = fonts[c];
+    const uint8* chr = fonts[selectedFont].font[c];
     // Draw pixels
         for (j=0; j<CHAR_WIDTH; j++) {
             for (i=0; i<CHAR_HEIGHT; i++) {
@@ -195,6 +197,23 @@ void drawChar(char c, int x, int y) {
                 } else drawCSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE,black);
             }
         }
+}
+
+void  setupFonts(int fontNumber){
+    fonts[0] = zxpix;
+    fonts[1] = superdig;
+    fonts[2] = sloth;
+    fonts[3] = minimum;
+    fonts[4] = hiskyf21;
+    fonts[5] = haiku;
+    fonts[6] = crackers;
+    fonts[7] = bmplain;
+    fonts[8] = blockus;
+    fonts[9] = aztech;
+    fonts[10] = fiveByFive;
+    fonts[11] = uglyFont;
+    if(selectedFont > MAX_FONTS) selectedFont = 0;
+    selectedFont = fontNumber;
 }
 
 void clearScreen(){
