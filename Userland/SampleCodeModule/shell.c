@@ -78,6 +78,9 @@ void execute() {
 	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
 		sleep(2000);
 		printf("setting time zone...\n");
+		clear();
+	} else if(strcmp(shellBuffer, "fractal --zelda") == 0) {
+		drawCFractalEquilateral(150,768,768,10,0xFFFF00);
 	} else if(strcmp(shellBuffer, "help") == 0) {
 		print(instructions, strlen(instructions)); //TODO cambiar por printf
 	} else if(strcmp(shellBuffer, "star wars") == 0) {

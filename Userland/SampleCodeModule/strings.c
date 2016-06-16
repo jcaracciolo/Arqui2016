@@ -23,7 +23,7 @@
 	return length;
 }
 
-int strlen(char* str) {
+int strlen(const char* str) {
 	int length = 0;
 	while (*(str++) != '\0') {
 		length++;
@@ -50,14 +50,14 @@ void toUpper(char* str) {
 	}
 }
 
-void strcpy(char* str1, char* str2, int length) {
+void strcpy(char* str1,const char* str2, int length) {
 	int i;
 	for (i = 0; i < length; i++) {
 		str1[i] = str2[i];
 	}
 }
 
-int strcmp(char* str1, char* str2) {
+int strcmp(const char* str1, const char* str2) {
 	while (*str1 != '\0') {
 		if (*str2 == '\0') return -1;
 		if (*str1 < *str2) return -1;

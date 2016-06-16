@@ -50,6 +50,11 @@ int main()
 //	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 //	ncNewline();
 
+	ncPrint("  Setting up IDT");
+	setup_IDT();
+	ncPrint("  Setting up System Calls");
+	setUpSyscalls();
+	addTimerListener(&blinkCursor,10);
 
 //	ncPrint("  Calling the sample code module returned: ");
 //	//HERE IT SHOULD CALL SAMPLE MODULE BUT INSTEAD CALL A MODULE ONLY IF COMMAND
@@ -160,7 +165,7 @@ void setupEverything(){
 	setupFonts(3);
 	print("  Setting up Fonts ....\n");
 	print("  Giving life some color....\n");
-	setColor(color);
+	_setColor(color);
 	print("  Setting up IDT....\n");
 	setup_IDT();
 	print("  Setting up System Calls.....\n");

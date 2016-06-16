@@ -24,4 +24,6 @@ void addStringToScreen(char* str);
 /* adds a char tho the screen */
 void addToBuffer(char c);
 
+void addToShellBuffer(char c);
+
 #endif

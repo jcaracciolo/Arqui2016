@@ -8,18 +8,18 @@ int intToString(char* str, int num);
 void reverseCharArray(char* str, int length);
 
 /* returns length of a string */
-int strlen(char* str);
+int strlen(const char* str);
 
 /* Returns the length of num ('-' sign is counted whereas '+' sign isn't) */
 int numLength(int num);
 
 /* str1: destination, str2: origin */
-void strcpy(char* str1, char* str2, int length);
+void strcpy(char* str1,const  char* str2, int length);
 
 /* convert str, '\0' ended string, to uppercase */
 void toUpper(char* str);
 
 /* compares twoe '\0' ended strings */
-int strcmp(char* str1, char* str2);
+int strcmp(const char* str1,const char* str2);
 
 #endif

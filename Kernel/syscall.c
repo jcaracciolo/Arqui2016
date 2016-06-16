@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "include/types.h"
 #include "include/videoDriver.h"
 #include "include/keyboardDriver.h"
@@ -49,12 +50,12 @@ qword sys_clear(qword rdi, qword buffer, qword size, qword r10, qword r8, qword 
 }
 
 qword sys_line(qword origX, qword origY, qword destX, qword destY, qword color, qword r9) {
-	drawCLine(origX,origY,destX,destY, hexaToColor(color));
+    _drawCLine(origX, origY, destX, destY, hexaToColor(color));
     return 0;
 }
 
 qword sys_pixel(qword x, qword y, qword color, qword r10, qword r8, qword r9) {
-	drawCPixel(x,y,hexaToColor(color));
+    _drawCPixel(x, y, hexaToColor(color));
     return 0;
 }
 

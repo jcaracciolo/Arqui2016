@@ -125,17 +125,19 @@ void blinkCursor() {
 	Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
 
 	on = !on;
-	if(on)	drawSquare(cursorX(cursor)*FONT_SCALE,cursorY(cursor)*FONT_SCALE,
-						 CURSOR_HEIGHT,CURSOR_WIDTH);
-	else drawCSquare(cursorX(cursor)*FONT_SCALE,cursorY(cursor)*FONT_SCALE,
-					CURSOR_HEIGHT,CURSOR_WIDTH,black);
+	if(on)
+		_drawSquare(cursorX(cursor) * FONT_SCALE, cursorY(cursor) * FONT_SCALE,
+					CURSOR_HEIGHT, CURSOR_WIDTH);
+	else
+		_drawCSquare(cursorX(cursor) * FONT_SCALE, cursorY(cursor) * FONT_SCALE,
+					 CURSOR_HEIGHT, CURSOR_WIDTH, black);
 }
 
 //TODO REDO
 void removeCursorMark() {
 	Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
-	drawCSquare(cursorX(cursor)*FONT_SCALE,cursorY(cursor)*FONT_SCALE,
-				CURSOR_HEIGHT,CURSOR_WIDTH,black);
+	_drawCSquare(cursorX(cursor) * FONT_SCALE, cursorY(cursor) * FONT_SCALE,
+				 CURSOR_HEIGHT, CURSOR_WIDTH, black);
 }
 
 void printNewLine() {

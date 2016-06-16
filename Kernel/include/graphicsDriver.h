@@ -2,22 +2,29 @@
 // Created by julian on 6/13/16.
 //
 
-#ifndef ARQUI2016_GRAPHICSDRIVER_H
-#define ARQUI2016_GRAPHICSDRIVER_H
+#ifndef GRAPHICSDRIVER_H
+#define GRAPHICSDRIVER_H
 
 #include "types.h"
 
+
 #define CHAR_WIDTH 6
+
 #define CHAR_HEIGHT 8
-
 #define WIN_WIDTH 1024
-#define WIN_HEIGHT 768
 
+#define WIN_HEIGHT 768
 #define RED_MASK 0x00FF0000
 #define GREEN_MASK 0x00FF00
+
 #define BLUE_MASK 0x0000FF
 
+
 #define FONT_SCALE 2
+#define inBound(x,y) ((x)>=0 && (x)<1024 && (y)>=0 && (y)<768)
+#define abs(n) ((n)>=0?(n):-(n))
+#define round(n) (int)((n) < 0 ? ((n) - 0.5) : ((n) + 0.5));
+#define sqrt3 1.73205080757
 
 
 typedef  unsigned short uint16;
@@ -54,26 +61,24 @@ struct ModeInfoBlock {
     uint32 reserved1;
     uint16 reserved2;
 } __attribute__((packed));
+
+
 typedef struct ModeInfoBlock modeInfo;
 
 void drawChar(char c, int x, int y);
 
-void drawPixel(int x, int y);
-void drawSquare(int x, int y, int height, int width);
-void incPixel(int m) ;
-void drawCPixel(int x, int y,Color color);
-void drawCSquare(int x, int y, int height, int width, Color c);
-void setColor(Color c);
-void clearScreen();
 Color hexaToColor(qword color);
-void drawStraightLine(uint32 x,uint32 y,uint32 length);
-void drawVerticalLine(uint32 x,uint32 y,uint32 length);
-void drawLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2);
-void drawCLine(uint32 x1, uint32 y1,uint32 x2, uint32 y2, Color c);
-void drawTriangle(uint32 x1, uint32 y1,uint32 x2, uint32 y2,uint32 x3,uint32 y3);
-void fractalTriangle( uint32 x1, uint32 y1, uint32 x2, uint32 y2, uint32 x3, uint32 y3 ,uint32 recursion);
-void drawEquilateral(uint32 x,uint32 y,uint32 size);
-void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion);
+void _drawPixel(int x, int y);
+void _drawSquare(int x, int y, int height, int width);
+void incPixel(int m) ;
+void _drawCPixel(int x, int y, Color color);
+void _drawCSquare(int x, int y, int height, int width, Color c);
+void _setColor(Color c);
+void clearScreen();
+void _drawStraightLine(uint32 x, uint32 y, uint32 length);
+void _drawVerticalLine(uint32 x, uint32 y, uint32 length);
+void _drawLine(uint32 x1, uint32 y1, uint32 x2, uint32 y2);
+void _drawCLine(uint32 x1, uint32 y1, uint32 x2, uint32 y2, Color c);
 
 
-#endif //ARQUI2016_GRAPHICSDRIVER_H
+#endif //GRAPHICSDRIVER_H
