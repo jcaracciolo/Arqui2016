@@ -12,20 +12,40 @@ int selectedFont = 4;
 
 
 static Color color = {.r = 0xFF, .g = 0xFF , .b = 0xFF};
+static qword hexColor=0;
 modeInfo *inf = (modeInfo *)0x5c00;
 
 void _setColor(Color c){
     color.r = c.r;
     color.g = c.g;
     color.b = c.b;
+
+    hexColor=c.r<<16 | c.g<<8 | c.b;
 }
 
 void _drawSquare(int x, int y, int height, int width){
-    for (int i = x; i < x + width; ++i) {
-        for (int j = y; j < y + height; ++j) {
-            _drawPixel(i,j);
+//    for (int i = x; i < x + width; ++i) {
+//        for (int j = y; j < y + height; ++j) {
+//            _drawPixel(i,j);
+//        }
+//    }
+
+    int bpp=inf->bpp/8;
+    int line=bpp*(--width);
+    char * vi= inf->physbase + inf->pitch *y + bpp*x;
+    for(int i=0;i<height;i++){
+        for(int j=0;j<width;j++){
+            *((qword*)vi)=hexColor;
+            vi+=bpp;
         }
+        vi[0] = color.b;
+        vi[1] = color.g;
+        vi[2] = color.r;
+
+        vi-=line;
+        vi+=inf->pitch;
     }
+
 }
 
 void _drawCSquare(int x, int y, int height, int width, Color c){
