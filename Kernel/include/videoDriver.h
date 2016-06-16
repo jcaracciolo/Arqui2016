@@ -1,6 +1,11 @@
 #ifndef VIDEODRIVER_H
 #define VIDEODRIVER_H
 
+#include "graphicsDriver.h"
+
+#define ROWS ((WIN_HEIGHT / CHAR_HEIGHT) / FONT_SCALE)
+#define COLS ((WIN_WIDTH / CHAR_WIDTH) / FONT_SCALE)
+
 /* print msg ('\0' given string) with given coe color */
 void print(const char* msg);
 

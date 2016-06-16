@@ -4,10 +4,18 @@
 #include "include/strings.h"
 #include "include/stdlib.h"
 #include "include/stdvid.h"
+#include "include/stdtime.h"
 #include "include/sw.h"
+#include "../../Kernel/include/graphicsDriver.h"
 
-#define ROWS 48
-#define COLS 85
+#define ROWS ((WIN_HEIGHT / CHAR_HEIGHT) / FONT_SCALE)
+#define COLS ((WIN_WIDTH / CHAR_WIDTH) / FONT_SCALE)
+
+const char* instructions = " func           - print a simple message (completly useless)\n\
+ clear          - clears the screen\n\
+ time           - get current system time\n\
+ setTimeZone(t) - set computer's time zone\n\
+ date           - get current system date\n";
 
 extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
 
@@ -69,6 +77,8 @@ void execute() {
 	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
 		sleep(2);
 		printf("setting time zone...\n");
+	} else if(strcmp(shellBuffer, "help") == 0) {
+		print(instructions, strlen(instructions)); //TODO cambiar por printf
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		printFrame();
 	}else {

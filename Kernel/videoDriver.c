@@ -4,10 +4,6 @@
 #include "include/graphicsDriver.h"
 // Colors: backColor_frontColor
 
-
-#define ROWS 48
-#define COLS 85
-
 #define BLACK 0
 #define BLUE 1
 #define GREEB 2
@@ -28,8 +24,8 @@
 #define cursorY(a) (((a)/COLS)*CHAR_HEIGHT)
 #define cc(a,b) (a)*0x10+(b)
 
-#define MAX_LINE_TO_WRITE 47
-#define LINES_TO_SCROLL 3	// works weird if any other number
+#define MAX_LINE_TO_WRITE (ROWS - 1)
+#define LINES_TO_SCROLL 3
 
 #define CURSOR_WIDTH (CHAR_WIDTH*FONT_SCALE)
 #define CURSOR_HEIGHT (CHAR_HEIGHT*FONT_SCALE)
