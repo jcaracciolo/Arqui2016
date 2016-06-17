@@ -116,8 +116,12 @@ qword sys_addTimerEvent(qword timerEventFunc, qword interval, qword rcx, qword r
     return 0;
 }
 
-qword sys_setCursor(qword pos, qword rdx, qword rcx, qword r8, qword r9) {
-	setCursorPosition((int)pos);
+/* set position if get=0, else get position */
+qword sys_cursor(qword pos, qword get, qword rcx, qword r8, qword r9) {
+	if (get) {
+		int* p = (int*)pos;
+		*p = getCursorPosition();
+	} else setCursorPosition((int)pos);
 }
 
 
@@ -136,7 +140,7 @@ void setUpSyscalls(){
     sysCalls[11] = &sys_pixel;
     sysCalls[12] = &sys_line;
     sysCalls[13] = &sys_square;
-	sysCalls[14] = &sys_setCursor;
+	sysCalls[14] = &sys_cursor;
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);

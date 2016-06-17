@@ -24,5 +24,6 @@ void drawCEquilateral(uint32 x,uint32 y,uint32 size,qword color);
 void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion);
 void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion,qword color);
 void setCursorPos(int pos);
+int getCursorPos();
 
 #endif

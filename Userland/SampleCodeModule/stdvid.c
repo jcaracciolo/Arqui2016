@@ -21,6 +21,12 @@ void setCursorPos(int pos) {
 	int80(14,pos,0,0,0,0);	
 }
 
+int getCursorPos() {
+	int pos;
+	int80(14,&pos,1,0,0,0);	
+	return pos;
+}
+
 void drawLine(int x1, int y1, int x2, int y2) {
 	int80(12,x1,y1,x2,y2,stdColor);
 }

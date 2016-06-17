@@ -25,9 +25,6 @@
 #define cursorY(a) (((a)/COLS)*CHAR_HEIGHT)
 #define cc(a,b) (a)*0x10+(b)
 
-#define MAX_LINE_TO_WRITE (ROWS - 1)
-#define LINES_TO_SCROLL 3
-
 #define CURSOR_WIDTH (CHAR_WIDTH*FONT_SCALE)
 #define CURSOR_HEIGHT (CHAR_HEIGHT*FONT_SCALE)
 
@@ -54,6 +51,10 @@ void scroll() {
 
 void setCursorPosition(int pos) {
 	cursor = pos;
+}
+
+int getCursorPosition() {
+	return cursor;
 }
 
 /* print '/0' ended string */
