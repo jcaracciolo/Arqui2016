@@ -9,7 +9,7 @@
 #include "include/syscall.h"
 #include "include/lib.h"
 
-#define SYSTEM_CALL_COUNT 14
+#define SYSTEM_CALL_COUNT 15
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -116,6 +116,13 @@ qword sys_addTimerEvent(qword timerEventFunc, qword interval, qword rcx, qword r
     return 0;
 }
 
+/* set position if get=0, else get position */
+qword sys_cursor(qword pos, qword get, qword rcx, qword r8, qword r9) {
+	if (get) {
+		int* p = (int*)pos;
+		*p = getCursorPosition();
+	} else setCursorPosition((int)pos);
+}
 
 
 void setUpSyscalls(){
@@ -133,6 +140,7 @@ void setUpSyscalls(){
     sysCalls[11] = &sys_pixel;
     sysCalls[12] = &sys_line;
     sysCalls[13] = &sys_square;
+	sysCalls[14] = &sys_cursor;
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);

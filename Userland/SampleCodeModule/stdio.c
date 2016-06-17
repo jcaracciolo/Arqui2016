@@ -17,7 +17,8 @@ int getc() {
 	return *a;
 }
 
-void print(char* arr) {
+// cambiar por printf
+void printCharArray(char* arr, int length) {
 	int80(4,1,arr,strlen(arr),0,0);
 }
 
@@ -39,7 +40,7 @@ int printf(const char* format,...){
 				case 'i':
 					n=va_arg(args,int);
 					int length=intToString(strnum,n);
-					print(strnum);
+					printCharArray(strnum,length);
 					break;
 				case 'c':
 					n=(char)va_arg(args,int);
@@ -47,7 +48,7 @@ int printf(const char* format,...){
 					break;
 				case 's':
 					str=(char*)va_arg(args,char*);
-					print(str);
+					printCharArray(str, strlen(str));
 					break;
 
 			}

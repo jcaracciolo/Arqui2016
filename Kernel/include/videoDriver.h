@@ -6,6 +6,10 @@
 #define ROWS ((WIN_HEIGHT / CHAR_HEIGHT) / FONT_SCALE)
 #define COLS ((WIN_WIDTH / CHAR_WIDTH) / FONT_SCALE)
 
+#define MAX_LINE_TO_WRITE (ROWS)
+#define LINES_TO_SCROLL 3
+
+
 /* print msg ('\0' given string) with given coe color */
 void print(const char* msg);
 
@@ -36,6 +40,10 @@ void backspace();
 void setupFonts(int fontNumber);
 
 void supr();
+
+void setCursorPosition(int pos);
+
+int getCursorPosition();
 
 /* Move Cursor*/
 void moveCursorRight();

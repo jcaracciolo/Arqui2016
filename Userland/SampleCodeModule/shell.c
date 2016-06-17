@@ -13,7 +13,8 @@ const char* instructions = " func           - print a simple message (completly 
  time           - get current system time\n\
  setTimeZone(t) - set computer's time zone\n\
  date           - get current system date\n\
- star wars      - little star wars animation\n";
+ star wars      - little star wars animation\n\
+ gedit          - dimple text editor";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
@@ -75,11 +76,13 @@ void execute() {
 	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
 		sleep(2000);
 		printf("setting time zone...\n");
-		clear();
 	} else if(strcmp(shellBuffer, "fractal --zelda") == 0) {
-		drawCFractalEquilateral(150,768,768,10,0xFFFF00);
+		clear();
+		drawCFractalEquilateral(150,768,768,15,0x2A3B8D);
+		sleep(1000);
+		clear();
 	} else if(strcmp(shellBuffer, "help") == 0) {
-		print(instructions); //TODO cambiar por printf
+		printf("%s\n", instructions);
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		printFrame();
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
