@@ -3,23 +3,23 @@
 #include <stdarg.h>
 #include "include/shell.h"
 
-extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
+extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
 void putc(char c) {
-	int80(4,1,&c,1,0,0,0);
+	int80(4,1,&c,1,0,0);
 }
 
 
 int getc() {
 	char a[2];
-	int80(3,1,a,2,0,0,0);
+	int80(3,1,a,2,0,0);
 	if(*a==0) return EOF;
 	return *a;
 }
 
 // cambiar por printf
 void printCharArray(char* arr, int length) {
-	int80(4,1,arr,length,0,0,0);
+	int80(4,1,arr,strlen(arr),0,0);
 }
 
 int printf(const char* format,...){
@@ -28,6 +28,7 @@ int printf(const char* format,...){
 
 	int n;
 	char strnum[10];
+	char* str;
 
 	while(*format!='\0'){
 		if(*format!='%'){
@@ -45,7 +46,13 @@ int printf(const char* format,...){
 					n=(char)va_arg(args,int);
 					putc((char)n);
 					break;
+				case 's':
+					str=(char*)va_arg(args,char*);
+					printCharArray(str, strlen(str));
+					break;
+
 			}
+			++format;
 		}
 
 	}

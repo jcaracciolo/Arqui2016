@@ -1,4 +1,5 @@
 #include "videoDriver.h"
+#include "include/videoDriver.h"
 #include "strings.h"
 #include "include/strings.h"
 #include "include/graphicsDriver.h"
@@ -35,6 +36,8 @@ static int cursor = 0;
 static boolean on = false;
 static char screen[COLS * ROWS] = {0};
 
+
+
 void scroll() {
 	int begincpy = LINES_TO_SCROLL * COLS;
 	int length = COLS * ROWS - begincpy;
@@ -46,29 +49,11 @@ void scroll() {
 	for (j = length; j < ROWS * COLS; j++) {
 		screen[j] = ' ';
 	}
-	
-	//int i;
-	//for (i = 0; i < cursor; i ++) {
-	//	drawChar(screen[i],cursorX(i),cursorY(i));
-	//}	
-	//for (i = (MAX_LINE_TO_WRITE - 1) * COLS; i < COLS * ROWS; i++) {
-	//	drawChar(' ',cursorX(i),cursorY(i));
-	//}
-
-
 	cursor -= begincpy;
+}
 
-	//cursor = 0;
-	//int i;
-	//int j = 0;
-	//for (i = LINES_TO_SCROLL * COLS; i < cursor; i++) {
-	//	screen[j] = screen[i];
-		//printChar(screen[j]);
-	//	printChar('h');
-	//}
-	//for(; i < COLS * ROWS; i++) {
-	//	printChar(' ');
-	//}
+void setCursorPosition(int pos) {
+	cursor = pos;
 }
 
 /* print '/0' ended string */
@@ -94,7 +79,7 @@ void printChar(int c){
 //		video[cursor++] = 0x07;
 	}
 	if (cursor >= MAX_LINE_TO_WRITE * COLS) {
-		clear();
+		//clear();
 		scroll();
 		printScreenArray();
 	}

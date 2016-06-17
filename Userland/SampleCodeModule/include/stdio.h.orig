@@ -1,0 +1,18 @@
+#ifndef STDIN_H
+#define STDIN_H
+
+#include <stdarg.h>
+
+void putc(char c);
+
+int getc();
+
+<<<<<<< HEAD
+void printCharArray(const char* arr, int length);
+=======
+void print(char* arr);
+>>>>>>> b02b3e843bf63326d916b75a1dcb0986f1a5ee57
+
+int printf(const char* format,...);
+
+#endif

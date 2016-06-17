@@ -64,12 +64,6 @@ getChar:
 int80:
 
     pushState
-    mov rax,rdi
-    mov rdi,rsi
-    mov rsi,rdx
-    mov rdx,rcx
-    mov rcx,r8
-    mov r8,r9
     INT 80h
     popState
     ret

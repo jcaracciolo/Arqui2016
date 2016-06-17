@@ -37,6 +37,8 @@ void setupFonts(int fontNumber);
 
 void supr();
 
+void setCursorPosition(int pos);
+
 /* Move Cursor*/
 void moveCursorRight();
 

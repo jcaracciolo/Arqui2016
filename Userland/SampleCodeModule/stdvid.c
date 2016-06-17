@@ -1,12 +1,12 @@
 #include "include/stdvid.h"
 #include "include/types.h"
 
-extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
+extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r8, qword r9);
 
 static qword stdColor=0xFFFFFF;
 
 void clear() {
-	int80(0,0,0,0,0,0,0);
+	int80(0,0,0,0,0,0);
 }
 
 void setColor(qword color) {
@@ -14,31 +14,31 @@ void setColor(qword color) {
 }
 
 void drawCLine(int x1, int y1, int x2, int y2, qword color) {
-	int80(2,x1,y1,x2,y2,color,0);
+	int80(12,x1,y1,x2,y2,color);
+}
+
+void setCursorPos(int pos) {
+	int80(14,pos,0,0,0,0);	
 }
 
 void drawLine(int x1, int y1, int x2, int y2) {
-	int80(2,x1,y1,x2,y2,stdColor,0);
+	int80(12,x1,y1,x2,y2,stdColor);
 }
 
 void drawPixel(int x, int y) {
-	int80(1,x,y,stdColor,0,0,0);
+	int80(11,x,y,stdColor,0,0);
 }
 
 void drawCPixel(int x, int y, qword color) {
-	int80(1,x,y,color,0,0,0);
+	int80(11,x,y,color,0,0);
 }
 
-void drawCSquare(int x, int y, int size, int width,qword color){
-	for (int i = x; i < size; ++i) {
-			drawCLine(i,y,i,y+size,color);
-	}
+void drawCSquare(int x, int y, int height, int width,qword color){
+	int80(13,x,y,height,width,color);
 }
 
-void drawSquare(int x, int y, int size, int width){
-	for (int i = x; i < size; ++i) {
-		drawLine(i,y,i,y+size);
-	}
+void drawSquare(int x, int y, int height, int width){
+	int80(13,x,y,height,width,stdColor);
 }
 
 void drawTriangle(uint32 x1, uint32 y1,uint32 x2, uint32 y2,uint32 x3,uint32 y3){
@@ -81,11 +81,11 @@ void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion){
 
 }
 
-void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion,qword color){
+void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size, uint32 recursion, qword color){
 	if(recursion==0) return;
 
 	drawCEquilateral(x,y,size,color);
-
+	
 	int h=round(size*sqrt3/2.0);
 	drawCFractalEquilateral(x,y,size/2,recursion-1,color);
 	drawCFractalEquilateral(x+size/2,y,size/2,recursion-1,color);

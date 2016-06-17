@@ -166,15 +166,7 @@ _irq08Handler:
 
 _irq80Handler:
 
-    push r9
-    mov r9,r8
-    mov r8, rcx
-    mov rcx, rdx
-    mov rdx, rsi
-    mov rsi, rdi
-    mov rdi, rax
 	call syscallHandler
-	pop r9
 
 	;signal pic
 	mov al, 20h
