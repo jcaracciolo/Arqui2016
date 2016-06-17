@@ -1,6 +1,11 @@
 #ifndef SHELL_H
 #define SHELL_H
 
+#include "../../../Kernel/include/graphicsDriver.h"
+
+#define ROWS ((WIN_HEIGHT / CHAR_HEIGHT) / FONT_SCALE)
+#define COLS ((WIN_WIDTH / CHAR_WIDTH) / FONT_SCALE)
+
 void initShell();
 
 /* adds char c to the buffer */

@@ -6,10 +6,7 @@
 #include "include/stdvid.h"
 #include "include/stdtime.h"
 #include "include/sw.h"
-#include "../../Kernel/include/graphicsDriver.h"
-
-#define ROWS ((WIN_HEIGHT / CHAR_HEIGHT) / FONT_SCALE)
-#define COLS ((WIN_WIDTH / CHAR_WIDTH) / FONT_SCALE)
+#include "include/gedit.h"
 
 const char* instructions = " func           - print a simple message (completly useless)\n\
  clear          - clears the screen\n\
@@ -82,10 +79,12 @@ void execute() {
 	} else if(strcmp(shellBuffer, "fractal --zelda") == 0) {
 		drawCFractalEquilateral(150,768,768,10,0xFFFF00);
 	} else if(strcmp(shellBuffer, "help") == 0) {
-		print(instructions, strlen(instructions)); //TODO cambiar por printf
+		printCharArray(instructions, strlen(instructions)); //TODO cambiar por printf
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		printFrame();
-	}else {
+	} else if(strcmp(shellBuffer, "gedit") == 0) {
+		runGedit();
+	} else {
 		printf("Command not found.\n");
 	}
 	printf("  >>");
