@@ -13,7 +13,8 @@ const char* instructions = " func           - print a simple message (completly 
  time           - get current system time\n\
  setTimeZone(t) - set computer's time zone\n\
  date           - get current system date\n\
- star wars      - little star wars animation";
+ star wars      - little star wars animation\n\
+ gedit          - dimple text editor";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
