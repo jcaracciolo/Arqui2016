@@ -9,18 +9,18 @@
 
 
 #define CHAR_WIDTH 6
-
 #define CHAR_HEIGHT 8
-#define WIN_WIDTH 1024
 
+#define FONT_SCALE 2
+
+#define WIN_WIDTH 1024
 #define WIN_HEIGHT 768
+
 #define RED_MASK 0x00FF0000
 #define GREEN_MASK 0x00FF00
-
 #define BLUE_MASK 0x0000FF
 
 
-#define FONT_SCALE 2
 #define inBound(x,y) ((x)>=0 && (x)<1024 && (y)>=0 && (y)<768)
 #define abs(n) ((n)>=0?(n):-(n))
 #define round(n) (int)((n) < 0 ? ((n) - 0.5) : ((n) + 0.5));

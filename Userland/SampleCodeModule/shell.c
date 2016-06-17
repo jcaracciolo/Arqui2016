@@ -6,10 +6,7 @@
 #include "include/stdvid.h"
 #include "include/stdtime.h"
 #include "include/sw.h"
-#include "../../Kernel/include/graphicsDriver.h"
-
-#define ROWS ((WIN_HEIGHT / CHAR_HEIGHT) / FONT_SCALE)
-#define COLS ((WIN_WIDTH / CHAR_WIDTH) / FONT_SCALE)
+#include "include/gedit.h"
 
 const char* instructions = " func           - print a simple message (completly useless)\n\
  clear          - clears the screen\n\
@@ -30,7 +27,7 @@ void initShell() {
 	//clearScreen();
 	printf("-- WELCOME THE SHELL --\n\n  >>");
 	setTimeZone(-3);
-	
+
 	while(1) {
 		int c = getc();
 		if (c != EOF) {
@@ -74,7 +71,7 @@ void execute() {
 	} else if(strcmp(shellBuffer, "time") == 0) {
 		printf("%d:%d\n", getHours(), getMinutes());
 	} else if(strcmp(shellBuffer, "date") == 0) {
-		printf("%d/%d/%d\n", (int)getDay(), (int)getMonth(), (int)getYear());
+		printf("%d/%d/%d\n", getDay(), getMonth(), getYear());
 	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
 		sleep(2000);
 		printf("setting time zone...\n");
