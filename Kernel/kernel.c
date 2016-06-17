@@ -8,9 +8,9 @@
 #include <interrupts.h>
 #include <syscall.h>
 #include <videoDriver.h>
+#include "include/interrupts.h"
 #include "include/videoDriver.h"
 #include "include/naiveConsole.h"
-#include "include/interrupts.h"
 #include "include/syscall.h"
 #include "include/graphicsDriver.h"
 #include "include/getTime.h"
@@ -44,16 +44,7 @@ void setupEverything();
 int main()
 {
 	setupEverything();
-//	ncPrint("[Kernel Main]");
-//	ncNewline();
-//	ncPrint("  Sample code module at 0x");
-//	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-//	ncNewline();
 
-	ncPrint("  Setting up IDT");
-	setup_IDT();
-	ncPrint("  Setting up System Calls");
-	setUpSyscalls();
 	addTimerListener(&blinkCursor,10);
 
 //	ncPrint("  Calling the sample code module returned: ");

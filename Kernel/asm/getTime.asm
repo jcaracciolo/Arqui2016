@@ -21,6 +21,7 @@ section .text
 
 %macro _setState 1
 
+            mov rax,0
             mov al,0Bh
             out 70h,al
             in al,71h

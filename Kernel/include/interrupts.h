@@ -10,6 +10,8 @@
 
 #include "types.h"
 
+typedef void (*timerEventT)() ;
+
 void _irq00Handler(void);
 void _irq01Handler(void);
 void _irq02Handler(void);
@@ -17,6 +19,7 @@ void _irq03Handler(void);
 void _irq04Handler(void);
 void _irq05Handler(void);
 void _irq08Handler(void);
+
 void _irq80Handler(void);
 
 void _int_80_hand();
@@ -27,17 +30,19 @@ void _sti(void);
 
 void picMasterMask(byte mask);
 
-void picSlaveMask(byte mask);
 
+void picSlaveMask(byte mask);
 
 void lidt(IDTR *idtr);
 
 void setup_IDT();
 
+void addTimerListener(timerEventT event, int interval);
+
+void deleteTimerListener(timerEventT event);
+
+
 //Termina la ejecución de la cpu.
 void haltcpu(void);
-
-
-typedef void (*timerEventT)() ;
 
 #endif /* INTERRUPS_H_ */

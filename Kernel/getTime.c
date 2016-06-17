@@ -31,3 +31,5 @@ void _setAlarmHours(char hours) {
         _setAlarmHoursASM(abs(h));
     }
 }
+
+void _get

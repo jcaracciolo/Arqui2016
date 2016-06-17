@@ -18,7 +18,7 @@ const char* instructions = " func           - print a simple message (completly 
  date           - get current system date\n\
  star wars      - little star wars animation\n";
 
-extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
+extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
 char screen[ROWS * COLS] = {0};
 int screenIndex = 0;
@@ -30,7 +30,7 @@ void initShell() {
 	//clearScreen();
 	printf("-- WELCOME THE SHELL --\n\n  >>");
 	setTimeZone(-3);
-
+	
 	while(1) {
 		int c = getc();
 		if (c != EOF) {
@@ -74,7 +74,7 @@ void execute() {
 	} else if(strcmp(shellBuffer, "time") == 0) {
 		printf("%d:%d\n", getHours(), getMinutes());
 	} else if(strcmp(shellBuffer, "date") == 0) {
-		printf("%d/%d/%d\n", getDay(), getMonth(), getYear());
+		printf("%d/%d/%d\n", (int)getDay(), (int)getMonth(), (int)getYear());
 	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
 		sleep(2000);
 		printf("setting time zone...\n");
@@ -82,7 +82,7 @@ void execute() {
 	} else if(strcmp(shellBuffer, "fractal --zelda") == 0) {
 		drawCFractalEquilateral(150,768,768,10,0xFFFF00);
 	} else if(strcmp(shellBuffer, "help") == 0) {
-		print(instructions, strlen(instructions)); //TODO cambiar por printf
+		print(instructions); //TODO cambiar por printf
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		printFrame();
 	}else {
