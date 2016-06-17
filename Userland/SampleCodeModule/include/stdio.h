@@ -11,8 +11,5 @@ void printCharArray(const char* arr, int length);
 
 int printf(const char* format,...);
 
-#endif
-
-int printf(const char* format,...);
 
 #endif

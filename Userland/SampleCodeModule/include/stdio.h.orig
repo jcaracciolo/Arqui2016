@@ -8,10 +8,18 @@ void putc(char c);
 int getc();
 
 <<<<<<< HEAD
-void printCharArray(const char* arr, int length);
-=======
+void print(const char* arr);
+||||||| merged common ancestors
+<<<<<<< Temporary merge branch 1
 void print(char* arr);
->>>>>>> b02b3e843bf63326d916b75a1dcb0986f1a5ee57
+||||||| merged common ancestors
+void print(const char* arr, int length);
+=======
+void printCharArray(const char* arr, int length);
+>>>>>>> Temporary merge branch 2
+=======
+void printCharArray(const char* arr, int length);
+>>>>>>> old-state
 
 int printf(const char* format,...);
 
