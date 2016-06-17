@@ -7,7 +7,7 @@ void putc(char c);
 
 int getc();
 
-void print(char* arr);
+void print(const char* arr);
 
 int printf(const char* format,...);
 

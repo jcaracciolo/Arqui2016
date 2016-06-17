@@ -82,7 +82,9 @@ void execute() {
 		print(instructions); //TODO cambiar por printf
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		printFrame();
-	}else {
+	} else if(strcmp(shellBuffer, "gedit") == 0) {
+		runGedit();
+	} else {
 		printf("Command not found.\n");
 	}
 	printf("  >>");

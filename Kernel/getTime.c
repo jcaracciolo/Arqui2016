@@ -32,4 +32,3 @@ void _setAlarmHours(char hours) {
     }
 }
 
-void _get
