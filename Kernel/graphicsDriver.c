@@ -29,6 +29,9 @@ void _drawSquare(int x, int y, int height, int width){
 //            _drawPixel(i,j);
 //        }
 //    }
+
+    width=(x+width>inf->Xres)?inf->Xres-x:width;
+    height=(y+height>inf->Yres)?inf->Yres-y:height;
     --width;
     int bpp=inf->bpp/8;
     int line=bpp*(width);
