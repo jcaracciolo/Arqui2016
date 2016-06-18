@@ -45,7 +45,6 @@ int main()
 {
 	setupEverything();
 
-	addTimerListener(&blinkCursor,10);
 
 //	ncPrint("  Calling the sample code module returned: ");
 //	//HERE IT SHOULD CALL SAMPLE MODULE BUT INSTEAD CALL A MODULE ONLY IF COMMAND
@@ -155,7 +154,7 @@ void setupEverything(){
     //Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
 	Color color = {.r = 0xFF, .g = 0xFF , .b = 0x00};
 
-	setupFonts(10);
+	setupFonts(12);
 	print("  Setting up Fonts ....\n");
 	print("  Giving life some color....\n");
 	_setColor(color);

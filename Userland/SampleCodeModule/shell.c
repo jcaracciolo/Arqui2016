@@ -79,7 +79,7 @@ void execute() {
 		printf("setting time zone...\n");
 	} else if(strcmp(shellBuffer, "fractal --zelda") == 0) {
 		clear();
-		drawCFractalEquilateral(150,768,768,15,0x2A3B8D);
+		drawCFractalEquilateral(150,768,768,15,0xFFFF00);
 		sleep(1000);
 		clear();
 	} else if(strcmp(shellBuffer, "help") == 0) {

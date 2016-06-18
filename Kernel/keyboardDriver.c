@@ -14,8 +14,7 @@ static int lastIndex=0;
 static boolean lshift= false;
 static boolean rshift=false;
 static boolean lalt=false;
-static boolean ralt=false;
-
+static boolean caps=false;
 void addToBuffer(){
     int key=read_key();
 
@@ -25,16 +24,29 @@ void addToBuffer(){
         lshift=!lshift;
     }else if(key==0x38 || lalt==0xB8){
         lalt=!lalt;
+    }else if(key==0x3a){
+        caps=!caps;
     }
 
+    int aux;
     if(lastIndex!=actualIndex-1){
         if(key<0x40 && key>0){
             if(ASCII_VALUE[key]!=0){
                 if(lshift || rshift){
-                    buffer[lastIndex] = SHIFT_ASCII_VALUE[key];
+                   aux = SHIFT_ASCII_VALUE[key];
                 }else{
-                    buffer[lastIndex] = ASCII_VALUE[key];
+                    aux = ASCII_VALUE[key];
                 }
+
+                if(caps){
+                    if(aux>='a' && aux<='z'){
+                        aux=aux-'a'+'A';
+                    }else if(aux>='A' && aux<='Z'){
+                        aux=aux+'a'-'A';
+                    }
+                }
+
+                buffer[lastIndex]=aux;
                 lastIndex = (lastIndex + 1) % BUFFER_SIZE;
             }else{
 

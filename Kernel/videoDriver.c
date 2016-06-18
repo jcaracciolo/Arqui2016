@@ -76,6 +76,11 @@ void printChar(int c){
 		backspace();
 	}else if(c=='\n'){
 		printNewLine();
+	}else if(c=='\t') {
+		for(int i=0;i<4;i++) {
+			drawChar(' ', cursorX(cursor), cursorY(cursor));
+			screen[cursor++] = (char)c;
+		}
 	}else{
 		drawChar(c,cursorX(cursor),cursorY(cursor));
 
