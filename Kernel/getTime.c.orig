@@ -31,3 +31,10 @@ void _setAlarmHours(char hours) {
         _setAlarmHoursASM(abs(h));
     }
 }
+<<<<<<< HEAD
+
+||||||| merged common ancestors
+
+void _get
+=======
+>>>>>>> old-state

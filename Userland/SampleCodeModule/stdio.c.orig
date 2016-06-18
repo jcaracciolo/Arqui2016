@@ -17,9 +17,27 @@ int getc() {
 	return *a;
 }
 
+<<<<<<< HEAD
+void print(char* arr) {
+	int80(4,1,arr,strlen(arr),0,0);
+||||||| merged common ancestors
+<<<<<<< Temporary merge branch 1
+void print(char* arr) {
+	int80(4,1,arr,strlen(arr),0,0);
+||||||| merged common ancestors
+// cambiar por printf
+void print(char* arr, int length) {
+	int80(4,1,arr,length,0,0,0);
+=======
+// cambiar por printf
+void printCharArray(char* arr, int length) {
+	int80(4,1,arr,length,0,0,0);
+>>>>>>> Temporary merge branch 2
+=======
 // cambiar por printf
 void printCharArray(char* arr, int length) {
 	int80(4,1,arr,strlen(arr),0,0);
+>>>>>>> old-state
 }
 
 int printf(const char* format,...){
@@ -40,7 +58,19 @@ int printf(const char* format,...){
 				case 'i':
 					n=va_arg(args,int);
 					int length=intToString(strnum,n);
+<<<<<<< HEAD
+					print(strnum);
+||||||| merged common ancestors
+<<<<<<< Temporary merge branch 1
+					print(strnum);
+||||||| merged common ancestors
+					print(strnum,length);
+=======
 					printCharArray(strnum,length);
+>>>>>>> Temporary merge branch 2
+=======
+					printCharArray(strnum,length);
+>>>>>>> old-state
 					break;
 				case 'c':
 					n=(char)va_arg(args,int);

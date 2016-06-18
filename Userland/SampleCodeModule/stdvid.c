@@ -17,6 +17,16 @@ void drawCLine(int x1, int y1, int x2, int y2, qword color) {
 	int80(12,x1,y1,x2,y2,color);
 }
 
+void setCursorPos(int pos) {
+	int80(14,pos,0,0,0,0);	
+}
+
+int getCursorPos() {
+	int pos;
+	int80(14,&pos,1,0,0,0);	
+	return pos;
+}
+
 void drawLine(int x1, int y1, int x2, int y2) {
 	int80(12,x1,y1,x2,y2,stdColor);
 }
@@ -77,11 +87,11 @@ void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion){
 
 }
 
-void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion,qword color){
+void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size, uint32 recursion, qword color){
 	if(recursion==0) return;
 
 	drawCEquilateral(x,y,size,color);
-
+	
 	int h=round(size*sqrt3/2.0);
 	drawCFractalEquilateral(x,y,size/2,recursion-1,color);
 	drawCFractalEquilateral(x+size/2,y,size/2,recursion-1,color);
