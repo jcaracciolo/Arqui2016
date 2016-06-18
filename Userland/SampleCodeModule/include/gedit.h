@@ -2,22 +2,11 @@
 #define GEDIT_H
 
 #include "../../../Kernel/include/videoDriver.h"
+#include "../../../Kernel/include/types.h"
 
-static char save[ROWS * COLS + 1] = " New to gedit? Here are some tips...\n\
-    -> Tab to enter/exit writeMode\n\n\
-        In writeMode\n\
-         |\n\
-         |-> wasd to navigate\n\
-         |-> c to clear screen\n\
-         |-> q to quit\n";
-
-static char text[ROWS * COLS + 1] = " New to gedit? Here are some tips...\n\
-    -> Tab to enter/exit writeMode\n\n\
-        In writeMode\n\
-         |\n\
-         |-> wasd to navigate\n\
-         |-> c to clear screen\n\
-         |-> q to quit\n";
+static boolean firstTime = true; 
+static char save[ROWS * COLS + 1] = {0};
+static char text[ROWS * COLS + 1] = {0};
 
 void runGedit();
 void navigate(int c);
@@ -26,5 +15,8 @@ void clearText();
 void printSave();
 void saveState();
 boolean answer();
+int fillLines(char* str, int line);
+void fillSpaces(int line, int begin);
+boolean outOfBounds();
 
 #endif
