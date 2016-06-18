@@ -12,7 +12,7 @@ int selectedFont = 4;
 
 
 static Color color = {.r = 0xFF, .g = 0xFF , .b = 0xFF};
-static qword hexColor=0;
+static int hexColor=0;
 modeInfo *inf = (modeInfo *)0x5c00;
 
 void _setColor(Color c){
@@ -29,18 +29,20 @@ void _drawSquare(int x, int y, int height, int width){
 //            _drawPixel(i,j);
 //        }
 //    }
-
+    --width;
     int bpp=inf->bpp/8;
-    int line=bpp*(--width);
+    int line=bpp*(width);
     char * vi= inf->physbase + inf->pitch *y + bpp*x;
     for(int i=0;i<height;i++){
         for(int j=0;j<width;j++){
-            *((qword*)vi)=hexColor;
+            *((int*)vi)=hexColor;
             vi+=bpp;
         }
+
         vi[0] = color.b;
         vi[1] = color.g;
         vi[2] = color.r;
+
 
         vi-=line;
         vi+=inf->pitch;
@@ -154,7 +156,6 @@ void drawChar(char c, int x, int y) {
             for (i=0; i<CHAR_HEIGHT; i++) {
 
                 if (chr[j] & (1<<i)) {
-//                    drawPixel(x+j, y+i);
                     _drawSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE);
                 } else _drawCSquare((x+j)*FONT_SCALE,(y+i)*FONT_SCALE,FONT_SCALE,FONT_SCALE,black);
             }
@@ -179,19 +180,6 @@ void  setupFonts(int fontNumber){
 }
 
 void clearScreen(){
-//    Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
-//    drawCSquare(0,0,inf->Yres,inf->Xres,black);
-//    char * vi;
-//    for (int i = 0; i < inf->Xres; ++i) {
-//        for (int j = 0; j < inf->Yres; ++j) {
-//
-//            vi =(char*) inf->physbase + inf->pitch *j + inf->bpp/8*i;
-//            vi[0] = 0x00;
-//            vi[1] = 0x00;
-//            vi[2] = 0x00;
-//
-//        }
-//    }
 
     int size=inf->Yres*inf->Xres*3;
     char* vi =(char*) inf->physbase;
@@ -200,4 +188,6 @@ void clearScreen(){
         vi[i+1]=0;
         vi[i+2]=0;
     }
+
+
 }

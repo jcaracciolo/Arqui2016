@@ -216,7 +216,6 @@ void printWithLength(const char* msg, int length) {
 }
 
 void clear() {
-	int i;
 	removeCursorMark();
 	clearScreen();
 }

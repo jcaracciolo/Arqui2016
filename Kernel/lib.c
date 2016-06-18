@@ -1,6 +1,4 @@
 #include <stdint.h>
-#define MAX_STACK_SIZE 5000
-static unsigned char mem[MAX_STACK_SIZE];
 static char * pointer = 0x10000000;
 
 void * memset(void * destination, int32_t c, uint64_t length)

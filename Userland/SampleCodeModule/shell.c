@@ -7,6 +7,7 @@
 #include "include/stdtime.h"
 #include "include/sw.h"
 #include "include/gedit.h"
+#include "include/paint.h"
 
 const char* instructions = " func           - print a simple message (completly useless)\n\
  clear          - clears the screen\n\
@@ -84,6 +85,10 @@ void execute() {
 		printFrame();
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		runGedit();
+	} else if(strcmp(shellBuffer, "paint") == 0) {
+		paintLoop();
+	} else if(strcmp(shellBuffer, "square") == 0) {
+		drawCSquare(0,0,768,1024,0xFFFFFF);
 	} else {
 		printf("Command not found.\n");
 	}

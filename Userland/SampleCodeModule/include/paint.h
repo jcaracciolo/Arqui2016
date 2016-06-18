@@ -6,6 +6,6 @@
 #define ARQUI2016_PAINT_H
 
 
-int main();
+int paintLoop();
 
 #endif //ARQUI2016_PAINT_H
