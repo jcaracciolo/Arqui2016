@@ -28,6 +28,7 @@ extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r
 
 extern int getChar();
 
+
 static const uint64_t PageSize = 0x1000;
 static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
@@ -154,7 +155,7 @@ void setupEverything(){
     //Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
 	Color color = {.r = 0xFF, .g = 0xFF , .b = 0x00};
 
-	setupFonts(12);
+	setupFonts(1);
 	print("  Setting up Fonts ....\n");
 	print("  Giving life some color....\n");
 	_setColor(color);

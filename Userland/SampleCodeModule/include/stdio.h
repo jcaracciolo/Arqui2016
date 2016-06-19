@@ -11,5 +11,10 @@ void printCharArray(const char* arr, int length);
 
 int printf(const char* format,...);
 
+char* readLine() ;
+
+char* readInt(char* string, int* num);
+
+int scanf(const char* format,...);
 
 #endif

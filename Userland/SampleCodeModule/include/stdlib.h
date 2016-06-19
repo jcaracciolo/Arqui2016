@@ -1,6 +1,11 @@
 #ifndef STRINGS_H
 #define STRINGS_H
 
-int isalpha(char c);
+int isAlpha(char c);
 
+void* malloc(int bytes);
+
+int isNum(char c);
+
+void free();
 #endif

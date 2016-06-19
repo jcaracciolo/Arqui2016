@@ -2,7 +2,7 @@
 
 
 /* Converts num into a '\0' ended string in str parameter*/
-	int intToString(char* str, int num) {
+int intToString(char* str, int num) {
 	int length = numLength(num);
 	int numLength = length;
 	int i;

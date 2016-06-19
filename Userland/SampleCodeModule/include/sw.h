@@ -4,6 +4,7 @@
 #ifndef SW
 #define SW
 
-void printFrame();
+//void printFrame();
+void swStart();
 
 #endif

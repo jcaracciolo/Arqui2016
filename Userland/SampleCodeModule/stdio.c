@@ -2,8 +2,13 @@
 #include "include/strings.h"
 #include <stdarg.h>
 #include "include/shell.h"
-
+#include "include/stdlib.h"
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
+
+
+char* readLine() ;
+char* readInt(char* string, int* num);
+
 
 void putc(char c) {
 	int80(4,1,&c,1,0,0);
@@ -60,3 +65,101 @@ int printf(const char* format,...){
 	return 0;
 
 }
+
+int scanf(const char* format,...){
+	va_list args;
+	va_start( args, format );
+
+	int n;
+    char strnum[10];
+
+	char* str = readLine();
+    char* character;
+
+	while(*format!='\0'){
+		if(*format!='%'){
+            if((*format) != (*str)){
+                return n;
+            } else{
+                format++;
+                str++;
+            }
+		}else{
+			switch(*(++format)){
+				case '%':
+                    if(*str != '%') return n;
+                    else str++;
+                    break;
+				case 'd':
+				case 'i':
+                    str = readInt(str, va_arg(args,int));
+					break;
+				case 'c':
+                    character = va_arg(args, char*);
+                    *character = *str++;
+                    n++;
+                    break;
+				case 's':
+                    character = va_arg(args,char*);
+                    char temp;
+                    while( (temp = *str) != '\0'){
+                        *character = *str;
+                        character++;
+                        str++;
+                    }
+                    n++;
+			}
+			++format;
+		}
+	}
+
+	return n;
+}
+
+/**
+ * Returns a null terminated string. It reads until it finds a \n.
+ */
+char* readLine() {
+    int bufferIndex = 0;
+    char *buff = malloc(COLS + 1);
+
+    int c ;
+
+    while ((c = getc()) != '\n') {
+        if(c == '\b'){
+            if (bufferIndex != 0) {
+                bufferIndex--;
+                putc('\b');
+            }
+        }
+        else if(c != -1){
+            if (bufferIndex <= COLS) {
+                buff[bufferIndex++] = c;
+            }
+            putc(c);
+        }
+
+    }
+    buff[bufferIndex] = '\0';
+    return buff;
+}
+/**
+ * Tries to parse a num from string. It stores the result in num and returns the
+ * string that is left to read;
+ */
+char* readInt(char* string, int* num){
+    *num = 0;
+    if((*string == '-') && isNum(*(string+1))){
+        *num = *(string+1)-'0';
+        string++;
+        string++;
+    }int c;
+
+    while (isNum(c = *string)){
+        *num = (*num)*10+c-'0';
+        string++;
+    }
+    return string;
+}
+
+

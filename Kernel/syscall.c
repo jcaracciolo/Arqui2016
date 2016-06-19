@@ -25,9 +25,8 @@ qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
-qword sys_allocate(qword pointer, qword size, qword rcx, qword r8, qword r9) {
-    pointer=allocate(size);
-    return 0;
+qword sys_allocate(qword size, qword rdx, qword rcx, qword r8, qword r9) {
+    return allocate(size);
 }
 
 qword sys_free(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {

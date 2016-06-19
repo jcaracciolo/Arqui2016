@@ -67,6 +67,16 @@ void sleep(unsigned int time){
 }
 
 
+void addTimer(timerEventT t, int interval){
+	int80(8,t,interval,0,0,0,0);
+//	int80(8,&printSmt,1,0,0,0,0);
+
+}
+
+void removeTimer(timerEventT t){
+	int80(9,t,0,0,0,0,0);
+}
+
 
 
 

@@ -25,6 +25,11 @@ int screenIndex = 0;
 char shellBuffer[COLS + 1] = {0};	// + 1 to add '\0' at the end
 int shellIndex = 0;
 
+void prio(){
+	printf("alal ");
+}
+
+
 void initShell() {
 	//clearScreen();
 	printf("-- WELCOME THE SHELL --\n\n  >>");
@@ -85,7 +90,7 @@ void execute() {
 	} else if(strcmp(shellBuffer, "help") == 0) {
 		printf("%s\n", instructions);
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
-		printFrame();
+		swStart();
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		runGedit();
 	} else if(strcmp(shellBuffer, "paint") == 0) {

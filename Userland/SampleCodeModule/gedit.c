@@ -6,6 +6,8 @@
 
 static boolean writeMode = false;
 
+void initInstructions();
+
 void runGedit() {
 	clear();
 

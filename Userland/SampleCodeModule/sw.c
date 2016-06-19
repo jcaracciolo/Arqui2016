@@ -4,18 +4,35 @@
 #include "include/stdio.h"
 #include "include/sw_movie.h"
 #include "include/stdvid.h"
-#include "../../Kernel/include/graphicsDriver.h"
+#include "include/stdtime.h"
 
-static int lastFrame = 400;
+static int lastFrame;
 static int frameIndex =0;
+static boolean finished = false;
+
 void printFrame(){
-    for (int j = 0; j < lastFrame; ++j) {
-        //clear();
+        if(frameIndex >= lastFrame){
+            finished = true;
+//            printf("ending %d,%d",frameIndex,lastFrame);
+            return;
+        }
         setCursorPos(0);
-		//drawCSquare(0,0,13 * CHAR_HEIGHT,1024, 0xFFFFFF);
-        for (int i = 0; i < 13; ++i) {
+
+        for (int i = 0; i < 18; ++i) {
             printf(sw_frames[frameIndex++]);
         }
-		sleep(70);
+}
+
+void swStart(){
+    finished = false;
+    setCursorPos(0);
+    frameIndex = 0;
+    clear();
+    lastFrame = 9953;
+    addTimer(&printFrame,2);
+    while (!finished){
+        if(getc() != -1) finished = true;
     }
+    removeTimer(&printFrame);
+    clear();
 }

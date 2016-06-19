@@ -92,11 +92,11 @@ void addTimerListener(timerEventT event, int interval){
 void deleteTimerListener(timerEventT event){
 	for (int j = 0; j < timerListeners; j++) {
 		if(timerEvents[j]==event){
-			timerListeners--;
-			for(int k=0;k<timerListeners;k++){
+			for(int k=j;k<timerListeners-1;k++){
 				timerEvents[k]=timerEvents[k+1];
 				alarmEvents[k]=alarmEvents[k+1];
 			}
+			timerListeners--;
 			break;
 		}
 	}
