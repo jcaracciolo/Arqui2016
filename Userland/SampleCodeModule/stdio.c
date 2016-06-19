@@ -37,7 +37,7 @@ int printf(const char* format,...){
 
 	while(*format!='\0'){
 		if(*format!='%'){
-			putc(*format++);
+			putc(*format);
 		}else{
 			switch(*(++format)){
 				case '%': putc('%'); break;
@@ -57,8 +57,8 @@ int printf(const char* format,...){
 					break;
 
 			}
-			++format;
 		}
+		format++;
 
 	}
 
@@ -70,11 +70,12 @@ int scanf(const char* format,...){
 	va_list args;
 	va_start( args, format );
 
-	int n;
+	int n=0;
     char strnum[10];
 
 	char* str = readLine();
     char* character;
+
 
 	while(*format!='\0'){
 		if(*format!='%'){
@@ -93,6 +94,7 @@ int scanf(const char* format,...){
 				case 'd':
 				case 'i':
                     str = readInt(str, va_arg(args,int));
+					n++;
 					break;
 				case 'c':
                     character = va_arg(args, char*);
@@ -114,6 +116,60 @@ int scanf(const char* format,...){
 	}
 
 	return n;
+}
+
+void sscanf(const char* format, const char* str, ...){
+	int scanf(const char* format,...){
+		va_list args;
+		va_start( args, format );
+
+		int n=0;
+		char strnum[10];
+
+		char* character;
+
+		while(*format!='\0'){
+			if(*format!='%'){
+				if((*format) != (*str)){
+					return n;
+				} else{
+					format++;
+					str++;
+				}
+			}else{
+				switch(*(++format)){
+					case '%':
+						if(*str != '%') return n;
+						else str++;
+						break;
+					case 'd':
+					case 'i':
+						printf("YAY");
+						str = readInt(str, va_arg(args,int));
+						n++;
+						break;
+					case 'c':
+						character = va_arg(args, char*);
+						*character = *str++;
+						n++;
+						break;
+					case 's':
+						character = va_arg(args,char*);
+						char temp;
+						while( (temp = *str) != '\0'){
+							*character = *str;
+							character++;
+							str++;
+						}
+						n++;
+
+				}
+				++format;
+			}
+		}
+
+		return n;
+	}
 }
 
 /**
@@ -149,14 +205,16 @@ char* readLine() {
  */
 char* readInt(char* string, int* num){
     *num = 0;
+	boolean sign=1;
     if((*string == '-') && isNum(*(string+1))){
-        *num = *(string+1)-'0';
+		sign=-1;
+        *num = (*(string+1)-'0')*sign;
         string++;
         string++;
     }int c;
 
     while (isNum(c = *string)){
-        *num = (*num)*10+c-'0';
+        *num = (*num)*10+(c-'0')*sign;
         string++;
     }
     return string;

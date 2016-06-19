@@ -17,4 +17,5 @@ char* readInt(char* string, int* num);
 
 int scanf(const char* format,...);
 
+void sscanf(const char* format, const char* str, ...);
 #endif

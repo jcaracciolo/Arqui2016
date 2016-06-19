@@ -80,8 +80,14 @@ void execute() {
 	} else if(strcmp(shellBuffer, "date") == 0) {
 		printf("%d/%d/%d\n", getDay(), getMonth(), getYear());
 	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
-		sleep(2000);
-		printf("setting time zone...\n");
+		printf("insert the timezone\n");
+		int tz;
+		if(scanf("%d",&tz)==1 && tz>=-12 && tz<=12) {
+			setTimeZone(tz);
+			printf("\nTime set correctly to GTM %d \n",tz);
+		} else{
+			printf("\nInput error\n");
+		}
 	} else if(strcmp(shellBuffer, "fractal --zelda") == 0) {
 		clear();
 		drawCFractalEquilateral(150,768,768,15,0xFFFF00);

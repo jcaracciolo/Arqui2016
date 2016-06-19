@@ -155,7 +155,7 @@ void setupEverything(){
     //Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
 	Color color = {.r = 0xFF, .g = 0xFF , .b = 0x00};
 
-	setupFonts(1);
+	setupFonts(7);
 	print("  Setting up Fonts ....\n");
 	print("  Giving life some color....\n");
 	_setColor(color);
