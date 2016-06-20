@@ -47,33 +47,9 @@ int main()
 	setupEverything();
 
 
-//	ncPrint("  Calling the sample code module returned: ");
-//	//HERE IT SHOULD CALL SAMPLE MODULE BUT INSTEAD CALL A MODULE ONLY IF COMMAND
-//	ncNewline();
-//	ncNewline();
-//
-//	ncPrint("  Sample data module at 0x");
-//	ncPrintHex((uint64_t)sampleDataModuleAddress);
-//	ncNewline();
-//	ncPrint("  Sample data module contents: ");
-//	ncPrint((char*)sampleDataModuleAddress);
-//	ncNewline();
-//
-//	ncPrint("[Finished]");
-//	ncPrint("[Finished]");
-
-
-//	drawFractalEquilateral(0,768,768,15);
-	//Call shell
-
 	((EntryPoint)sampleCodeModuleAddress)();
 
-	//for (int u = 1; u < 20; u++) {
-	//	printNum(u, 0x05);
-	//	print("Linea de prueba   \n", 65);
-	//}
-	//print("Linea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de pruebaLinea de prueba", 65);
-	
+
 	while(1) {
 	}
 
@@ -88,7 +64,6 @@ void printSmt(){
 void printSmt2(){
 	printNum(8);
 }
-
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {
@@ -155,6 +130,7 @@ void setupEverything(){
     //Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
 	Color color = {.r = 0xFF, .g = 0xFF , .b = 0x00};
 
+	setupFonts(1);
 	setupFonts(7);
 	print("  Setting up Fonts ....\n");
 	print("  Giving life some color....\n");

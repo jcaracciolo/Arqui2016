@@ -10,6 +10,7 @@ static int lastFrame;
 static int frameIndex =0;
 static boolean finished = false;
 
+
 void printFrame(){
         if(frameIndex >= lastFrame){
             finished = true;
