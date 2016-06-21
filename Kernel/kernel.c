@@ -47,7 +47,7 @@ int main()
 	setupEverything();
 
 
-	((EntryPoint)sampleCodeModuleAddress)();
+ ((EntryPoint)sampleCodeModuleAddress)();
 
 
 	while(1) {

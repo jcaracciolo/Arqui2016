@@ -8,7 +8,7 @@ sampleCodeModule:
 	cd SampleCodeModule; make
 
 sampleDataModule:
-	 $ echo 'FFFFFF00' | xxd -r -p   >> $(SAMPLE_DATA)
+	 $ cat <movie7 >> $(SAMPLE_DATA)
 
 clean:
 	cd SampleCodeModule; make clean
