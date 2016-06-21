@@ -1,4 +1,5 @@
 #include "include/stdvid.h"
+#include "include/stdtime.h"
 #include "include/types.h"
 
 extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r8, qword r9);

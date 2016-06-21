@@ -13,5 +13,6 @@ void setTimeZone(int tz);
 void sleep(unsigned int time);
 void removeTimer(timerEventT t);
 void addTimer(timerEventT t, int interval);
+void sleep(unsigned int time);
 
 #endif
