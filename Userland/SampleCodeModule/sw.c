@@ -22,14 +22,19 @@ void printFrame(){
         for (int i = 0; i < 18; ++i) {
             printf(sw_frames[frameIndex++]);
         }
+//    printCharArray(0x50000c+(frameIndex++)*962,962);
+
+
 }
+
+
 
 void swStart(){
     finished = false;
     setCursorPos(0);
     frameIndex = 0;
     clear();
-    lastFrame = 9953;
+    lastFrame = 6533;
     addTimer(&printFrame,2);
     while (!finished){
         if(getc() != -1) finished = true;

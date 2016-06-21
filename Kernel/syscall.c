@@ -10,7 +10,7 @@
 #include "include/lib.h"
 #include "include/kernel.h"
 
-#define SYSTEM_CALL_COUNT 15
+#define SYSTEM_CALL_COUNT 17
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);

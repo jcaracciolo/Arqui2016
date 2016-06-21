@@ -16,6 +16,7 @@
 #include "include/graphicsDriver.h"
 #include "include/getTime.h"
 #include "../Userland/SampleCodeModule/include/sw.h"
+#include "include/logo.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -46,7 +47,7 @@ int main()
 	setupEverything();
 
 
-	((EntryPoint)sampleCodeModuleAddress)();
+ ((EntryPoint)sampleCodeModuleAddress)();
 
 
 	while(1) {
@@ -127,6 +128,7 @@ void * initializeKernelBinary()
 
 void setupEverything(){
     //Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
+	
 	Color color = {.r = 0xFF, .g = 0xFF , .b = 0x00};
 
 	setupFonts(1);
@@ -142,5 +144,8 @@ void setupEverything(){
 	addTimerListener(&blinkCursor,10);
 	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n\n");
 	decreaseTimerTick();
+	
+	print(logo3);
+	sleep(5000);
 
 }

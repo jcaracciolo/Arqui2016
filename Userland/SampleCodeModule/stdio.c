@@ -24,7 +24,7 @@ int getc() {
 
 // cambiar por printf
 void printCharArray(char* arr, int length) {
-	int80(4,1,arr,strlen(arr),0,0);
+	int80(4,1,arr,length,0,0);
 }
 
 void changeFont(int n) {
@@ -122,14 +122,14 @@ int scanf(const char* format,...){
 	return n;
 }
 
-void sscanf(const char* format, const char* str, ...){
-	int scanf(const char* format,...){
+int sscanf(const char* format, const char* str, ...){
+
 		va_list args;
 		va_start( args, format );
 
+
 		int n=0;
 		char strnum[10];
-
 		char* character;
 
 		while(*format!='\0'){
@@ -148,9 +148,11 @@ void sscanf(const char* format, const char* str, ...){
 						break;
 					case 'd':
 					case 'i':
-						printf("YAY");
+						character=str;
 						str = readInt(str, va_arg(args,int));
-						n++;
+						if(str!=character){
+							n++;
+						}
 						break;
 					case 'c':
 						character = va_arg(args, char*);
@@ -174,7 +176,7 @@ void sscanf(const char* format, const char* str, ...){
 
 		return n;
 	}
-}
+
 
 /**
  * Returns a null terminated string. It reads until it finds a \n.
@@ -210,12 +212,20 @@ char* readLine() {
 char* readInt(char* string, int* num){
     *num = 0;
 	boolean sign=1;
-    if((*string == '-') && isNum(*(string+1))){
-		sign=-1;
-        *num = (*(string+1)-'0')*sign;
-        string++;
-        string++;
-    }int c;
+
+    if(*string == '-'){
+		if (isNum(*(string + 1))) {
+			sign = -1;
+			*num = (*(string + 1) - '0') * sign;
+			string++;
+			string++;
+		} else {
+			return string;
+
+		}
+	}
+
+	int c;
 
     while (isNum(c = *string)){
         *num = (*num)*10+(c-'0')*sign;

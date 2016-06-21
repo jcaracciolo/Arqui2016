@@ -1,4 +1,4 @@
-// http://antiflux.org/~grant/star-wars-asciimation.                      
+// http://antiflux.org/~grant/star-wars-asciimation.
 #ifndef SW_M
 #define SW_M
 const char *sw_frames[] = {

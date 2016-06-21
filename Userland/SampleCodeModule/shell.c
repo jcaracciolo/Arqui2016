@@ -9,13 +9,18 @@
 #include "include/gedit.h"
 #include "include/paint.h"
 
-const char* instructions = " func           - print a simple message (completly useless)\n\
- clear          - clears the screen\n\
- time           - get current system time\n\
- setTimeZone(t) - set computer's time zone\n\
- date           - get current system date\n\
- star wars      - little star wars animation\n\
- gedit          - dimple text editor";
+const char* instructions = " func                - print a simple message (completly useless)\n\
+ echo *param*        - prints message on console\n\
+ clear               - clears the screen\n\
+ time                - get current system time\n\
+ setTimeZone *param* - set computer's time zone\n\
+ date                - get current system date\n\
+ fractal Zelda       - draws a triforce inspirated fractal\n\
+ star wars           - little star wars animation\n\
+ gedit               - simple text editor\n\
+ paint               - simple keyboard controlled paint\n\
+ paintBg             - paint the console background (only once)\n\
+ setupFont *param*   - setup font to write";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
@@ -69,6 +74,8 @@ void addToShellBuffer(char c) {
 }
 
 void execute() {
+	char arr[100];
+	int tz;
 	shellBuffer[shellIndex] = '\0';
 	int num;
 	putc('\n');
@@ -80,18 +87,16 @@ void execute() {
 		printf("%d:%d\n", getHours(), getMinutes());
 	} else if(strcmp(shellBuffer, "date") == 0) {
 		printf("%d/%d/%d\n", getDay(), getMonth(), getYear());
-	} else if(strcmp(shellBuffer, "setTimeZone") == 0) {
-		printf("insert the timezone\n");
-		int tz;
-		if(scanf("%d",&tz)==1 && tz>=-12 && tz<=12) {
+	} else if(sscanf("setTimeZone %d",shellBuffer,&tz)==1) {
+		if(tz>=-12 && tz<=12) {
 			setTimeZone(tz);
 			printf("\nTime set correctly to GTM %d \n",tz);
 		} else{
 			printf("\nInput error\n");
 		}
-	} else if(strcmp(shellBuffer, "fractal --zelda") == 0) {
+	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
 		clear();
-		drawCFractalEquilateral(150,768,768,15,0xFFFF00);
+		drawCFractalEquilateral(150,768,768,8,0xFFFF00);
 		sleep(1000);
 		clear();
 	} else if(strcmp(shellBuffer, "help") == 0) {
@@ -102,7 +107,7 @@ void execute() {
 		runGedit();
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		paintLoop();
-	} else if(strcmp(shellBuffer, "square") == 0) {
+	} else if(strcmp(shellBuffer, "paintBg") == 0) {
 		printf("Select a color:\n");
 		int color;
 		if (scanf("%d", &color) == 1) {
@@ -112,7 +117,10 @@ void execute() {
 		}
 	} else if(sscanf("setupFont %d", shellBuffer, &num) == 1) {
 		changeFont(num);
-	}  else {
+	}else if(sscanf("echo %s",shellBuffer,arr)==1) {
+		printf(arr);
+		printf("\n");
+	}else {
 		printf("Command not found.\n");
 	}
 	printf("  >>");
