@@ -10,7 +10,7 @@
 #include "include/lib.h"
 #include "include/kernel.h"
 
-#define SYSTEM_CALL_COUNT 17
+#define SYSTEM_CALL_COUNT 18
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -143,6 +143,15 @@ qword sys_changeFont(qword font, qword rdx, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
+qword sys_getConsoleSize(qword rows, qword cols, qword rcx, qword r8, qword r9) {
+	int* r = (int*) rows;
+	int* c = (int*) cols;
+
+	*c = COLS;
+	*r = ROWS;
+    return 0;
+}
+
 void setUpSyscalls(){
 	sysCalls[0] = &sys_clear;
 	sysCalls[1] = &sys_allocate;
@@ -161,6 +170,7 @@ void setUpSyscalls(){
 	sysCalls[14] = &sys_cursor;
 	sysCalls[15] = &sys_readData;
 	sysCalls[16] = &sys_changeFont;
+	sysCalls[17] = &sys_getConsoleSize;
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);

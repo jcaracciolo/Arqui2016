@@ -8,7 +8,7 @@ sampleCodeModule:
 	cd SampleCodeModule; make
 
 sampleDataModule:
-	 $ echo '00FFFF00' | xxd -r -p >> $(SAMPLE_DATA)
+	 $ echo 'FFFFFF00' | xxd -r -p >> $(SAMPLE_DATA)
 
 clean:
 	cd SampleCodeModule; make clean

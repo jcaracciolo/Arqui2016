@@ -10,4 +10,7 @@ int isNum(char c);
 void free();
 
 int readData();
+
+void setConsoleSize();
+
 #endif

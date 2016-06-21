@@ -30,15 +30,12 @@ int screenIndex = 0;
 char shellBuffer[COLS + 1] = {0};	// + 1 to add '\0' at the end
 int shellIndex = 0;
 
-void prio(){
-	printf("alal ");
-}
-
 
 void initShell() {
 	//clearScreen();
 	printf("-- WELCOME THE SHELL --\n\n  >>");
 	setTimeZone(-3);
+	setConsoleSize();
 
 	while(1) {
 		int c = getc();

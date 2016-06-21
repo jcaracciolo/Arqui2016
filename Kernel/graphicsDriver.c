@@ -178,7 +178,7 @@ void  setupFonts(int fontNumber){
     fonts[9] = aztech;
     fonts[10] = fiveByFive;
     fonts[11] = uglyFont;
-    if(selectedFont > MAX_FONTS) selectedFont = 0;
+    if(fontNumber <MAX_FONTS)
     selectedFont = fontNumber;
 }
 
