@@ -1,3 +1,4 @@
+#include "include/kernel.h"
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>
@@ -30,8 +31,6 @@ extern int getChar();
 
 
 static const uint64_t PageSize = 0x1000;
-static void * const sampleCodeModuleAddress = (void*)0x400000;
-static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
 

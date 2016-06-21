@@ -27,6 +27,10 @@ void printCharArray(char* arr, int length) {
 	int80(4,1,arr,strlen(arr),0,0);
 }
 
+void changeFont(int n) {
+	int80(16,n,0,0,0,0);
+}
+
 int printf(const char* format,...){
 	va_list args;
 	va_start( args, format );

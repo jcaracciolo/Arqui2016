@@ -70,6 +70,7 @@ void addToShellBuffer(char c) {
 
 void execute() {
 	shellBuffer[shellIndex] = '\0';
+	int num;
 	putc('\n');
 	if (strcmp(shellBuffer, "func") == 0) {
 		printf("execute!\n");
@@ -109,7 +110,9 @@ void execute() {
 		} else {
 			printf("Invalid color\n");
 		}
-	} else {
+	} else if(sscanf("setupFont %d", shellBuffer, &num) == 1) {
+		changeFont(num);
+	}  else {
 		printf("Command not found.\n");
 	}
 	printf("  >>");

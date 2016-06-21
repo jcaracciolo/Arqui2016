@@ -8,6 +8,7 @@
 #include "include/getTime.h"
 #include "include/syscall.h"
 #include "include/lib.h"
+#include "include/kernel.h"
 
 #define SYSTEM_CALL_COUNT 15
 #define SYSTEM_CALL_START_INDEX 0x80
@@ -121,8 +122,19 @@ qword sys_cursor(qword pos, qword get, qword rcx, qword r8, qword r9) {
 		int* p = (int*)pos;
 		*p = getCursorPosition();
 	} else setCursorPosition((int)pos);
+	return 0;
 }
 
+
+qword sys_readData(qword data, qword rdx, qword rcx, qword r8, qword r9) {
+	int* p = (int*) data;
+	*p = *(int*)sampleDataModuleAddress;
+	return 0;
+}
+
+qword sys_changeFont(qword font, qword rdx, qword rcx, qword r8, qword r9) {
+	setupFonts(font);
+}
 
 void setUpSyscalls(){
 	sysCalls[0] = &sys_clear;
@@ -140,6 +152,8 @@ void setUpSyscalls(){
     sysCalls[12] = &sys_line;
     sysCalls[13] = &sys_square;
 	sysCalls[14] = &sys_cursor;
+	sysCalls[15] = &sys_readData;
+	sysCalls[16] = &sys_changeFont;
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
