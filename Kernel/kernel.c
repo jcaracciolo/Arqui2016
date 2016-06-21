@@ -145,7 +145,7 @@ void setupEverything(){
 	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n\n");
 	decreaseTimerTick();
 	
-	print(logo3);
-	sleep(5000);
+	print(logo);
+	print("\n\n\n");
 
 }
