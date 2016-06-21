@@ -26,8 +26,10 @@ qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
-qword sys_allocate(qword size, qword rdx, qword rcx, qword r8, qword r9) {
-    return allocate(size);
+qword sys_allocate(qword address, qword size, qword rcx, qword r8, qword r9) {
+     void** ad =address;
+    *ad=allocate(size);
+    return 0;
 }
 
 qword sys_free(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
@@ -75,10 +77,13 @@ qword sys_pixel(qword x, qword y, qword color, qword r8, qword r9) {
 
 qword sys_timezone(qword tz, qword rdx, qword rcx, qword r8, qword r9) {
 	_setTimeZone(tz);
+    return 0;
 }
 
 qword sys_sleep(qword time, qword rdx, qword rcx, qword r8, qword r9) {
 	sleep(time);
+    return 0;
+
 }
 
 qword sys_time(qword hour, qword min, qword sec, qword r8, qword r9) {
@@ -100,6 +105,7 @@ qword sys_date(qword date,qword month,qword year,qword r8,qword r9){
     *(d) =_getDayofMonth();
     *(mo) =_getMonth();
     *(y) = _getYear();
+    return 0;
 }
 
 qword sys_removeTimerEvent(qword timerEventFunc, qword rdx, qword rcx, qword r8, qword r9) {
@@ -134,6 +140,7 @@ qword sys_readData(qword data, qword rdx, qword rcx, qword r8, qword r9) {
 
 qword sys_changeFont(qword font, qword rdx, qword rcx, qword r8, qword r9) {
 	setupFonts(font);
+    return 0;
 }
 
 void setUpSyscalls(){

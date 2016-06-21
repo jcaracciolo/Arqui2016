@@ -1,5 +1,5 @@
 #include <stdint.h>
-static char * pointer = 0x10000000;
+static char * pointer = (char*)0x10000000;
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -52,6 +52,6 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 
 void * allocate(int bytes){
 	char * temp = pointer;
-	pointer += bytes+1;
-	return pointer;
+	pointer += bytes;
+	return temp;
 }
