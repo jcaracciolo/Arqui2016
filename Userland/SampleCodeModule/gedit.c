@@ -1,5 +1,5 @@
 #include "include/gedit.h"
-#include "../../Kernel/include/types.h"
+#include "types.h"
 #include "include/stdvid.h"
 #include "include/stdio.h"
 #include "../../../Kernel/include/videoDriver.h"

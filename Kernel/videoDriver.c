@@ -3,27 +3,10 @@
 #include "strings.h"
 #include "include/strings.h"
 #include "include/graphicsDriver.h"
-// Colors: backColor_frontColor
 
-#define BLACK 0
-#define BLUE 1
-#define GREEB 2
-#define AQUA 3
-#define RED 4
-#define PURPLE 5
-#define YELLOW 6
-#define WHITE 7
-#define GRAY 8
-#define LIGHT_BLUE 9
-#define LIGHT_GREEN 10
-#define LIGHT_AQUA 11
-#define LIGHT_RED 12
-#define LIGHT_PURPLE 13
-#define LIGHT_YELLOW 14
-#define BRIGHT_WHITE 15
+
 #define cursorX(a) (((a)-((a)/COLS)*COLS)*CHAR_WIDTH)
 #define cursorY(a) (((a)/COLS)*CHAR_HEIGHT)
-#define cc(a,b) (a)*0x10+(b)
 
 #define CURSOR_WIDTH (CHAR_WIDTH*FONT_SCALE)
 #define CURSOR_HEIGHT (CHAR_HEIGHT*FONT_SCALE)
@@ -140,48 +123,10 @@ void printNewLine() {
 
 	cursor = ((int)(cursor / COLS) + 1) * COLS;	
 
-	printCursor();
-}
-//TODO REDO
-void printCursor() {
-	video[cursor + 1] = cc(WHITE,BLACK);
 }
 
 
-void moveCursorUp() {
-	removeCursorMark();
 
-	cursor -= COLS;
-	cursor = cursor < 0 ? cursor % COLS + ROWS * COLS : cursor;
-
-	printCursor();
-}
-
-void moveCursorDown() {
-	removeCursorMark();
-
-	cursor += COLS;
-	cursor = cursor > ROWS * COLS ? cursor % COLS : cursor;
-
-	printCursor();
-}
-
-void moveCursorLeft() {
-	removeCursorMark();
-
-	cursor--;
-	cursor = cursor < 0 ? 0: cursor;
-
-	printCursor();
-}
-
-void moveCursorRight() {
-	removeCursorMark();
-	cursor++;
-	cursor = cursor > ROWS * COLS ? cursor % COLS : cursor;
-
-	printCursor();
-}
 
 void backspace() {
 	removeCursorMark();
@@ -190,29 +135,8 @@ void backspace() {
 	cursor--;
 	cursor = cursor < 0 ? 0 : cursor;
 
-	printCursor();
 }
 
-//TODO
-void supr() {
-	removeCursorMark();
-
-	printChar(' ');
-
-	printCursor();
-}
-
-void printWithLength(const char* msg, int length) {
-
-	for (int j = 0; j < length ; j++) {
-        printChar(msg[j]);
-	}
-}
-
-void clear() {
-	removeCursorMark();
-	clearScreen();
-}
 
 void clearChars() {
 	for (int i = 0; i < COLS * ROWS; i++) {

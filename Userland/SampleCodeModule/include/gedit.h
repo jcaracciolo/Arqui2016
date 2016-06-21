@@ -2,7 +2,7 @@
 #define GEDIT_H
 
 #include "../../../Kernel/include/videoDriver.h"
-#include "../../../Kernel/include/types.h"
+#include "types.h"
 
 static boolean firstTime = true; 
 static char save[ROWS * COLS + 1] = {0};

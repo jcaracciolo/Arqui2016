@@ -1,5 +1,5 @@
 #include "include/shell.h"
-#include "../../Kernel/include/types.h"
+#include "types.h"
 #include "include/stdio.h"
 #include "include/strings.h"
 #include "include/stdlib.h"
@@ -19,7 +19,7 @@ const char* instructions = " func                - print a simple message (compl
  star wars           - little star wars animation\n\
  gedit               - simple text editor\n\
  paint               - simple keyboard controlled paint\n\
- paintBg             - paint the console background (only once)\n\
+ paintBg *param*     - paint the console background (only once)\n\
  setupFont *param*   - setup font to write";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -107,14 +107,9 @@ void execute() {
 		runGedit();
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		paintLoop();
-	} else if(strcmp(shellBuffer, "paintBg") == 0) {
-		printf("Select a color:\n");
-		int color;
-		if (scanf("%d", &color) == 1) {
-			drawCSquare(0,0,768,1024,color);
-		} else {
-			printf("Invalid color\n");
-		}
+	} else if(sscanf("paintBg %d", shellBuffer, &num) == 1) {
+			drawCSquare(0,0,768,1024,num);
+			setCursorPos(0);
 	} else if(sscanf("setupFont %d", shellBuffer, &num) == 1) {
 		changeFont(num);
 	}else if(sscanf("echo %s",shellBuffer,arr)==1) {

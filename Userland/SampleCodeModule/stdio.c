@@ -1,4 +1,4 @@
-#include "../../Kernel/include/types.h"
+#include "types.h"
 #include "include/strings.h"
 #include <stdarg.h>
 #include "include/shell.h"

@@ -22,6 +22,8 @@ void printFrame(){
         for (int i = 0; i < 18; ++i) {
             printf(sw_frames[frameIndex++]);
         }
+    
+    //this doesnt work cause not enough memory
 //    printCharArray(0x50000c+(frameIndex++)*962,962);
 
 
