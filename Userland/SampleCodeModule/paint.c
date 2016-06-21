@@ -102,7 +102,6 @@ void move(int x,int y){
 void paintArray(){
     for(int i=0;i<XRES/4;i++){
         for(int j=0;j<YRES/4;j++){
-            if(array[i][j]!=0)
                 drawCSquare(i*4,j*4,4,4,array[i][j]);
         }
     }
