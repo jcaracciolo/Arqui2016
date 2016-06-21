@@ -12,4 +12,10 @@ void* malloc(int bytes){
 	return int80(1,bytes,0,0,0);
 }
 
+int readData(){
+	int n;
+	int80(15,&n,0,0,0);
+	return n;
+}
+
 void  free(){ return;}

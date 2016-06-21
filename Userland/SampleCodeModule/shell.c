@@ -96,7 +96,7 @@ void execute() {
 		}
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
 		clear();
-		drawCFractalEquilateral(150,768,768,8,0xFFFF00);
+		drawCFractalEquilateral(150,768,768,9,readData());
 		sleep(1000);
 		clear();
 	} else if(strcmp(shellBuffer, "help") == 0) {

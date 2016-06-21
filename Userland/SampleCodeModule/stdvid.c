@@ -97,12 +97,12 @@ void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size, uint32 recursion, q
 	
 	int h=round(size*sqrt3/2.0);
 
-	if(recursion%2==0)sleep(1);
+	if(recursion%3==0)sleep(1);
 
 	
 	drawCFractalEquilateral(x,y,size/2,recursion-1,color);
 
-drawCFractalEquilateral(x+size/2,y,size/2,recursion-1,color);
+	drawCFractalEquilateral(x+size/2,y,size/2,recursion-1,color);
 
 	drawCFractalEquilateral(x+size/4,y-h/2,size/2,recursion-1,color);
 
