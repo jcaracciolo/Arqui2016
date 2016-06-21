@@ -85,6 +85,7 @@ void move(int x,int y){
 
     if(erase){
         array[xcursor][ycursor]=0;
+        drawCSquare(xcursor*4,ycursor*4,4,4,0);
     }
 
 

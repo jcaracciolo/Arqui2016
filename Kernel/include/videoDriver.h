@@ -33,8 +33,6 @@ void printScreenArray();
 /* Makes cursor blink */
 void blinkCursor();
 
-void printCursor();
-
 void backspace();
 
 void setupFonts(int fontNumber);
@@ -45,13 +43,6 @@ void setCursorPosition(int pos);
 
 int getCursorPosition();
 
-/* Move Cursor*/
-void moveCursorRight();
-
-void moveCursorUp();
-void moveCursorLeft();
-void moveCursorDown();
-void moveCursorRight();
 
 void printChar(int c);
 
