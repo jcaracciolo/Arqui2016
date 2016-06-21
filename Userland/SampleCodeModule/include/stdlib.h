@@ -8,4 +8,6 @@ void* malloc(int bytes);
 int isNum(char c);
 
 void free();
+
+int readData();
 #endif
