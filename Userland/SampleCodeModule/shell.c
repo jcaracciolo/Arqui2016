@@ -102,7 +102,13 @@ void execute() {
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		paintLoop();
 	} else if(strcmp(shellBuffer, "square") == 0) {
-		drawCSquare(0,0,768,1024,0xFFFFFF);
+		printf("Select a color:\n");
+		int color;
+		if (scanf("%d", &color) == 1) {
+			drawCSquare(0,0,768,1024,color);
+		} else {
+			printf("Invalid color\n");
+		}
 	} else {
 		printf("Command not found.\n");
 	}
