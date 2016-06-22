@@ -111,7 +111,6 @@ void blinkCursor() {
 					 CURSOR_HEIGHT, CURSOR_WIDTH, black);
 }
 
-//TODO REDO
 void removeCursorMark() {
 	Color black = {.r = 0x00, .g = 0x00 , .b = 0x0};
 	_drawCSquare(cursorX(cursor) * FONT_SCALE, cursorY(cursor) * FONT_SCALE,

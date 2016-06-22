@@ -27,8 +27,8 @@ qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
 }
 
 qword sys_allocate(qword address, qword size, qword rcx, qword r8, qword r9) {
-     void** ad =address;
-    *ad=allocate(size);
+     void** ad =(void**)address;
+    *ad=allocate((int)size);
     return 0;
 }
 
@@ -36,28 +36,41 @@ qword sys_free(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
-qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9){
+qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9) {
 
-    char* charbuffer=(char*)buffer;
-    int i=0;
-    int c;
-    while(i<size-1 && (c=readBuffer())!=EOF){
-	charbuffer[i]=(char)c;
-        i++;
-   }
-	charbuffer[i]=0;
-    //TODO FILL WITH CODE
-
+    if (file == 0) {
+        char *charbuffer = (char *) buffer;
+        int i = 0;
+        int c;
+        while (i < size - 1 && (c = readBuffer()) != EOF) {
+            charbuffer[i] = (char) c;
+            i++;
+        }
+        charbuffer[i] = 0;
+    }
     return 1;
 }
 
 qword sys_write(qword file, qword buffer, qword size, qword r8, qword r9){
 
     char* charbuffer=(char*)buffer;
-    while(size--){
-        printChar(*charbuffer++);
-     }
-     return 1;
+    if(file==1){
+        while(size--){
+            printChar(*charbuffer++);
+        }
+    }else if(file==2){
+
+        Color col={col.r=0xFF,col.b=00,col.g=00};
+        Color aux=getColor();
+        _setColor(col);
+        while(size--){
+            printChar(*charbuffer++);
+
+        }
+        _setColor(aux);
+    }
+
+return 1;
 }
 
 qword sys_line(qword origX, qword origY, qword destX, qword destY, qword color) {

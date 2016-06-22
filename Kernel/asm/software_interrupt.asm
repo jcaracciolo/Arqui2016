@@ -43,24 +43,6 @@ GLOBAL int80
 vesaControllerInfo:
 
 
-
-softwareInterrupt:
-    INT 80h
-    ret
-
-
-getChar:
-    push rdi
-    mov rax,3
-    mov rdi,1
-    mov rsi,char
-    mov rdx,1
-    INT 80h
-    mov rax,[char]
-    pop rdi
-    ret
-
-
 int80:
     pushState
     INT 80h

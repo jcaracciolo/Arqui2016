@@ -74,6 +74,7 @@ void incPixel(int m) ;
 void _drawCPixel(int x, int y, Color color);
 void _drawCSquare(int x, int y, int height, int width, Color c);
 void _setColor(Color c);
+Color getColor();
 void clearScreen();
 void _drawStraightLine(uint32 x, uint32 y, uint32 length);
 void _drawVerticalLine(uint32 x, uint32 y, uint32 length);

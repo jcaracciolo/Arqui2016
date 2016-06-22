@@ -15,6 +15,10 @@ static Color color = {.r = 0xFF, .g = 0xFF , .b = 0xFF};
 static int hexColor=0;
 modeInfo *inf = (modeInfo *)0x5c00;
 
+Color getColor(){
+    return color;
+}
+
 void _setColor(Color c){
     color.r = c.r;
     color.g = c.g;

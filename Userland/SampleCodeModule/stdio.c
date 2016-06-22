@@ -17,7 +17,7 @@ void putc(char c) {
 
 int getc() {
 	char a[2];
-	int80(3,1,a,2,0,0);
+	int80(3,0,a,2,0,0);
 	if(*a==0) return EOF;
 	return *a;
 }
