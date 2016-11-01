@@ -9,4 +9,6 @@ void * allocate(int bytes);
 
 char *cpuVendor(char *result);
 
+void * allocatePages(void * address, int cantPages);
+
 #endif

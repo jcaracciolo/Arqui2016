@@ -10,7 +10,7 @@
 #include "include/lib.h"
 #include "include/kernel.h"
 
-#define SYSTEM_CALL_COUNT 18
+#define SYSTEM_CALL_COUNT 19
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -23,6 +23,12 @@ static sys sysCalls[SYSTEM_CALL_COUNT];
 qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     clearScreen();
     clearChars();
+    return 0;
+}
+
+qword sys_allocatePages(qword address, qword cantPages, qword rcx, qword r8, qword r9) {
+    void** ad =(void**)address;
+    *ad = allocatePages(*ad, cantPages);
     return 0;
 }
 
@@ -183,7 +189,8 @@ void setUpSyscalls(){
 	sysCalls[14] = &sys_cursor;
 	sysCalls[15] = &sys_readData;
 	sysCalls[16] = &sys_changeFont;
-	sysCalls[17] = &sys_getConsoleSize;
+    sysCalls[17] = &sys_getConsoleSize;
+	sysCalls[18] = &sys_allocatePages;
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);

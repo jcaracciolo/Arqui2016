@@ -98,6 +98,21 @@ void execute() {
 		clear();
 	} else if(strcmp(shellBuffer, "help") == 0) {
 		printf("%s\n", instructions);
+		int *mempos = 0x10000000;
+		printf("mempos: %i\n", mempos);
+		int80(18,&mempos,2,0,0,0);
+		printf("\nmempos: %i\n", mempos);
+		int80(18,&mempos,5,0,0,0);
+		printf("\nmempos: %i\n", mempos);
+		int80(18,&mempos,6,0,0,0);
+		printf("\nmempos: %i\n", mempos);
+		int80(18,&mempos,10,0,0,0);
+		printf("\nmempos: %i\n", mempos);
+		int80(18,0x10000000,2,0,0,0);
+		printf("\nmempos: %i\n", mempos);
+		int80(18,&mempos,11,0,0,0);
+		printf("\nmempos: %i\n", mempos);
+
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		swStart();
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
