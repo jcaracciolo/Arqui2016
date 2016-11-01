@@ -65,14 +65,14 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 }
 
 void markPages(int init, int cant) {
-	int i;	
+	int i;
 	for (i=init; i < cant+init; i++) {
 		memory[i] = 1;
 	}
 }
 
 void unmarkPages(int init, int cant) {
-	int i;	
+	int i;
 	for (i=init; i < cant+init; i++) {
 		memory[i] = 0;
 	}
@@ -80,8 +80,8 @@ void unmarkPages(int init, int cant) {
 
 
 pageBlock * findPageBlock(void * address) {
-	for (int j = 0; j < MAX_BLOCK_PAGES; j++) {
-		if(pageBlockTable[j].address==address){
+	for (int j = 0; j < tableSize; j++) {
+		if(pageBlockTable[j].address == address) {
 			return &(pageBlockTable[j]);
 		}
 	}
@@ -119,9 +119,10 @@ int pageIndexToMemory(int index) {
 }
 
 int memoryToPageIndex(void * address) {
-	for (int j = 0; j < MAX_BLOCK_PAGES; j++) {
-		if(pageBlockTable[j].address==address){
-			return j;
+	int pageIdx = 0;
+	for (int j = pointer; pageIdx < MAX_BLOCK_PAGES ; j+=PAGE_SIZE, pageIdx++) {
+		if(j==address){
+			return pageIdx;
 		}
 	}
 	return -1;
@@ -153,32 +154,70 @@ int getFreeBlock(int cantPages) {
 	return -1;
 }
 
+/* Debug function */
+void printTable() {
+	print("\nTABLE:\n");
+	for (int i = 0; i < tableSize; i++) {
+		print("    ");
+		printNum(pageBlockTable[i].address);
+		print(" -> ");
+		printNum(pageBlockTable[i].cantPages);
+		print("\n");
+	}
+	print("END TABLE");
+}
+
+/* Debug function 
+ * Print n elements of array memory
+ */
+void printPagesArray(int n) {
+	print("\n");
+	for (int i = 0; i < n; i++) {
+		printNum(memory[i]);
+	}
+}
+
+/* Allocate cantPages pages. If address exists it will reallocate memory, else it will
+ * allocate the first cantPages consecutive pages available.
+ * @returns: position of the beggining of the block allocated
+ */
 void * allocatePages(int * address, int cantPages){
 
 	pageBlock * block = findPageBlock(address);
-
 	if(block == (pageBlock *)0) {
 		// address was not allocated
 		int memInit = getFreeBlock(cantPages);
+		print("\nmeminit: "); printNum(memInit);
 		markPages(memInit, cantPages);
-		addPageBlock(address, cantPages);
+		addPageBlock(pageIndexToMemory(memInit), cantPages);
 		print("\npointer:"); printNum(memInit);
+	printTable();
+	printPagesArray(70);
 		return pageIndexToMemory(memInit);
 	}
 
 	if(block->cantPages < cantPages) {
-		int memInit = getFreeBlock(cantPages);
-		markPages(memInit, cantPages);
+		// reallocing more memory
 		unmarkPages(memoryToPageIndex(address), block->cantPages);
-		deletePageBlock(address);
-		if(findPageBlock(address) != 0) {
-			print("NO LO BORRO!");
-		}
-		addPageBlock(pageIndexToMemory(memInit), cantPages);
+		int memInit = getFreeBlock(cantPages);
 		print("\npointer(realloc):"); printNum(memInit);
+		markPages(memInit, cantPages);
+		deletePageBlock(address);
+		addPageBlock(pageIndexToMemory(memInit), cantPages);
+		copyBlocks(memInit, address, block->cantPages);
+	printTable();
+	printPagesArray(70);
 		return pageIndexToMemory(memInit);
 	}
+
+	//realloc less memory
 	print("\nno entro a nada");
-	return address;
-	
+	unmarkPages(memoryToPageIndex(address) + cantPages, block->cantPages - cantPages);
+	print("\n start to delete: "); printNum(memoryToPageIndex(address) + cantPages);
+	print("\n delete length: "); printNum(block->cantPages); print("-"); printNum(cantPages);
+	deletePageBlock(address);
+	addPageBlock(address, cantPages);
+	printTable();
+	printPagesArray(70);
+	return address;	
 }

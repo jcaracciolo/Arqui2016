@@ -98,7 +98,10 @@ void execute() {
 		clear();
 	} else if(strcmp(shellBuffer, "help") == 0) {
 		printf("%s\n", instructions);
-		int *mempos = 0x10000000;
+		int *mempos = 0;
+		int *mempos2 = 0;
+		int *mempos3 = 0;
+		int *mempos4 = 0;
 		printf("mempos: %i\n", mempos);
 		int80(18,&mempos,2,0,0,0);
 		printf("\nmempos: %i\n", mempos);
@@ -106,12 +109,22 @@ void execute() {
 		printf("\nmempos: %i\n", mempos);
 		int80(18,&mempos,6,0,0,0);
 		printf("\nmempos: %i\n", mempos);
-		int80(18,&mempos,10,0,0,0);
+		int80(18,&mempos,7,0,0,0);
 		printf("\nmempos: %i\n", mempos);
-		int80(18,0x10000000,2,0,0,0);
-		printf("\nmempos: %i\n", mempos);
+		int80(18,&mempos2,2,0,0,0);
+		printf("\nmempos2: %i\n", mempos2);
+		int80(18,&mempos3,3,0,0,0);
+		printf("\nmempos3: %i\n", mempos3);
+		int80(18,&mempos3,30,0,0,0);
+		printf("\nmempos3: %i\n", mempos3);
 		int80(18,&mempos,11,0,0,0);
 		printf("\nmempos: %i\n", mempos);
+		int80(18,&mempos4,3,0,0,0);
+		printf("\nmempos4: %i\n", mempos4);
+		int80(18,&mempos4,1,0,0,0);
+		printf("\nmempos4: %i\n", mempos4);
+		int80(18,&mempos3,3,0,0,0);
+		printf("\nmempos3: %i\n", mempos3);
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		swStart();

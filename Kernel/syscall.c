@@ -28,7 +28,12 @@ qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
 
 qword sys_allocatePages(qword address, qword cantPages, qword rcx, qword r8, qword r9) {
     void** ad =(void**)address;
-    *ad = allocatePages(*ad, cantPages);
+    if (*ad == 0) {
+        int * aux = -1;
+        *ad = allocatePages(aux, cantPages);
+    } else {
+        *ad = allocatePages(*ad, cantPages);
+    }
     return 0;
 }
 
