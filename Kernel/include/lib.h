@@ -5,10 +5,13 @@
 
 void * memset(void * destination, int32_t character, uint64_t length);
 void * memcpy(void * destination, const void * source, uint64_t length);
+void * malloc(int bytes);
+void * free(void * p);
 void * allocate(int bytes);
 
 char *cpuVendor(char *result);
 
-void * allocatePages(void * address, int cantPages);
+void * allocatePages(int cantPages);
+void * reallocatePages(int * address, int cantPages);
 
 #endif

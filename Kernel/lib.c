@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "./include/videoDriver.h"
+#include "lib.h"
 
 #define MAX_BLOCK_PAGES 512
 #define PAGE_SIZE 4*1024
@@ -107,6 +108,13 @@ void deletePageBlock(void * address){
 	}
 }
 
+void * malloc(int bytes) {
+	allocate(bytes);
+}
+
+void * free(void * p) {
+	
+}
 
 void * allocate(int bytes){
 	char * temp = pointer;
@@ -177,22 +185,27 @@ void printPagesArray(int n) {
 	}
 }
 
+
+
+void * allocatePages(int cantPages){
+	return reallocatePages(-1, cantPages);
+}
+
 /* Allocate cantPages pages. If address exists it will reallocate memory, else it will
  * allocate the first cantPages consecutive pages available.
  * @returns: position of the beggining of the block allocated
  */
-void * allocatePages(int * address, int cantPages){
-
+void * reallocatePages(int * address, int cantPages){
 	pageBlock * block = findPageBlock(address);
 	if(block == (pageBlock *)0) {
 		// address was not allocated
 		int memInit = getFreeBlock(cantPages);
-		print("\nmeminit: "); printNum(memInit);
+	//print("\nmeminit: "); printNum(memInit);
 		markPages(memInit, cantPages);
 		addPageBlock(pageIndexToMemory(memInit), cantPages);
-		print("\npointer:"); printNum(memInit);
-	printTable();
-	printPagesArray(70);
+	//print("\npointer:"); printNum(memInit);
+	//printTable();
+	//printPagesArray(70);
 		return pageIndexToMemory(memInit);
 	}
 
@@ -200,24 +213,24 @@ void * allocatePages(int * address, int cantPages){
 		// reallocing more memory
 		unmarkPages(memoryToPageIndex(address), block->cantPages);
 		int memInit = getFreeBlock(cantPages);
-		print("\npointer(realloc):"); printNum(memInit);
+	//print("\npointer(realloc):"); printNum(memInit);
 		markPages(memInit, cantPages);
 		deletePageBlock(address);
 		addPageBlock(pageIndexToMemory(memInit), cantPages);
 		copyBlocks(memInit, address, block->cantPages);
-	printTable();
-	printPagesArray(70);
+	//printTable();
+	//printPagesArray(70);
 		return pageIndexToMemory(memInit);
 	}
 
 	//realloc less memory
-	print("\nno entro a nada");
+print("\nno entro a nada");
 	unmarkPages(memoryToPageIndex(address) + cantPages, block->cantPages - cantPages);
-	print("\n start to delete: "); printNum(memoryToPageIndex(address) + cantPages);
-	print("\n delete length: "); printNum(block->cantPages); print("-"); printNum(cantPages);
+//print("\n start to delete: "); printNum(memoryToPageIndex(address) + cantPages);
+//print("\n delete length: "); printNum(block->cantPages); print("-"); printNum(cantPages);
 	deletePageBlock(address);
 	addPageBlock(address, cantPages);
-	printTable();
-	printPagesArray(70);
+//printTable();
+//printPagesArray(70);
 	return address;	
 }
