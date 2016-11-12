@@ -3,7 +3,7 @@
 
 #define INIT_PROCESS_PAGES 5
 
-static uint64_t nextPID = 0;
+static uint64_t nextPID = 1;
 
 typedef struct {
 	//Registers restore context
@@ -35,16 +35,6 @@ typedef struct {
 
 	uint64_t ret;
 } stack_frame;
-
-
-typedef struct process_t{
-	void * entry_point;		// instruction pointer
-	void * stack_base;		// beggining of stack's pages
-	void * stack_pointer;	// relative to stack_base
-
-	uint64_t pid;
-	uint64_t ppid;
-};
 
 int equalProcesses(process * p1, process * p2) {
 	return p1->pid - p2->pid;

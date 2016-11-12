@@ -9,6 +9,7 @@
 #include "include/interrupts.h"
 #include "include/defs.h"
 #include "include/keyboardDriver.h"
+#include "include/scheduler.h"
 
 
 #define FPS 60
@@ -77,7 +78,13 @@ void sleep(unsigned int time){
 	return;
 }
 
+void executeSchedule() {
+	schedule();
+}
 
+void activateScheduler() {
+	addTimerListener(&executeSchedule, 10);
+}
 
 
 void addTimerListener(timerEventT event, int interval){

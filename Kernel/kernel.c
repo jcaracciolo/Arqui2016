@@ -41,14 +41,27 @@ int readBuffer();
 void decreaseTimerTick();
 void setupEverything();
 
+void onlyPrints() {
+	print("another process!!");
+	while(1) print(".");
+}
+
+void onlyPrints2(){
+	while(1) print("o");
+}
+
 int main()
 {
 	setupEverything();
 
+ 	insertProcess(&onlyPrints);
+ 	print("currentPID: "); printNum(getCurrentPid()); print("\n");
+ 	insertProcess(&onlyPrints2);
+ 	print("currentPID: "); printNum(getCurrentPid()); print("\n");
+ 	insertProcess(sampleCodeModuleAddress);
+ 	//beginScheduler();
 
- ((EntryPoint)sampleCodeModuleAddress)();
-
-
+ 	((EntryPoint)sampleCodeModuleAddress)();
 	while(1) {
 	}
 
@@ -141,8 +154,10 @@ void setupEverything(){
 	setUpSyscalls();
 	print("  Giving listeners ears.....\n");
 	addTimerListener(&blinkCursor,10);
-	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n\n");
+	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n");
 	decreaseTimerTick();
+	activateScheduler();
+	print("  Activating scheduler...\n\n");
 	
 	print(logo);
 	print("\n\n\n");
