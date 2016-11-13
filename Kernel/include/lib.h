@@ -1,6 +1,8 @@
 #ifndef LIB_H
 #define LIB_H
 
+#define PAGE_SIZE 4*1024
+
 #include <stdint.h>
 
 void * memset(void * destination, int32_t character, uint64_t length);

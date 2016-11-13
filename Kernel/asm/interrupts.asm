@@ -24,6 +24,7 @@ GLOBAL _irq80Handler
 
 EXTERN irqDispatcher
 EXTERN syscallHandler
+EXTERN next_process
 
 EXTERN printNum
 

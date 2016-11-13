@@ -19,6 +19,8 @@ IDTR idtr;			// IDTR
 
 #define MAX_LISTENERS 10
 
+extern void _change_process();
+
 static qword counter = 0;
 static int timerListeners =0;
 
@@ -79,11 +81,15 @@ void sleep(unsigned int time){
 }
 
 void executeSchedule() {
-	schedule();
+	print("Scheduling\n");
+	//schedule();
+	_change_process();
 }
 
 void activateScheduler() {
-	addTimerListener(&executeSchedule, 10);
+	_cli();
+	addTimerListener(&executeSchedule, 50);
+	_sti();
 }
 
 

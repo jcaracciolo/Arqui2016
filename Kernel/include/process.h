@@ -8,6 +8,8 @@ typedef struct process_t{
 	void * stack_base;		// beggining of stack's pages
 	void * stack_pointer;	// relative to stack_base
 
+	uint64_t cantPages;
+
 	uint64_t pid;
 	uint64_t ppid;
 } process;

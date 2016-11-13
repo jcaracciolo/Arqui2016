@@ -55,13 +55,13 @@ int main()
 	setupEverything();
 
  	insertProcess(&onlyPrints);
- 	print("currentPID: "); printNum(getCurrentPid()); print("\n");
- 	insertProcess(&onlyPrints2);
- 	print("currentPID: "); printNum(getCurrentPid()); print("\n");
- 	insertProcess(sampleCodeModuleAddress);
- 	//beginScheduler();
+ 	// print("currentPID: "); printNum(getCurrentPid()); print("\n");
+ 	//insertProcess(&onlyPrints2);
+ 	// print("currentPID: "); printNum(getCurrentPid()); print("\n");
+ 	// insertProcess(sampleCodeModuleAddress);
+ 	beginScheduler();
 
- 	((EntryPoint)sampleCodeModuleAddress)();
+ 	//((EntryPoint)sampleCodeModuleAddress)();
 	while(1) {
 	}
 

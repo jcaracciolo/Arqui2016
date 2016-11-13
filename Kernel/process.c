@@ -49,7 +49,8 @@ process * createProcess(void * entryPoint) {
 	process * newProcess = (process *)malloc(sizeof(process*));
 	newProcess->entry_point = entryPoint;
 	newProcess->stack_base = allocatePages(INIT_PROCESS_PAGES);
-	newProcess->stack_pointer = fill_stack(entryPoint, newProcess->stack_base);
+	newProcess->cantPages = INIT_PROCESS_PAGES;
+	newProcess->stack_pointer = fill_stack(entryPoint, newProcess->stack_base + newProcess->cantPages * PAGE_SIZE);
 	newProcess->pid = nextPID++;
 
 	return newProcess;

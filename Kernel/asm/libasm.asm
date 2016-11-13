@@ -4,6 +4,12 @@ section .text
 
 GLOBAL _get_rsp
 GLOBAL _set_rsp
+GLOBAL _get_rip
+GLOBAL _popAll
+GLOBAL _pushAll
+GLOBAL _change_process
+
+EXTERN next_process
 
 %macro pushState 0  ; fuente: RowDaBoat/Proyect Wyrm
 	push rax
@@ -21,9 +27,13 @@ GLOBAL _set_rsp
 	push r13
 	push r14
 	push r15
+	push fs
+	push gs
 %endmacro
 
-%macro popState 0
+%macro	popState 0
+	pop gs
+	pop fs
 	pop r15
 	pop r14
 	pop r13
@@ -65,10 +75,36 @@ cpuVendor:
 	pop rbp
 	ret
 
+_change_process:
+	pushState
+
+	mov rdi, rsp
+	call next_process
+
+	mov rsp, rax
+
+	mov al, 0x20
+	out 0x20, al
+
+	popState
+	iretq
+
 _get_rsp:
 	mov rax, rsp
 	ret
 
 _set_rsp:
 	mov rsp, rdi
+	ret
+
+_get_rip
+	mov rax, $
+	ret
+
+_pushAll:
+	push rax
+	ret
+
+_popAll
+	popState
 	ret

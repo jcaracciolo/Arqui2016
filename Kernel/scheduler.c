@@ -4,8 +4,11 @@
 #include "include/defs.h"
 #include "include/videoDriver.h"
 
-extern _get_rsp();
-extern _set_rsp(void * rsp);
+extern void * _get_rsp();
+extern void _set_rsp(void * rsp);
+extern void * get_rip();
+extern void _pushAll();
+extern void _popAll();
 
 static processSlot * current = NULL;
 
@@ -32,6 +35,7 @@ void addProcess(process * process) {
 		//print("despues: "); printNum(current->process->pid); print("\n");
 	}
 	print("inserted pid: "); printNum(process->pid); print(" "); printNum(current->process->pid); print("\n");
+	print("inserted stack: "); printNum(process->stack_base); print(" "); printNum(current->process->stack_base); print("\n");
 }
 
 int getCurrentPid() {
@@ -70,12 +74,28 @@ void freeProcessSlot(processSlot * slot) {
 	free(slot);
 }
 
-void schedule() {
-	//print("pid: "); printNum(current->process->pid); print("\n");
+void * next_process(int current_rsp) {
+	print("change rsp to: "); printNum(current_rsp); print("\n");
+	if (current == NULL) {
+		return current_rsp;
+	}
+	current->process->stack_pointer = current_rsp;
+	current->process->entry_point = _get_rip();
 
-	//current->process->stack_pointer = _get_rsp();
 	current = current->next;
-	//_set_rsp(current->process->stack_pointer);
+	print("new rsp to: "); printNum(current->process->stack_pointer); print("\n");
+	return current->process->stack_pointer;
+}
+
+void schedule() {
+	_pushAll();
+	print("a");
+	current->process->stack_pointer = _get_rsp();
+	current = current->next;
+	_set_rsp(current->process->stack_pointer);
+	_popAll();
+
+	//print("schedule pid: "); printNum(current->process->pid); print(" schedule stack"); printNum(current->process->stack_base); print("\n");
 }
 
 void beginScheduler() {
