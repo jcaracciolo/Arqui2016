@@ -22,8 +22,8 @@ unsigned short myMask(unsigned short n);
 int isPowerOfTwo (unsigned int x);
 size_t roundUpPower2(size_t v);
 
-#define MAXMEMORY 2048000 //in b//
-#define MINPAGE 4000 //in b//
+#define MAXMEMORY 2097152 //in b//
+#define MINPAGE 4096 //in b//
 #define MAXHEAPSIZE (MAXMEMORY/MINPAGE)*2-1
 
 
