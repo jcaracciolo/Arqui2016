@@ -5,12 +5,7 @@
 
 #include "include/buddyMemManager.h"
 
-//
-// Created by juanfra on 13/11/16.
-//
-
 #define NULL ((void*)0)
-typedef unsigned int size_t;
 
 /* Initializing heap*/
 unsigned short recursiveMark(int index);

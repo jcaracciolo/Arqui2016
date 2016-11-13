@@ -14,4 +14,6 @@ char *cpuVendor(char *result);
 void * allocatePages(int cantPages);
 void * reallocatePages(int * address, int cantPages);
 
+#define MEMBEGIN 0x10000000
+
 #endif

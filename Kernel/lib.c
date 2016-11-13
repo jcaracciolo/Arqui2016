@@ -5,7 +5,7 @@
 #define MAX_BLOCK_PAGES 512
 #define PAGE_SIZE 4*1024
 
-static char * pointer = (char*)0x10000000;
+static char * pointer = (char*)MEMBEGIN;
 static char * memory[MAX_BLOCK_PAGES];
 
 typedef struct {

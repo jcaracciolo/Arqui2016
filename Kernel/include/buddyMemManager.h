@@ -5,6 +5,8 @@
 #ifndef ARQUI2016_BUDDYMEMMANAGER_H
 #define ARQUI2016_BUDDYMEMMANAGER_H
 
+#include "lib.h"
+typedef unsigned int size_t;
 
 /* Initializing heap*/
 void initializeHeap();
@@ -21,7 +23,6 @@ size_t roundUpPower2(size_t v);
 
 #define MAXMEMORY 2048000 //in b//
 #define MINPAGE 4000 //in b//
-#define MEMBEGIN 0x1
 #define MAXHEAPSIZE (MAXMEMORY/MINPAGE)*2-1
 
 
