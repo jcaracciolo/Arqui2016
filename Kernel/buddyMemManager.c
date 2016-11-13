@@ -4,7 +4,7 @@
 
 
 #include "include/buddyMemManager.h"
-
+#include "include/lib.h"
 #define NULL ((void*)0)
 
 /* Initializing heap*/
@@ -15,7 +15,7 @@ void* addNblocks(unsigned char  n);
 void* recursiveAdd(int i , unsigned short n,size_t address,size_t innerSize);
 
 void releaseUp(int i,int level);
-void searchUp(int i,unsigned short level);
+int searchUp(int i,unsigned short level);
 
 
 /* Moving and marking the Heap */
@@ -54,9 +54,25 @@ size_t pow2(size_t n){
 
 
 void* buddyAllocate(size_t amount){
+    if(amount<=0) return NULL;
     size_t pages=roundUpPower2( amount/block );
     return addNblocks(pages);
 }
+
+void* buddyReallocate(void* address,size_t amount){
+
+    if( buddyFree(address) != -1){
+
+        void* ans = buddyAllocate(amount);
+        if(ans!=NULL && ans!=address){
+            memcpy(ans,address,amount);
+        }
+        return ans;
+    }else{
+        return NULL;
+    }
+}
+
 
 
 int lowerBound2Pow(int n){
@@ -148,34 +164,29 @@ int isInt(float f){
     return (f-(int)f == 0);
 }
 
-void buddyFree(void *address){
+int buddyFree(void* address){
     address= (void*)((char*)address -  (char*)beginning);
 
     if(!isInt((long)address/(block*1.0f))){
-        return;
+        return -1;
     } else{
         int position=((long)address)/block;
-        searchUp(heapSize/2 + 1 + position,1);
-
+        return searchUp(heapSize/2 + 1 + position,1);
     }
 
 }
 
-void searchUp(int i, unsigned short level){
-    if(i<1) return;
+int searchUp(int i, unsigned short level){
+    if(i<1) return -1;
     if(heap[i]==0){
         heap[i]=myMask(level);
         releaseUp(PARENT(i),level+1);
-
+        return 0;
     }else if(AMILEFT(i)){
-        searchUp(PARENT(i),level+1);
-
+        return searchUp(PARENT(i),level+1);
     }else{
-
-        return;
+        return -1;
     }
-
-
 }
 
 void releaseUp(int i,int level){

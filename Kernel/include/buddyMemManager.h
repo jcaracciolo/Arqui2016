@@ -13,7 +13,8 @@ void initializeHeap();
 
 /* Modifying Heap */
 void* buddyAllocate(size_t amount);
-void buddyFree(void* address);
+void* buddyReallocate(void* address,size_t amount);
+int buddyFree(void* address);
 
 /* Mark creators*/
 unsigned short myBit(unsigned short n);
