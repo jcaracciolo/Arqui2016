@@ -82,12 +82,8 @@ _change_process:
 	call next_process
 
 	mov rsp, rax
-
-	mov al, 0x20
-	out 0x20, al
-
 	popState
-	iretq
+	ret
 
 _get_rsp:
 	mov rax, rsp
