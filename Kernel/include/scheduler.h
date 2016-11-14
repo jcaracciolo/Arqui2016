@@ -11,15 +11,25 @@ struct processSlot_t{
 
 typedef struct processSlot_t processSlot;
 
-void addProcess(process * process);
+int insertProcess(void * entryPoint);
 
-void removeProcess(process * process);
+int addProcessSlot(process * process);
+
+void removeProcess(int pid);
 
 void freeProcessSlot(processSlot * slot);
 
 void schedule();
 
 void beginScheduler();
+
+int getCurrentPid();
+
+void printAllProcesses();
+
+void setForeground(int pid);
+
+int getforegroundPid();
 
 int getCurrentPid();
 

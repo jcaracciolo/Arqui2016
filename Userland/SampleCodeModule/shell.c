@@ -71,6 +71,10 @@ void addToShellBuffer(char c) {
 	}
 }
 
+void drawFractal() {	
+		drawCFractalEquilateral(150,768,768,9,readData());
+}
+
 void execute() {
 	char arr[100];
 	int number = 0;
@@ -96,38 +100,47 @@ void execute() {
 		}
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
 		clear();
-		drawCFractalEquilateral(150,768,768,9,readData());
-		sleep(1000);
+		int pid = exec(&drawFractal);
+		printf("pid del fractal: %d\n", pid);
+		int a = 999999;
+		while (a--){
+			int b = 100;
+			while(b--) {
+			}
+		}
+		printf("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa\n");
+		//sleep(1000);
+		endProcess(pid);	// <--- Esto no debe ir acá
 		clear();
 	} else if(strcmp(shellBuffer, "help") == 0) {
 		printf("%s\n", instructions);
-		int *mempos = 0;
-		int *mempos2 = 0;
-		int *mempos3 = 0;
-		int *mempos4 = 0;
-		printf("mempos: %i\n", mempos);
-		int80(18,&mempos,2,0,0,0);
-		printf("\nmempos: %i\n", mempos);
-		int80(18,&mempos,5,0,0,0);
-		printf("\nmempos: %i\n", mempos);
-		int80(18,&mempos,6,0,0,0);
-		printf("\nmempos: %i\n", mempos);
-		int80(18,&mempos,7,0,0,0);
-		printf("\nmempos: %i\n", mempos);
-		int80(18,&mempos2,2,0,0,0);
-		printf("\nmempos2: %i\n", mempos2);
-		int80(18,&mempos3,3,0,0,0);
-		printf("\nmempos3: %i\n", mempos3);
-		int80(18,&mempos3,30,0,0,0);
-		printf("\nmempos3: %i\n", mempos3);
-		int80(18,&mempos,11,0,0,0);
-		printf("\nmempos: %i\n", mempos);
-		int80(18,&mempos4,3,0,0,0);
-		printf("\nmempos4: %i\n", mempos4);
-		int80(18,&mempos4,1,0,0,0);
-		printf("\nmempos4: %i\n", mempos4);
-		int80(18,&mempos3,3,0,0,0);
-		printf("\nmempos3: %i\n", mempos3);
+		// int *mempos = 0;
+		// int *mempos2 = 0;
+		// int *mempos3 = 0;
+		// int *mempos4 = 0;
+		// printf("mempos: %i\n", mempos);
+		// int80(18,&mempos,2,0,0,0);
+		// printf("\nmempos: %i\n", mempos);
+		// int80(18,&mempos,5,0,0,0);
+		// printf("\nmempos: %i\n", mempos);
+		// int80(18,&mempos,6,0,0,0);
+		// printf("\nmempos: %i\n", mempos);
+		// int80(18,&mempos,7,0,0,0);
+		// printf("\nmempos: %i\n", mempos);
+		// int80(18,&mempos2,2,0,0,0);
+		// printf("\nmempos2: %i\n", mempos2);
+		// int80(18,&mempos3,3,0,0,0);
+		// printf("\nmempos3: %i\n", mempos3);
+		// int80(18,&mempos3,30,0,0,0);
+		// printf("\nmempos3: %i\n", mempos3);
+		// int80(18,&mempos,11,0,0,0);
+		// printf("\nmempos: %i\n", mempos);
+		// int80(18,&mempos4,3,0,0,0);
+		// printf("\nmempos4: %i\n", mempos4);
+		// int80(18,&mempos4,1,0,0,0);
+		// printf("\nmempos4: %i\n", mempos4);
+		// int80(18,&mempos3,3,0,0,0);
+		// printf("\nmempos3: %i\n", mempos3);
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		int mutex = createMutex("uno");
@@ -162,6 +175,8 @@ void execute() {
 	}else if(sscanf("echo %s",shellBuffer,arr)==1) {
 		printf(arr);
 		printf("\n");
+	} else if(strcmp(shellBuffer, "ps") == 0) {
+		ps();
 	}else {
 		printf("Command not found.\n");
 	}

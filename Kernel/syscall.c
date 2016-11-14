@@ -11,7 +11,7 @@
 #include "include/kernel.h"
 #include "include/mutex.h"
 
-#define SYSTEM_CALL_COUNT 22
+#define SYSTEM_CALL_COUNT 25
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -189,6 +189,25 @@ qword sys_releaseMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
+qword sys_exec(qword entry_point, qword pid, qword rcx, qword r8, qword r9) {
+    int * retPid = (int *) pid;
+    *retPid = insertProcess(entry_point);
+    return 0;
+}
+
+qword sys_ps(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
+    printAllProcesses();
+    return 0;
+}
+
+qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
+    if (msg == 0) {
+        // end a process
+        removeProcess(pid);
+    }
+    return 0;
+}
+
 qword sys_handleMutexLock(qword actionArg, qword mutexIDArg, qword returnArg, qword r8, qword r9) {
     lockAction_type action = (lockAction_type) actionArg;
     int * returnValue = (int *) returnArg;
@@ -231,7 +250,10 @@ void setUpSyscalls(){
 	sysCalls[18] = &sys_allocatePages;
 	sysCalls[19] = &sys_createMutex;
 	sysCalls[20] = &sys_releaseMutex;
-	sysCalls[21] = &sys_handleMutexLock;
+    sysCalls[21] = &sys_handleMutexLock;
+    sysCalls[22] = &sys_exec;
+    sysCalls[23] = &sys_ps;
+    sysCalls[24] = &sys_kill;
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);

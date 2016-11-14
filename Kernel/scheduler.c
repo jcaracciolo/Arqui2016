@@ -11,53 +11,70 @@ extern void _pushAll();
 extern void _popAll();
 
 static processSlot * current = NULL;
+static processSlot * foreground = NULL;
+static int cantProcesses = 0;
 
 
-void insertProcess(void * entryPoint) {
+int insertProcess(void * entryPoint) {
 	process * p = createProcess(entryPoint);
-	addProcess(p);
+	return addProcessSlot(p);
 }
 
-void addProcess(process * process) {
+int addProcessSlot(process * process) {
 	processSlot * slot = (processSlot *)malloc(sizeof(processSlot));
 	slot->process = process;
-	//slot->pid = process->pid;
 
 	if (current == NULL) {
-		print("== NULL\n");
 		current = slot;
+		foreground = slot;
 		current->next = current;
 	} else {
-		print("!= NULL\n");
-		//print("antes: "); printNum(current->process->pid); print("\n");
 		slot->next = current->next;
 		current->next = slot;
-		//print("despues: "); printNum(current->process->pid); print("\n");
 	}
-	print("inserted pid: "); printNum(process->pid); print(" "); printNum(current->process->pid); print("\n");
-	print("inserted stack: "); printNum(process->stack_base); print(" "); printNum(current->process->stack_base); print("\n");
+	cantProcesses++;
 
-
+	return process->pid;
 }
 
 int getCurrentPid() {
 	return current->process->pid;
 }
 
-void removeProcess(process * process) {
+int getforegroundPid() {
+	return foreground->process->pid;
+}
+
+void setForeground(int pid) {
+	int i = 0;
+	processSlot * slot = foreground;
+	for (; i < cantProcesses; i++) {
+		if (slot->process->pid == pid) {
+			// new foreground process found
+			foreground = slot;
+			return;
+		}
+	}
+	// pid does not exists
+	return;
+}
+
+void removeProcess(int pid) {
 	if (current == NULL) {
 		return;
-	} else if(equalProcesses(current->process, current->next->process) && equalProcesses(current->process, process)) {
+	} else if(equalProcesses(current->process, current->next->process) && current->process->pid == pid) {
 		// process to remove is the current and only one process in list
 		freeProcessSlot(current);
 		current = NULL;
+		foreground = NULL;
+		cantProcesses--;
 		return;
 	}
 
 	processSlot * prevSlot = current;
 	processSlot * slotToRemove = current->next;
 
-	while (!equalProcesses(slotToRemove->process, process)) {
+	while (slotToRemove->process->pid != pid) {
 		prevSlot = slotToRemove;
 		slotToRemove = slotToRemove->next;
 	}
@@ -69,6 +86,16 @@ void removeProcess(process * process) {
 
 	prevSlot->next = slotToRemove->next;
 	freeProcessSlot(slotToRemove);
+	cantProcesses--;
+}
+
+void printAllProcesses() {
+	processSlot * slot  = current;
+	int i = 0;
+	for(; i < cantProcesses; i++) {
+		print("pid: "); printNum(slot->process->pid); print("\n");
+		slot = slot->next;
+	}
 }
 
 void freeProcessSlot(processSlot * slot) {
@@ -77,6 +104,7 @@ void freeProcessSlot(processSlot * slot) {
 }
 
 void * next_process(int current_rsp) {
+	//printAllProcesses();
 
 	if (current == NULL) {
 		return current_rsp;
@@ -90,14 +118,14 @@ void * next_process(int current_rsp) {
 }
 
 void schedule() {
-	_pushAll();
-	print("a");
-	current->process->stack_pointer = _get_rsp();
-	current = current->next;
-	_set_rsp(current->process->stack_pointer);
-	_popAll();
+	current->process->state = READY;
 
-	//print("schedule pid: "); printNum(current->process->pid); print(" schedule stack"); printNum(current->process->stack_base); print("\n");
+	current = current->next;
+	while (current->process->state == BLOCKED) {
+		current = current->next;
+	}
+
+	current->process->state = RUNNING;
 }
 
 void beginScheduler() {
