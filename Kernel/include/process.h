@@ -3,7 +3,7 @@
 
 #include "lib.h"
 
-typedef enum processState_t {RUNNING, READY, BLOCKED} processState;
+typedef enum processState_t {RUNNING, READY, BLOCKED, DEAD} processState;
 
 typedef struct process_t{
 	void * entry_point;		// instruction pointer

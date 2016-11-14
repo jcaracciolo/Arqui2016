@@ -54,10 +54,28 @@ void setForeground(int pid) {
 			foreground = slot;
 			return;
 		}
+		slot = slot->next;
 	}
 	// pid does not exists
 	return;
 }
+
+void killProcess(int pid) {
+	int i = 0;
+	processSlot * slot = current;
+	for (; i < cantProcesses; i++) {
+		if (slot->process->pid == pid) {
+			// process found
+			slot->process->state = DEAD;
+			return;
+		}
+		slot = slot->next;
+	}
+	// pid does not exists
+	return;
+}
+
+
 
 void removeProcess(int pid) {
 	if (current == NULL) {
@@ -87,13 +105,16 @@ void removeProcess(int pid) {
 	prevSlot->next = slotToRemove->next;
 	freeProcessSlot(slotToRemove);
 	cantProcesses--;
+	printAllProcesses();
 }
 
 void printAllProcesses() {
+	print("current: "); printNum(current->process->pid); print("\n");
+
 	processSlot * slot  = current;
 	int i = 0;
 	for(; i < cantProcesses; i++) {
-		print("pid: "); printNum(slot->process->pid); print("\n");
+		print("pid: "); printNum(slot->process->pid); print(" state: "); printNum(slot->process->state); print("\n");
 		slot = slot->next;
 	}
 }
@@ -112,16 +133,25 @@ void * next_process(int current_rsp) {
 	current->process->stack_pointer = current_rsp;
 	//current->process->entry_point = _get_rip();
 
-	current = current->next;
+	schedule();
 
 	return current->process->stack_pointer;
 }
 
 void schedule() {
+	if (current->process->state == DEAD) {
+			print("Process found DEAD.\n");
+			removeProcess(current->process->pid);
+	}
+
 	current->process->state = READY;
 
 	current = current->next;
-	while (current->process->state == BLOCKED) {
+	while (current->process->state != READY) {
+		if (current->process->state == DEAD) {
+			print("Process found DEAD.\n");
+			removeProcess(current->process->pid);
+		} else 
 		current = current->next;
 	}
 

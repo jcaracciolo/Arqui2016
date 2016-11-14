@@ -8,6 +8,7 @@ GLOBAL _get_rip
 GLOBAL _popAll
 GLOBAL _pushAll
 GLOBAL _change_process
+GLOBAL _yield
 
 EXTERN next_process
 
@@ -89,11 +90,28 @@ cpuVendor:
 	pop rbp
 	ret
 
+_yield:
+	mov rax,rsp
+	
+	push QWORD 0
+	push QWORD 0
+	push rax
+	pushfq
+	push QWORD 0x008
+	push .ret
+
+	pushState
+
+	jmp to_next
+
+.ret:
+	ret
+
 _change_process:
-
     deleteInterr
-	mov rdi, rsp
 
+to_next:
+	mov rdi, rsp
 	call next_process
 
 	mov rsp, rax

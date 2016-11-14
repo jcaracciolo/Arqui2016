@@ -40,6 +40,11 @@ void ps() {
 	int80(23, 0, 0, 0, 0, 0);
 }
 
-void endProcess(int pid) {
-	int80(24, pid, 0, 0, 0, 0);
+void kill(int pid, int msg) {
+	int80(24, pid, msg, 0, 0, 0);
+}
+
+void leave() {
+	int80(24, 0, -1, 0, 0, 0);	// removes process from scheduler
+	int80(25, 0, 0, 0, 0, 0);	// calls next process
 }
