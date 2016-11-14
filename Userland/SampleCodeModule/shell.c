@@ -103,7 +103,6 @@ void execute() {
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
 		clear();
 		int pid = exec(&drawFractal);
-		printf("pid del fractal: %d\n", pid);
 		//sleep(1000);
 		//clear();
 	

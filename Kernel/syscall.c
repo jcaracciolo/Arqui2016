@@ -203,15 +203,12 @@ qword sys_ps(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
 }
 
 qword sys_yield(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
-    printAllProcesses();
     _yield();
-    printAllProcesses();
     return 0;
 }
 
 qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
     if (msg == 0) {
-        // end a process
         killProcess(pid);
     } else if (msg == -1) {
         killProcess(getCurrentPid());

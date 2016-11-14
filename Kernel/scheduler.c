@@ -105,12 +105,9 @@ void removeProcess(int pid) {
 	prevSlot->next = slotToRemove->next;
 	freeProcessSlot(slotToRemove);
 	cantProcesses--;
-	printAllProcesses();
 }
 
 void printAllProcesses() {
-	print("current: "); printNum(current->process->pid); print("\n");
-
 	processSlot * slot  = current;
 	int i = 0;
 	for(; i < cantProcesses; i++) {
@@ -125,13 +122,10 @@ void freeProcessSlot(processSlot * slot) {
 }
 
 void * next_process(int current_rsp) {
-	//printAllProcesses();
-
 	if (current == NULL) {
 		return current_rsp;
 	}
 	current->process->stack_pointer = current_rsp;
-	//current->process->entry_point = _get_rip();
 
 	schedule();
 
@@ -159,7 +153,5 @@ void schedule() {
 }
 
 void beginScheduler() {
-	print("current pid: "); printNum(current->process->pid); print("\n");
-
 	((int (*)(void))(current->process->entry_point))();
 }

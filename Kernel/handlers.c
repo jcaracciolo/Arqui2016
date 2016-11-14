@@ -83,7 +83,6 @@ void sleep(unsigned int time){
 }
 
 void executeSchedule() {
-	//print("Scheduling\n");
 	_change_process();
 
 }

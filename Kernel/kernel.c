@@ -38,17 +38,6 @@ void decreaseTimerTick();
 void setupEverything();
 
 
-
-/* Debug Functions */
-static int var = 0;
-void aaa() {
-	while(1) print(".");
-}
-void aaaa() {
-	while(1) ;print("o");
-}
-/* End of Debug Functions */
-
 int main()
 {
 
@@ -57,12 +46,6 @@ int main()
 
 	setupEverything();
 
-
-
-    //insertProcess(sampleCodeModuleAddress);
-    //insertProcess(&aaa);
-    //insertProcess(&aaaa);
-    //insertProcess(sampleCodeModuleAddress);
     insertProcess(sampleCodeModuleAddress);
  	beginScheduler();
 
