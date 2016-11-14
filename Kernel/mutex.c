@@ -4,12 +4,15 @@
 
 #include "include/mutex.h"
 #include "include/testAndSet.h"
+#include "include/types.h"
 
+#define MAX_MUTEXES 256
+#define MAX_MUTEX_NAME_LENGHT 16
 #define NULL  (char*)0
-static char mutexNames[256][16];
-static char mutexes[256];
-static char freeSpace[256];
-static lastIndex=0;
+static char mutexNames[MAX_MUTEXES][MAX_MUTEX_NAME_LENGHT];
+static qword mutexes[MAX_MUTEXES];
+
+static int savedMutexes=0;
 
 int strcmp(const char* str1, const char* str2) {
     while (*str1 != '\0') {
@@ -22,59 +25,75 @@ int strcmp(const char* str1, const char* str2) {
 
 void saveName(int index,char* name){
     int i;
-    for(i=0;i<15 && name!='\0';i++,name++){
+    for(i=0;i<MAX_MUTEX_NAME_LENGHT && name!='\0';i++,name++){
         mutexNames[index][i]=*name;
     }
     mutexNames[index][i]='\0';
+    savedMutexes++;
 }
+
 int whereIs(char* name){
     int i;
-    for(i=0;i<lastIndex;i++){
+    for(i=0;i<savedMutexes;i++){
         if(strcmp(name,mutexNames[i])==0)
             return i;
     }
     return -1;
 }
 
-int nextFree(){
-    int i,j;
-    for(i=lastIndex,j=0; j<256 && freeSpace[i]!=0  ; i=(i+1)%256 , j++);
-    if(freeSpace[i]==0) return i;
-    return -1;
-}
-
 int createMutex(char* name){
-    if(lastIndex<0) return -1;
+    if(savedMutexes == MAX_MUTEXES) return -1;
     if(*name=='\0') return -1;
-    if(whereIs(name) != -1) return -1;
+    int pos = whereIs(name);
+    if(pos != -1) return pos;
 
-    int pos=nextFree();
-    lastIndex=pos;
-    if(pos<0) return -1;
+    pos = savedMutexes;
     saveName(pos,name);
     mutexes[pos]=0;
-    freeSpace[pos]=1;
-
 
     return pos;
 }
 
 int releaseMutex(int mutex){
-        if(mutex<0 || mutex >=256) return -1;
-        mutexNames[mutex][0]='\0';
-        mutexes[mutex]=0;
-        freeSpace[mutex]=0;
-        if(lastIndex<0) lastIndex=mutex;
+        if(mutex<0 || mutex >= savedMutexes) return -1;
+        if(mutex == savedMutexes -1){
+            mutexNames[mutex][0] = '\0';
+            mutexes[mutex]=0;
+        } else {
+            saveName(mutex,mutexNames[savedMutexes-1]);
+            mutexes[mutex] = mutexes[savedMutexes-1];
+            mutexNames[savedMutexes-1][0] = '\0';
+            mutexes[savedMutexes-1]=0;
+        }
+
+        savedMutexes -= 1;
         return 0;
 }
 
-int waitMutex(int mutex){
-    if(mutex<0 || mutex >=256) return -1;
-            if(testAndSet(mutexes[mutex])==1){
-                return 1;
-            }else{
-                //LOCK PROCESS, WAIT FOR THIS MUTEX
-            }
-    return 0;
+// 	tries to lock the mutex, returns if the mutex is not available
+int tryLockMutex(int mutex){
+    if(mutex<0 || mutex >= savedMutexes) return -1;
+    if (testAndSet(&(mutexes[mutex]))==1) {
+        return 1;
+    }
+    else return testAndSet(mutexes[mutex]);
 }
 
+// locks the mutex, blocks if the mutex is not available
+int lockMutex(int mutex){
+    if(mutex<0 || mutex >= savedMutexes) return -1;
+    if (testAndSet(&(mutexes[mutex]))==1) {
+        return 1;
+    } else {
+        //tellSchedulerThatYouAreWaitingForThisMutex(mutex);
+        return 1;
+    }
+}
+
+
+int unlockMutex(int mutex){
+    if(mutex<0 || mutex >= savedMutexes) return -1;
+    mutexes[mutex] = 0;
+    //wakeUpProcessesThatNeedThisMutexToContinue(mutex);
+    return 1;
+}

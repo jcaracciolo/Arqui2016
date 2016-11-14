@@ -130,12 +130,28 @@ void execute() {
 		printf("\nmempos3: %i\n", mempos3);
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
-		number = createMutex("asdasd");
-		printf("number: %d",number);
+		int mutex = createMutex("uno");
+		int mutex2 = createMutex("dos");
+		printf("uno: %d",mutex);
+		printf("do2: %d",mutex2);
+
+		printf("tryLock1: %d",tryLockMutex(mutex));
+		printf("tryLock2: %d",tryLockMutex(mutex2));
+		printf("tryLock1: %d",tryLockMutex(mutex));
+		printf("unlock1: %d",unlockMutex(mutex));
+		printf("tryLock1: %d",tryLockMutex(mutex));
+		printf("tryLock2: %d",tryLockMutex(mutex2));
+
+
+
+
 
 //		swStart();
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
-		runGedit();
+		number = createMutex("sad");
+
+		printf("number: %d",number);
+//		runGedit();
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		paintLoop();
 	} else if(sscanf("paintBg %d", shellBuffer, &num) == 1) {

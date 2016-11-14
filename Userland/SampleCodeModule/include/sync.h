@@ -7,8 +7,14 @@
 
 int createMutex(char* name);
 
+int lockMutex(int mutex);
+
+int tryLockMutex(int mutex);
+
+int unlockMutex(int mutex);
+
 int releaseMutex(int mutex);
 
-int waitMutex(int mutex);
+typedef enum {LOCK, TRY_LOCK, UNLOCK} lockAction_type;
 
 #endif //ARQUI2016_SYNC_H

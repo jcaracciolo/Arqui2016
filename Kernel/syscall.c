@@ -185,14 +185,25 @@ qword sys_createMutex(qword name, qword mutex, qword rcx, qword r8, qword r9) {
 qword sys_releaseMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
     int * retVal = (int *) ret;
     int mutexCode = (int ) mutex;
-    *retVal = releaseMutex((char*) mutexCode);
+    *retVal = releaseMutex(mutexCode);
     return 0;
 }
 
-qword sys_waitMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
-    int * retVal = (int *) ret;
-    int mutexCode = (int ) mutex;
-    *retVal = waitMutex((char*) mutexCode);
+qword sys_handleMutexLock(qword actionArg, qword mutexIDArg, qword returnArg, qword r8, qword r9) {
+    lockAction_type action = (lockAction_type) actionArg;
+    int * returnValue = (int *) returnArg;
+    int mutexID = (int ) mutexIDArg;
+    switch (action){
+        case LOCK:
+            *returnValue = lockMutex(mutexID);
+            break;
+        case TRY_LOCK:
+            *returnValue = tryLockMutex(mutexID);
+            break;
+        case UNLOCK:
+            *returnValue = unlockMutex(mutexID);
+            break;
+    }
     return 0;
 }
 
@@ -220,7 +231,7 @@ void setUpSyscalls(){
 	sysCalls[18] = &sys_allocatePages;
 	sysCalls[19] = &sys_createMutex;
 	sysCalls[20] = &sys_releaseMutex;
-	sysCalls[21] = &sys_waitMutex;
+	sysCalls[21] = &sys_handleMutexLock;
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
