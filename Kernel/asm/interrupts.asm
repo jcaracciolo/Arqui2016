@@ -45,9 +45,13 @@ EXTERN printNum
 	push r13
 	push r14
 	push r15
+	push fs
+	push gs
 %endmacro
 
-%macro popState 0
+%macro	popState 0
+	pop gs
+	pop fs
 	pop r15
 	pop r14
 	pop r13
@@ -65,8 +69,8 @@ EXTERN printNum
 	pop rax
 %endmacro
 
-
 %macro irqHandlerMaster 1
+
     pushState
 
 	mov rdi, %1
@@ -78,6 +82,7 @@ EXTERN printNum
 	out 20h, al
 
     popState
+
 	iretq
 
 %endmacro

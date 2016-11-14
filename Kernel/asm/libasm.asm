@@ -51,6 +51,20 @@ EXTERN next_process
 	pop rax
 %endmacro
 
+%macro deleteInterr 0  ; fuente: RowDaBoat/Proyect Wyrm
+	pop rax
+	pop rax
+	pop rax
+	pop rax
+	pop rax
+    pop rax
+   	pop rax
+   	pop rax
+   	pop rax
+%endmacro
+
+
+
 cpuVendor:
 	push rbp
 	mov rbp, rsp
@@ -76,14 +90,21 @@ cpuVendor:
 	ret
 
 _change_process:
-	pushState
 
+    deleteInterr
 	mov rdi, rsp
+
 	call next_process
 
 	mov rsp, rax
-	popState
-	ret
+
+    ;signal pic
+    mov al, 20h
+    out 20h, al
+
+    popState
+    sti
+    iretq
 
 _get_rsp:
 	mov rax, rsp

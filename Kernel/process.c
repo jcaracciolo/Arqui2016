@@ -46,7 +46,7 @@ void freeProcess(process * process) {
 }
 
 process * createProcess(void * entryPoint) {
-	process * newProcess = (process *)malloc(sizeof(process*));
+	process * newProcess = (process *)malloc(sizeof(process));
 	newProcess->entry_point = entryPoint;
 	newProcess->stack_base = allocatePages(INIT_PROCESS_PAGES);
 	newProcess->cantPages = INIT_PROCESS_PAGES;
@@ -58,7 +58,7 @@ process * createProcess(void * entryPoint) {
 }
 
 void * fill_stack(void * entryPoint, void * stack_base) {
-	stack_frame * frame = (stack_frame *) stack_base - 1;
+	stack_frame * frame =  (stack_frame *)(stack_base - sizeof(stack_frame) -1);
 
 	frame->gs =		0x001;
 	frame->fs =		0x002;
@@ -77,6 +77,8 @@ void * fill_stack(void * entryPoint, void * stack_base) {
 	frame->rcx =	0x00F;
 	frame->rbx =	0x010;
 	frame->rax =	0x011;
+
+    //iret hook
 	frame->rip =	entryPoint;
 	frame->cs =		0x008;
 	frame->eflags = 0x202;

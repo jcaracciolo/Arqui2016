@@ -24,8 +24,11 @@ extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 
+void onlyPrints();
+void onlyPrints2();
 
-extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
+
+        extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
 
 extern int getChar();
 
@@ -41,33 +44,52 @@ int readBuffer();
 void decreaseTimerTick();
 void setupEverything();
 
-void onlyPrints() {
-	print("another process!!");
-	while(1) print(".");
-}
-
-void onlyPrints2(){
-	while(1) print("o");
-}
-
 int main()
 {
+
+    print("HOLA");
+
+
 	setupEverything();
 
- 	insertProcess(&onlyPrints);
+
+ 	//insertProcess(&onlyPrints);
  	// print("currentPID: "); printNum(getCurrentPid()); print("\n");
  	//insertProcess(&onlyPrints2);
  	// print("currentPID: "); printNum(getCurrentPid()); print("\n");
- 	// insertProcess(sampleCodeModuleAddress);
+
+
+
+    //insertProcess(sampleCodeModuleAddress);
+    insertProcess(sampleCodeModuleAddress);
  	beginScheduler();
 
  	//((EntryPoint)sampleCodeModuleAddress)();
-	while(1) {
-	}
-
 
 	return 0;
 }
+
+void onlyPrints() {
+    print("another process!!");
+    int i=0;
+    while(1){
+        if(i++%20000000 == 0) {
+            printNum(i);
+            print("\n");
+        }
+    }
+}
+
+void onlyPrints2(){
+    int i=0;
+    while(1){
+        if(i++%20000000 == 0) {
+            print("o");
+            print("\n");
+        }
+    }
+}
+
 
 void printSmt(){
 	printNum(4);
@@ -140,7 +162,7 @@ void * initializeKernelBinary()
 
 void setupEverything(){
     //Color color = {.r = 0xBF, .g = 0x0D , .b = 0x0D};
-	
+
 	Color color = {.r = 0xFF, .g = 0xFF , .b = 0x00};
 
 	setupFonts(1);
@@ -152,13 +174,13 @@ void setupEverything(){
 	setup_IDT();
 	print("  Setting up System Calls.....\n");
 	setUpSyscalls();
-	print("  Giving listeners ears.....\n");
+    print("  Activating scheduler...\n\n");
+    activateScheduler(); //MUST BE THE FIRST LISTENER
+    print("  Giving listeners ears.....\n");
 	addTimerListener(&blinkCursor,10);
 	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n");
 	decreaseTimerTick();
-	activateScheduler();
-	print("  Activating scheduler...\n\n");
-	
+
 	print(logo);
 	print("\n\n\n");
 

@@ -36,6 +36,8 @@ void addProcess(process * process) {
 	}
 	print("inserted pid: "); printNum(process->pid); print(" "); printNum(current->process->pid); print("\n");
 	print("inserted stack: "); printNum(process->stack_base); print(" "); printNum(current->process->stack_base); print("\n");
+
+
 }
 
 int getCurrentPid() {
@@ -75,15 +77,15 @@ void freeProcessSlot(processSlot * slot) {
 }
 
 void * next_process(int current_rsp) {
-	print("change rsp to: "); printNum(current_rsp); print("\n");
+
 	if (current == NULL) {
 		return current_rsp;
 	}
 	current->process->stack_pointer = current_rsp;
-	current->process->entry_point = _get_rip();
+	//current->process->entry_point = _get_rip();
 
 	current = current->next;
-	print("new rsp to: "); printNum(current->process->stack_pointer); print("\n");
+
 	return current->process->stack_pointer;
 }
 
@@ -100,5 +102,6 @@ void schedule() {
 
 void beginScheduler() {
 	print("current pid: "); printNum(current->process->pid); print("\n");
+
 	((int (*)(void))(current->process->entry_point))();
 }
