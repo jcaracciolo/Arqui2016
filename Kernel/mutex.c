@@ -2,7 +2,8 @@
 // Created by juanfra on 13/11/16.
 //
 
-#include "mutex.h"
+#include "include/mutex.h"
+#include "include/testAndSet.h"
 
 #define NULL  (char*)0
 static char mutexNames[256][16];
@@ -45,7 +46,7 @@ int nextFree(){
 int createMutex(char* name){
     if(lastIndex<0) return -1;
     if(*name=='\0') return -1;
-    if(whereIs(name)<0) return -1;
+    if(whereIs(name) != -1) return -1;
 
     int pos=nextFree();
     lastIndex=pos;
@@ -69,12 +70,11 @@ int releaseMutex(int mutex){
 
 int waitMutex(int mutex){
     if(mutex<0 || mutex >=256) return -1;
+            if(testAndSet(mutexes[mutex])==1){
+                return 1;
+            }else{
+                //LOCK PROCESS, WAIT FOR THIS MUTEX
+            }
     return 0;
-    //        if(TESTANDSET(mutexes[pos])==1){
-//            return 1;
-//        }else{
-//            //LOCK PROCESS, WAIT FOR THIS MUTEX
-//        }
-
 }
 

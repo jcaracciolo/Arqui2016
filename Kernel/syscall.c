@@ -9,8 +9,9 @@
 #include "include/syscall.h"
 #include "include/lib.h"
 #include "include/kernel.h"
+#include "include/mutex.h"
 
-#define SYSTEM_CALL_COUNT 19
+#define SYSTEM_CALL_COUNT 22
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -175,6 +176,28 @@ qword sys_getConsoleSize(qword rows, qword cols, qword rcx, qword r8, qword r9) 
     return 0;
 }
 
+qword sys_createMutex(qword name, qword mutex, qword rcx, qword r8, qword r9) {
+    int * ret = (int *) mutex;
+    *ret = createMutex((char*) name);
+    return 0;
+}
+
+qword sys_releaseMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
+    int * retVal = (int *) ret;
+    int mutexCode = (int ) mutex;
+    *retVal = releaseMutex((char*) mutexCode);
+    return 0;
+}
+
+qword sys_waitMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
+    int * retVal = (int *) ret;
+    int mutexCode = (int ) mutex;
+    *retVal = waitMutex((char*) mutexCode);
+    return 0;
+}
+
+
+
 void setUpSyscalls(){
 	sysCalls[0] = &sys_clear;
 	sysCalls[1] = &sys_allocate;
@@ -195,6 +218,9 @@ void setUpSyscalls(){
 	sysCalls[16] = &sys_changeFont;
     sysCalls[17] = &sys_getConsoleSize;
 	sysCalls[18] = &sys_allocatePages;
+	sysCalls[19] = &sys_createMutex;
+	sysCalls[20] = &sys_releaseMutex;
+	sysCalls[21] = &sys_waitMutex;
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
