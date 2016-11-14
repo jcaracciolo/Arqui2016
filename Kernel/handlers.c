@@ -19,8 +19,11 @@ IDTR idtr;			// IDTR
 
 #define MAX_LISTENERS 10
 
+extern void _change_process();
+
 static qword counter = 0;
 static int timerListeners =0;
+static int auxj=0;
 
 static timerEventT timerEvents[MAX_LISTENERS];
 static int alarmEvents[MAX_LISTENERS];
@@ -35,9 +38,10 @@ void blink(){
 }
 void timerTick(){
 	counter++;
-	for (int j = 0; j < timerListeners; j++) {
-		if(counter % alarmEvents[j]==0) timerEvents[j]();
+	for (auxj = 1; auxj < timerListeners; auxj++) {
+		if(counter % alarmEvents[auxj]==0) timerEvents[auxj]();
 	}
+    if(timerListeners>0 && counter % alarmEvents[0]==0) timerEvents[0]();
 }
 
 
@@ -79,11 +83,16 @@ void sleep(unsigned int time){
 }
 
 void executeSchedule() {
-	schedule();
+	//schedule();
+	_change_process();
+
 }
 
 void activateScheduler() {
-	addTimerListener(&executeSchedule, 10);
+
+	_cli();
+	addTimerListener(&executeSchedule, 5);
+	_sti();
 }
 
 

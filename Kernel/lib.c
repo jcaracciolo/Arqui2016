@@ -3,9 +3,9 @@
 #include "lib.h"
 
 #define MAX_BLOCK_PAGES 512
-#define PAGE_SIZE 4*1024
 
 static char * pointer = (char*)MEMBEGIN;
+static char * mallocPointer = (char*)MEMBEGIN + 100*4*1024;  // TODO: sacar y linkear con las páginas
 static char * memory[MAX_BLOCK_PAGES];
 
 typedef struct {
@@ -117,8 +117,8 @@ void * free(void * p) {
 }
 
 void * allocate(int bytes){
-	char * temp = pointer;
-	pointer += bytes;
+	char * temp = mallocPointer;
+	mallocPointer += bytes;
 	return temp;
 }
 

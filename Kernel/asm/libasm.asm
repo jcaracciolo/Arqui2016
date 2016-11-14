@@ -4,6 +4,12 @@ section .text
 
 GLOBAL _get_rsp
 GLOBAL _set_rsp
+GLOBAL _get_rip
+GLOBAL _popAll
+GLOBAL _pushAll
+GLOBAL _change_process
+
+EXTERN next_process
 
 %macro pushState 0  ; fuente: RowDaBoat/Proyect Wyrm
 	push rax
@@ -21,9 +27,13 @@ GLOBAL _set_rsp
 	push r13
 	push r14
 	push r15
+	push fs
+	push gs
 %endmacro
 
-%macro popState 0
+%macro	popState 0
+	pop gs
+	pop fs
 	pop r15
 	pop r14
 	pop r13
@@ -40,6 +50,20 @@ GLOBAL _set_rsp
 	pop rbx
 	pop rax
 %endmacro
+
+%macro deleteInterr 0  ; fuente: RowDaBoat/Proyect Wyrm
+	pop rax
+	pop rax
+	pop rax
+	pop rax
+	pop rax
+    pop rax
+   	pop rax
+   	pop rax
+   	pop rax
+%endmacro
+
+
 
 cpuVendor:
 	push rbp
@@ -65,10 +89,39 @@ cpuVendor:
 	pop rbp
 	ret
 
+_change_process:
+
+    deleteInterr
+	mov rdi, rsp
+
+	call next_process
+
+	mov rsp, rax
+
+    ;signal pic
+    mov al, 20h
+    out 20h, al
+
+    popState
+    sti
+    iretq
+
 _get_rsp:
 	mov rax, rsp
 	ret
 
 _set_rsp:
 	mov rsp, rdi
+	ret
+
+_get_rip
+	mov rax, $
+	ret
+
+_pushAll:
+	push rax
+	ret
+
+_popAll
+	popState
 	ret
