@@ -24,11 +24,7 @@ extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 
-void onlyPrints();
-void onlyPrints2();
-
-
-        extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
+extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r10, qword r8, qword r9);
 
 extern int getChar();
 
@@ -36,9 +32,6 @@ extern int getChar();
 static const uint64_t PageSize = 0x1000;
 
 typedef int (*EntryPoint)();
-
-
-
 
 int readBuffer();
 void decreaseTimerTick();
@@ -53,12 +46,6 @@ int main()
 	setupEverything();
 
 
- 	//insertProcess(&onlyPrints);
- 	// print("currentPID: "); printNum(getCurrentPid()); print("\n");
- 	//insertProcess(&onlyPrints2);
- 	// print("currentPID: "); printNum(getCurrentPid()); print("\n");
-
-
 
     //insertProcess(sampleCodeModuleAddress);
     insertProcess(sampleCodeModuleAddress);
@@ -67,36 +54,6 @@ int main()
  	//((EntryPoint)sampleCodeModuleAddress)();
 
 	return 0;
-}
-
-void onlyPrints() {
-    print("another process!!");
-    int i=0;
-    while(1){
-        if(i++%20000000 == 0) {
-            printNum(i);
-            print("\n");
-        }
-    }
-}
-
-void onlyPrints2(){
-    int i=0;
-    while(1){
-        if(i++%20000000 == 0) {
-            print("o");
-            print("\n");
-        }
-    }
-}
-
-
-void printSmt(){
-	printNum(4);
-}
-
-void printSmt2(){
-	printNum(8);
 }
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
