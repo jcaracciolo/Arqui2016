@@ -8,6 +8,7 @@
 #include "include/sw.h"
 #include "include/gedit.h"
 #include "include/paint.h"
+#include "include/sync.h"
 
 const char* instructions = " func                - print a simple message (completly useless)\n\
  echo *param*        - prints message on console\n\
@@ -72,6 +73,8 @@ void addToShellBuffer(char c) {
 
 void execute() {
 	char arr[100];
+	int number = 0;
+
 	int tz;
 	shellBuffer[shellIndex] = '\0';
 	int num;
@@ -127,7 +130,10 @@ void execute() {
 		printf("\nmempos3: %i\n", mempos3);
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
-		swStart();
+		number = createMutex("asdasd");
+		printf("number: %d",number);
+
+//		swStart();
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		runGedit();
 	} else if(strcmp(shellBuffer, "paint") == 0) {
