@@ -43,6 +43,7 @@ void ps() {
 
 void kill(int pid, int msg) {
 	int80(24, pid, msg, 0, 0, 0);
+	leave();
 }
 
 void leave() {

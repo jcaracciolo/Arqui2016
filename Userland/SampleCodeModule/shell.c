@@ -108,7 +108,7 @@ void printDate() {
 
 /* (pargs)[0] -> tz */
 void callSetTimeZone(int cargs, void ** pargs) {
-	int tz = **((int**)pargs);
+	int tz = *((int*)(pargs[1]));	// TODO revisar que funcione bien
 	printf("changin tz to %d\n", tz);
 	if(tz>=-12 && tz<=12) {
 		setTimeZone(tz);
@@ -116,6 +116,33 @@ void callSetTimeZone(int cargs, void ** pargs) {
 	} else{
 		printf("\nInput error\n");
 	}
+	leave();
+}
+
+void printInstructions() {
+		printf("%s\n", instructions);
+		leave();
+}
+
+void callRunGedit() {
+	runGedit();
+	leave();
+}
+
+void paintBg(int carg, void ** pargs) {
+	drawCSquare(0,0,768,1024,*((int*)(args[1]))); // TODO revisar que ande
+	setCursorPos(0);
+	leave();
+}
+
+void callChangeFont(int carg, void ** pargs) {
+	changeFont(*((int*)(args[1])));	// TODO revisar que ande
+	leave();
+}
+
+void callEcho(int carg, void ** pargs) {
+	printf(*((char*)(pargs[1])));	// TODO revisar que ande
+	printf("\n");
 	leave();
 }
 
@@ -128,28 +155,40 @@ void execute() {
 	int num, pidToKill, msg;
 	putc('\n');
 	if (strcmp(shellBuffer, "func") == 0) {
-		int* parg = malloc(64);
-		*parg = 98;
-		//func(1, &parg);
+		void* parg = malloc(sizeof(int));
+		*parg = "func";
 		exec(&func, 1, &parg);
 	} else if (strcmp(shellBuffer, "clear") == 0) {
-		exec(&clearScreen);
+		void* parg = malloc(sizeof(int));
+		*parg = "clear";
+		exec(&clearScreen, 1, &parg);
 	} else if(strcmp(shellBuffer, "time") == 0) {
-		exec(&printTime);
+		void* parg = malloc(sizeof(int));
+		*parg = "time";
+		exec(&printTime, 1, &parg);
 	} else if(strcmp(shellBuffer, "date") == 0) {
-		exec(&printDate);
+		void* parg = malloc(sizeof(int));
+		*parg = "date";	
+		exec(&printDate, 1, &parg);
 	} else if(sscanf("setTimeZone %d",shellBuffer,&tz)==1) {
-		exec(&callSetTimeZone, 1, &tz);
+		int * parg = malloc(sizeof(int) * 2);
+		parg[0] = "setTimeZone";
+		parg[1] = tz;
+		exec(&callSetTimeZone, 2, &tz); // TODO revisar
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
+		void* parg = malloc(sizeof(int));
+		*parg = "fractal";
 		clear();
-		int pid = exec(&drawFractal);
+		int pid = exec(&drawFractal, 1, &parg);
 
 		//sleep(1000);
 		//clear();
 	} else if(strcmp(shellBuffer, "multifractal") == 0) {
 		clear();
 		for(int i=0;i<20;i++) {
-			int pid = exec(&drawFractalc);
+			void* parg = malloc(sizeof(int));
+			*parg = "colorfractal";
+			int pid = exec(&drawFractalc, 1, &parg);
 			//TODO sleep
 			int n = 4000000;
 			while (n--);
@@ -158,32 +197,48 @@ void execute() {
 
 	
 	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill, &msg)==1){
-		printf("killing %d %d\n", pidToKill, msg);
-		kill(pidToKill, msg);
+		void* parg = malloc(sizeof(int)*2);
+		parg[0] = "kill";
+		parg[2] = pidToKill;
+		parg[3] = msg;
+		exec(&kill, 3, &parg);	// TODO revisar que funcione
 	} else if(strcmp(shellBuffer, "help") == 0) {
-		printf("%s\n", instructions);
+		void* parg = malloc(sizeof(int));
+		parg[0] = "help";
+		exec(&printInstructions, 1, &parg); // TODO revisar que funcione
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
-
-		exec(&playStarWars);
+		void* parg = malloc(sizeof(int));
+		parg[0] = "starwars";
+		exec(&playStarWars, 1, &parg);
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
-		number = createMutex("sad");
-
-		printf("number: %d",number);
-		runGedit();
+		void* parg = malloc(sizeof(int));
+		parg[0] = "gedit";
+		exec(&callRunGedit, 1, &parg);	// TODO revisar si funciona
 	} else if(strcmp(shellBuffer, "paint") == 0) {
-		paintLoop();
+		void* parg = malloc(sizeof(int));
+		parg[0] = "paint";
+		exec(&callPaintLoop, 1, &parg);	// TODO revisar que funcione
 	} else if(sscanf("paintBg %d", shellBuffer, &num) == 1) {
-			drawCSquare(0,0,768,1024,num);
-			setCursorPos(0);
+		void* parg = malloc(sizeof(int) * 2);
+		parg[0] = "paintBg";
+		parg[1] = num;
+		exec(&paintBg, 2, parg);	// TODO revisar que funcione
 	} else if(sscanf("setupFont %d", shellBuffer, &num) == 1) {
-		changeFont(num);
+		void* parg = malloc(sizeof(int) * 2);
+		parg[0] = "setupFont";
+		parg[1] = num;
+		exec(callChangeFont, 2, &parg); // TODO revisar que funcione
 	}else if(sscanf("echo %s",shellBuffer,arr)==1) {
-		printf(arr);
-		printf("\n");
+		void* parg = malloc(sizeof(int) * 2);
+		parg[0] = "echo";
+		parg[1] = arr;
+		exec(&callEcho, 2, parg);	// TODO revisar que funcione
 	} else if(strcmp(shellBuffer, "ps") == 0) {
-		exec(&ps);
+		void* parg = malloc(sizeof(int));
+		parg[0] = "ps";
+		exec(&ps, 1, parg);	// TODO revisar que funcione
 	}else {
 		printf("Command not found.\n");
 	}
