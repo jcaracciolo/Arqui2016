@@ -20,6 +20,7 @@ const char* instructions = " func                - print a simple message (compl
  setTimeZone *param* - set computer's time zone\n\
  date                - get current system date\n\
  fractal Zelda       - draws a triforce inspirated fractal\n\
+ multifractal        - multipled colored fractals in a cool animation\n\
  star wars           - little star wars animation\n\
  gedit               - simple text editor\n\
  paint               - simple keyboard controlled paint\n\
@@ -126,6 +127,7 @@ void execute() {
 			int n = 4000000;
 			while (n--);
 		}
+		//clear();
 
 	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill)==1){
 		printf("killing %d %d\n", pidToKill, msg);

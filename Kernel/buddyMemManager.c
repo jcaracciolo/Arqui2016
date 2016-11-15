@@ -66,13 +66,27 @@ void* buddyAllocatePages(uint64_t pages){
     return addNblocks(pages);
 }
 
+
+void* buddyReallocatePages(void* address,uint64_t pages){
+    if( buddyFree(address) != -1){
+
+        void* ans = buddyAllocatePages(pages);
+        if(ans!=NULL && ans!=address){
+            memcpy(ans,address,pages*MINPAGE);
+        }
+        return ans;
+    }else{
+        return NULL;
+    }
+}
+
 void* buddyReallocate(void* address,uint64_t amount){
 
     if( buddyFree(address) != -1){
 
         void* ans = buddyAllocate(amount);
         if(ans!=NULL && ans!=address){
-            //memcpy(ans,address,amount);
+            memcpy(ans,address,amount);
         }
         return ans;
     }else{

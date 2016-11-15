@@ -10,6 +10,7 @@
 #include "include/lib.h"
 #include "include/kernel.h"
 #include "include/mutex.h"
+#include "include/buddyMemManager.h"
 
 #define SYSTEM_CALL_COUNT 26
 #define SYSTEM_CALL_START_INDEX 0x80
@@ -29,15 +30,39 @@ qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
+/*--------PAGING ALLOCATION  -----------------------------------*/
 qword sys_allocatePages(qword address, qword cantPages, qword rcx, qword r8, qword r9) {
     void** ad =(void**)address;
-    if (*ad == 0) {
-        *ad = allocatePages(cantPages);
-    } else {
-        *ad = reallocatePages(*ad, cantPages);
-    }
+    *ad = buddyAllocatePages(cantPages);
     return 0;
 }
+
+qword sys_reallocatePages(qword address, qword cantPages, qword rcx, qword r8, qword r9) {
+    void** ad =(void**)address;
+    *ad = buddyReallocate(*ad,cantPages);
+    return 0;
+}
+
+qword sys_freePages(qword address, qword cantPages, qword rcx, qword r8, qword r9) {
+    buddyFree((void*)address);
+    return 0;
+}
+
+qword sys_allocateNewMemory(qword address, qword amountBytes, qword rcx, qword r8, qword r9) {
+    void** ad =(void**)address;
+    *ad = buddyAllocate(amountBytes);
+    return 0;
+}
+
+qword sys_reallocateNewMemory(qword address, qword amountBytes, qword rcx, qword r8, qword r9) {
+    void** ad =(void**)address;
+    *ad = buddyReallocate(*ad,amountBytes);
+    return 0;
+}
+
+
+//TODO fix this
+/*--------------------- MEMORY ALLOCATING ----------------------------*/
 
 qword sys_allocate(qword address, qword size, qword rcx, qword r8, qword r9) {
      void** ad =(void**)address;
@@ -48,6 +73,14 @@ qword sys_allocate(qword address, qword size, qword rcx, qword r8, qword r9) {
 qword sys_free(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     return 0;
 }
+
+qword sys_reallocate(qword address, qword size, qword rcx, qword r8, qword r9) {
+    void** ad =(void**)address;
+    *ad=allocate((int)size);
+    return 0;
+}
+
+/*------------------------------------------------------------------------*/
 
 qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9) {
 
@@ -178,6 +211,8 @@ qword sys_getConsoleSize(qword rows, qword cols, qword rcx, qword r8, qword r9) 
     return 0;
 }
 
+
+/*------------------------MUTEX ----------------------*/
 qword sys_createMutex(qword name, qword mutex, qword rcx, qword r8, qword r9) {
     int * ret = (int *) mutex;
     *ret = createMutex((char*) name);
@@ -188,31 +223,6 @@ qword sys_releaseMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
     int * retVal = (int *) ret;
     int mutexCode = (int ) mutex;
     *retVal = releaseMutex(mutexCode);
-    return 0;
-}
-
-qword sys_exec(qword entry_point, qword pid, qword rcx, qword r8, qword r9) {
-    int * retPid = (int *) pid;
-    *retPid = insertProcess(entry_point);
-    return 0;
-}
-
-qword sys_ps(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
-    printAllProcesses();
-    return 0;
-}
-
-qword sys_yield(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
-    _yield();
-    return 0;
-}
-
-qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
-    if (msg == 0) {
-        killProcess(pid);
-    } else if (msg == -1) {
-        killProcess(getCurrentPid());
-    }
     return 0;
 }
 
@@ -234,12 +244,53 @@ qword sys_handleMutexLock(qword actionArg, qword mutexIDArg, qword returnArg, qw
     return 0;
 }
 
+/*----------------------- PROCCESS --------------------------*/
 
+qword sys_exec(qword entry_point, qword pid, qword rcx, qword r8, qword r9) {
+    int * retPid = (int *) pid;
+    *retPid = insertProcess(entry_point);
+    return 0;
+}
+
+qword sys_ps(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
+    printAllProcesses();
+    return 0;
+}
+
+qword sys_yield(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
+    _yield();
+    return 0;
+}
+
+//TODO fix this
+qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
+    if (msg == 0) {
+        killProcess(pid);
+    } else if (msg == -1) {
+        killProcess(getCurrentPid());
+    }
+    return 0;
+}
+
+qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
+    killProcess(getCurrentPid());
+    return 0;
+}
+
+/*------------------------- PIPES ------------------------------------*/
+
+    //TODO these
+    //sys_openPipe
+    //sys_closePipe
+
+
+
+/*--------------------------------------------------------------------*/
 
 void setUpSyscalls(){
-	sysCalls[0] = &sys_clear;
-	sysCalls[1] = &sys_allocate;
-	sysCalls[2] = &sys_free;
+    sysCalls[0] = &sys_clear;
+    sysCalls[1] = &sys_allocate;
+    sysCalls[2] = &sys_free;
     sysCalls[3] = &sys_read;
     sysCalls[4] = &sys_write;
     sysCalls[5] = &sys_timezone;
@@ -247,22 +298,32 @@ void setUpSyscalls(){
     sysCalls[7] = &sys_date;
     sysCalls[8] = &sys_addTimerEvent;
     sysCalls[9] = &sys_removeTimerEvent;
-	sysCalls[10] = &sys_sleep;
+    sysCalls[10] = &sys_sleep;
     sysCalls[11] = &sys_pixel;
     sysCalls[12] = &sys_line;
     sysCalls[13] = &sys_square;
-	sysCalls[14] = &sys_cursor;
-	sysCalls[15] = &sys_readData;
-	sysCalls[16] = &sys_changeFont;
+    sysCalls[14] = &sys_cursor;
+    sysCalls[15] = &sys_readData;
+    sysCalls[16] = &sys_changeFont;
     sysCalls[17] = &sys_getConsoleSize;
-	sysCalls[18] = &sys_allocatePages;
-	sysCalls[19] = &sys_createMutex;
-	sysCalls[20] = &sys_releaseMutex;
+    sysCalls[18] = &sys_allocatePages;
+    sysCalls[19] = &sys_createMutex;
+    sysCalls[20] = &sys_releaseMutex;
     sysCalls[21] = &sys_handleMutexLock;
     sysCalls[22] = &sys_exec;
     sysCalls[23] = &sys_ps;
     sysCalls[24] = &sys_kill;
     sysCalls[25] = &sys_yield;
+
+    //sys_freePages
+    //sys_allocateNewMemory
+    //sys_reallocateNewMemory
+    //sys_reallocatePages
+    //sys_reallocate
+    //sys_leave
+    //sys_openPipe
+    //sys_closePipe
+
 
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);

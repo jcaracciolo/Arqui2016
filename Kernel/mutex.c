@@ -6,10 +6,8 @@
 #include "include/testAndSet.h"
 #include "include/types.h"
 
-#define MAX_MUTEXES 256
-#define MAX_MUTEX_NAME_LENGHT 16
 #define NULL  (char*)0
-static char mutexNames[MAX_MUTEXES][MAX_MUTEX_NAME_LENGHT];
+static char mutexNames[MAX_MUTEXES][MAX_MUTEX_NAME_LENGHT+1];
 static qword mutexes[MAX_MUTEXES];
 
 static int savedMutexes=0;

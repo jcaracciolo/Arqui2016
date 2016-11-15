@@ -15,4 +15,8 @@ int unlockMutex(int mutex);
 
 int releaseMutex(int mutex);
 
+
+#define MAX_MUTEXES 256
+#define MAX_MUTEX_NAME_LENGHT 15
+
 #endif //ARQUI2016_MUTEX_H

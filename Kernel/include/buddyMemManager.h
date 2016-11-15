@@ -11,8 +11,9 @@
 void initializeHeap();
 
 /* Modifying Heap */
-void* buddyAllocate(uint64_t amount);
 void* buddyAllocatePages(uint64_t pages);
+void* buddyReallocatePages(void* address,uint64_t pages);
+void* buddyAllocate(uint64_t amount);
 void* buddyReallocate(void* address,uint64_t amount);
 int buddyFree(void* address);
 
