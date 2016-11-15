@@ -10,7 +10,7 @@ struct processSlot_t{
 
 typedef struct processSlot_t processSlot;
 
-int insertProcess(void * entryPoint);
+int insertProcess(void * entryPoint, int cargs, void ** pargs);
 
 int addProcessSlot(process * process);
 
@@ -31,5 +31,7 @@ void setForeground(int pid);
 int getforegroundPid();
 
 int getCurrentPid();
+
+void changeProcessState(int pid, processState state);
 
 #endif

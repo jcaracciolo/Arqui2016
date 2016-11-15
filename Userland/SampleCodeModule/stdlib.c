@@ -30,14 +30,16 @@ void setConsoleSize() {
 	int80(17,&ROWS,&COLS,0,0,0);
 }
 
-int exec(void * entry_point) {
+int exec(void * entry_point, int cargs, void ** pargs) {
+	printf("exec: %d", **((int**)pargs));
 	int pid;
-	int80(22, entry_point, &pid, 0, 0, 0);
+	int80(22, entry_point, &pid, cargs, pargs, 0);
 	return pid;
 }
 
 void ps() {
 	int80(23, 0, 0, 0, 0, 0);
+	leave();
 }
 
 void kill(int pid, int msg) {

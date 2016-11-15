@@ -6,5 +6,6 @@
 
 //void printFrame();
 void swStart();
+void playStarWars();
 
 #endif

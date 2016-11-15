@@ -88,6 +88,11 @@ void drawFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion){
 
 }
 
+void drawFractal() {	
+	drawCFractalEquilateral(150,768,768,9,readData());
+	leave();
+}
+
 void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size, uint32 recursion, qword color){
 	if(recursion==0) return;
 

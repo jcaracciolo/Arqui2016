@@ -29,7 +29,10 @@ void printFrame(){
 
 }
 
-
+void playStarWars() {
+    swStart();
+    leave();
+}
 
 void swStart(){
     finished = false;
@@ -39,7 +42,7 @@ void swStart(){
     lastFrame = 6533;
     addTimer(&printFrame,2);
     while (!finished){
-        if(getc() != -1) finished = true;
+     //   if(getc() != -1) finished = true;
     }
     removeTimer(&printFrame);
     clear();

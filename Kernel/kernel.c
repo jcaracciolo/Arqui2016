@@ -46,7 +46,7 @@ int main()
 
 	setupEverything();
 
-    insertProcess(sampleCodeModuleAddress);
+    insertProcess(sampleCodeModuleAddress, 0, NULL);
  	beginScheduler();
 
  	//((EntryPoint)sampleCodeModuleAddress)();

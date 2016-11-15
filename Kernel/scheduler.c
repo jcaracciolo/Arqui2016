@@ -15,8 +15,8 @@ static processSlot * foreground = NULL;
 static int cantProcesses = 0;
 
 
-int insertProcess(void * entryPoint) {
-	process * p = createProcess(entryPoint);
+int insertProcess(void * entryPoint, int cargs, void ** pargs) {
+	process * p = createProcess(entryPoint, (int)cargs, (void **)pargs);
 	return addProcessSlot(p);
 }
 
@@ -60,13 +60,13 @@ void setForeground(int pid) {
 	return;
 }
 
-void killProcess(int pid) {
+void changeProcessState(int pid, processState state) {
 	int i = 0;
 	processSlot * slot = current;
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
 			// process found
-			slot->process->state = DEAD;
+			slot->process->state = state;
 			return;
 		}
 		slot = slot->next;

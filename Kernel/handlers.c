@@ -90,7 +90,7 @@ void executeSchedule() {
 void activateScheduler() {
 
 	_cli();
-	addTimerListener(&executeSchedule, 2);
+	addTimerListener(&executeSchedule, 1);
 	_sti();
 }
 

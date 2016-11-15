@@ -3,7 +3,7 @@
 
 #include "lib.h"
 
-typedef enum processState_t {RUNNING, READY, BLOCKED, DEAD} processState;
+typedef enum processState_t {RUNNING, READY, BLOCKED, DEAD, SLEEPING} processState;
 
 typedef struct process_t{
 	void * entry_point;		// instruction pointer
@@ -24,7 +24,7 @@ int equalProcesses(process * p1, process * p2);
 void freeProcess(process * process);
 
 
-void * fill_stack(void * entryPoint, void * stack_base);
-process * createProcess(void * entryPoint);
+void * fill_stack(void * entryPoint, void * stack_base, int cargs, void ** pargs);
+process * createProcess(void * entryPoint, int cargs, void ** pargs);
 
 #endif

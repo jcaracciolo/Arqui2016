@@ -1,5 +1,5 @@
-#ifndef STRINGS_H
-#define STRINGS_H
+#ifndef STDLIB_H
+#define STDLIB_H
 
 int isAlpha(char c);
 
@@ -16,5 +16,7 @@ void setConsoleSize();
 void leave();
 
 void kill(int pid, int msg);
+
+void ps();
 
 #endif
