@@ -31,7 +31,6 @@ void setConsoleSize() {
 }
 
 int exec(void * entry_point, int cargs, void ** pargs) {
-	printf("exec: %d", **((int**)pargs));
 	int pid;
 	int80(22, entry_point, &pid, cargs, pargs, 0);
 	return pid;

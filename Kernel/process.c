@@ -61,9 +61,6 @@ process * createProcess(void * entryPoint, int cargs, void ** pargs) {
 void * fill_stack(void * entryPoint, void * stack_base, int cargs, void ** pargs) {
 	stack_frame * frame =  (stack_frame *)(stack_base - sizeof(stack_frame) -1);
 
-	if(pargs != 0) {
-    	print("process_exec: "); printNum(**((int**)pargs)); print("\n");
-	}
 	frame->gs =		0x001;
 	frame->fs =		0x002;
 	frame->r15 =	0x003;

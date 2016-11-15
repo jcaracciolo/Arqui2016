@@ -75,7 +75,7 @@ void addToShellBuffer(char c) {
 }
 
 void func(int cargs, void ** pargs) {
-	printf("execute! cargs:%d arg:%d\n", cargs, *((int*)pargs));
+	printf("execute! cargs:%d arg:%s\n", cargs, *((int*)pargs));
 	leave();
 }
 
@@ -98,8 +98,8 @@ void execute() {
 	int num, pidToKill, msg;
 	putc('\n');
 	if (strcmp(shellBuffer, "func") == 0) {
-		int* parg = malloc(64);
-		*parg = 5;
+		char* parg = malloc(64);
+		*parg = 98;
 		//func(1, &parg);
 		exec(&func, 1, &parg);
 	} else if (strcmp(shellBuffer, "clear") == 0) {
