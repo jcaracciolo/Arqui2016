@@ -17,8 +17,8 @@ void * allocatePages(int cantPages);
 void * reallocatePages(int * address, int cantPages);
 
 #define MEMBEGIN 0x10000000
-#define MAXMEMORY 128*1024*1024 //in b//
-#define MINPAGE 4*1024 //in b//
+#define MAXMEMORY (128*1024*1024) //in b//
+#define MINPAGE (4*1024) //in b//
 
 
 #endif

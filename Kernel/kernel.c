@@ -16,6 +16,8 @@
 #include "include/graphicsDriver.h"
 #include "include/getTime.h"
 #include "include/logo.h"
+#include "include/buddyMemManager.h"
+
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -130,9 +132,11 @@ void setupEverything(){
 	print("  Setting up System Calls.....\n");
 	setUpSyscalls();
     print("  Activating scheduler...\n\n");
-    activateScheduler(); //MUST BE THE FIRST LISTENER
+    //activateScheduler(); //MUST BE THE FIRST LISTENER
+	print("  Initializing super fast memory allocation system.....\n");
+	initializeHeap();
     print("  Giving listeners ears.....\n");
-	addTimerListener(&blinkCursor,10);
+	addTimerListener(&blinkCursor,750);
 	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n");
 	decreaseTimerTick();
 

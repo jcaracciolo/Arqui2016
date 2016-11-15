@@ -11,6 +11,8 @@
 #include "include/sync.h"
 #include "include/philosophers.h"
 
+int rand=1;
+
 const char* instructions = " func                - print a simple message (completly useless)\n\
  echo *param*        - prints message on console\n\
  clear               - clears the screen\n\
@@ -75,6 +77,15 @@ void addToShellBuffer(char c) {
 
 void drawFractal() {	
 	drawCFractalEquilateral(150,768,768,9,readData());
+
+	leave();
+}
+
+void drawFractalc() {
+
+	rand=rand*3+getSeconds()*500;
+	drawCFractalEquilateral(150,768,768,9,rand);
+
 	leave();
 }
 
@@ -104,9 +115,18 @@ void execute() {
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
 		clear();
 		int pid = exec(&drawFractal);
+
 		//sleep(1000);
 		//clear();
-	
+	} else if(strcmp(shellBuffer, "multifractal") == 0) {
+		clear();
+		for(int i=0;i<20;i++){
+			int pid = exec(&drawFractalc);
+			//TODO sleep
+			int n=4000000;
+			while(n--);
+		}
+
 	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill)==1){
 		printf("killing %d %d\n", pidToKill, msg);
 		kill(pidToKill, msg);

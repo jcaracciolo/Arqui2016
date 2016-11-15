@@ -6,21 +6,22 @@
 #define ARQUI2016_BUDDYMEMMANAGER_H
 
 #include "lib.h"
-typedef unsigned int size_t;
 
 /* Initializing heap*/
 void initializeHeap();
 
 /* Modifying Heap */
-void* buddyAllocate(size_t amount);
-void* buddyReallocate(void* address,size_t amount);
+void* buddyAllocate(uint64_t amount);
+void* buddyAllocatePages(uint64_t pages);
+void* buddyReallocate(void* address,uint64_t amount);
 int buddyFree(void* address);
 
 /* Mark creators*/
-unsigned short myBit(unsigned short n);
-unsigned short myMask(unsigned short n);
-int isPowerOfTwo (unsigned int x);
-size_t roundUpPower2(size_t v);
+uint16_t myBit(uint16_t n);
+uint16_t myMask(uint16_t n);
+int isPowerOfTwo (uint64_t x);
+uint64_t roundUpPower2(uint64_t v);
+
 
 #define MAXHEAPSIZE (MAXMEMORY/MINPAGE)*2-1
 

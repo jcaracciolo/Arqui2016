@@ -1,7 +1,9 @@
 #include "include/process.h"
 #include "include/lib.h"
+#include "include/buddyMemManager.h"
+#include "include/videoDriver.h"
 
-#define INIT_PROCESS_PAGES 5
+#define INIT_PROCESS_PAGES 4
 
 static uint64_t nextPID = 1;
 
@@ -42,13 +44,13 @@ int equalProcesses(process * p1, process * p2) {
 
 
 void freeProcess(process * process) {
-	free(process);
+	buddyFree(process->stack_base);
 }
 
 process * createProcess(void * entryPoint) {
 	process * newProcess = (process *)malloc(sizeof(process));
 	newProcess->entry_point = entryPoint;
-	newProcess->stack_base = allocatePages(INIT_PROCESS_PAGES);
+	newProcess->stack_base = buddyAllocatePages(INIT_PROCESS_PAGES);
 	newProcess->cantPages = INIT_PROCESS_PAGES;
 	newProcess->stack_pointer = fill_stack(entryPoint, newProcess->stack_base + newProcess->cantPages * PAGE_SIZE);
 	newProcess->pid = nextPID++;

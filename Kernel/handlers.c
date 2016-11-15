@@ -38,10 +38,10 @@ void blink(){
 }
 void timerTick(){
 	counter++;
-	for (auxj = 1; auxj < timerListeners; auxj++) {
+	for (auxj = 0; auxj < timerListeners; auxj++) {
 		if(counter % alarmEvents[auxj]==0) timerEvents[auxj]();
 	}
-    if(timerListeners>0 && counter % alarmEvents[0]==0) timerEvents[0]();
+	executeSchedule();
 }
 
 
