@@ -9,6 +9,7 @@
 #include "include/gedit.h"
 #include "include/paint.h"
 #include "include/sync.h"
+#include "include/philosophers.h"
 
 const char* instructions = " func                - print a simple message (completly useless)\n\
  echo *param*        - prints message on console\n\
@@ -130,22 +131,7 @@ void execute() {
 		printf("\nmempos3: %i\n", mempos3);
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
-		int mutex = createMutex("uno");
-		int mutex2 = createMutex("dos");
-		printf("uno: %d",mutex);
-		printf("do2: %d",mutex2);
-
-		printf("tryLock1: %d",tryLockMutex(mutex));
-		printf("tryLock2: %d",tryLockMutex(mutex2));
-		printf("tryLock1: %d",tryLockMutex(mutex));
-		printf("unlock1: %d",unlockMutex(mutex));
-		printf("tryLock1: %d",tryLockMutex(mutex));
-		printf("tryLock2: %d",tryLockMutex(mutex2));
-
-
-
-
-
+    philosphers();
 //		swStart();
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		number = createMutex("sad");
@@ -175,6 +161,3 @@ void cleanBuffer() {
 	}
 	shellIndex = 0;
 }
-
-
-
