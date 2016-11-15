@@ -47,12 +47,12 @@ void freeProcess(process * process) {
 	buddyFree(process->stack_base);
 }
 
-process * createProcess(void * entryPoint) {
+process * createProcess(void * entryPoint, int cargs, void ** pargs) {
 	process * newProcess = (process *)malloc(sizeof(process));
 	newProcess->entry_point = entryPoint;
 	newProcess->stack_base = buddyAllocatePages(INIT_PROCESS_PAGES);
 	newProcess->cantPages = INIT_PROCESS_PAGES;
-	newProcess->stack_pointer = fill_stack(entryPoint, newProcess->stack_base + newProcess->cantPages * PAGE_SIZE);
+	newProcess->stack_pointer = fill_stack(entryPoint, newProcess->stack_base + newProcess->cantPages * PAGE_SIZE, cargs, pargs);
 	newProcess->pid = nextPID++;
 	newProcess->state = READY;
 
@@ -60,7 +60,7 @@ process * createProcess(void * entryPoint) {
 
 }
 
-void * fill_stack(void * entryPoint, void * stack_base) {
+void * fill_stack(void * entryPoint, void * stack_base, int cargs, void ** pargs) {
 	stack_frame * frame =  (stack_frame *)(stack_base - sizeof(stack_frame) -1);
 
 	frame->gs =		0x001;
@@ -73,8 +73,8 @@ void * fill_stack(void * entryPoint, void * stack_base) {
 	frame->r10 =	0x008;
 	frame->r9 =		0x009;
 	frame->r8 =		0x00A;
-	frame->rsi =	0x00B;
-	frame->rdi =	0x00C;
+	frame->rsi =	pargs;
+	frame->rdi =	cargs;
 	frame->rbp =	0x00D;
 	frame->rdx =	0x00E;
 	frame->rcx =	0x00F;

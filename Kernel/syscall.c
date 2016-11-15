@@ -11,6 +11,7 @@
 #include "include/kernel.h"
 #include "include/mutex.h"
 #include "include/buddyMemManager.h"
+#include "include/process.h"
 
 #define SYSTEM_CALL_COUNT 26
 #define SYSTEM_CALL_START_INDEX 0x80
@@ -226,6 +227,7 @@ qword sys_releaseMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
+
 qword sys_handleMutexLock(qword actionArg, qword mutexIDArg, qword returnArg, qword r8, qword r9) {
     lockAction_type action = (lockAction_type) actionArg;
     int * returnValue = (int *) returnArg;
@@ -246,9 +248,9 @@ qword sys_handleMutexLock(qword actionArg, qword mutexIDArg, qword returnArg, qw
 
 /*----------------------- PROCCESS --------------------------*/
 
-qword sys_exec(qword entry_point, qword pid, qword rcx, qword r8, qword r9) {
+qword sys_exec(qword entry_point, qword pid, qword cargs, qword pargs, qword r9) {
     int * retPid = (int *) pid;
-    *retPid = insertProcess(entry_point);
+    *retPid = insertProcess((void *)entry_point, (int)cargs, (void **)pargs);
     return 0;
 }
 
@@ -264,16 +266,24 @@ qword sys_yield(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
 
 //TODO fix this
 qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
-    if (msg == 0) {
-        killProcess(pid);
-    } else if (msg == -1) {
-        killProcess(getCurrentPid());
+    switch(msg) {
+        case -1:
+            // kill current process
+            changeProcessState(getCurrentPid(), DEAD);
+            break;
+        case 0:
+            // kill custom process
+            changeProcessState(pid, DEAD);
+            break;
+        case 1:
+            // sleep custom process
+            changeProcessState(pid, SLEEPING);
     }
     return 0;
 }
 
 qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
-    killProcess(getCurrentPid());
+    changeProcessState(getCurrentPid(), DEAD);
     return 0;
 }
 

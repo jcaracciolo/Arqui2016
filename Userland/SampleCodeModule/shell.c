@@ -2,7 +2,6 @@
 #include "types.h"
 #include "include/stdio.h"
 #include "include/strings.h"
-#include "include/stdlib.h"
 #include "include/stdvid.h"
 #include "include/stdtime.h"
 #include "include/sw.h"
@@ -10,6 +9,7 @@
 #include "include/paint.h"
 #include "include/sync.h"
 #include "include/philosophers.h"
+#include "include/stdlib.h"
 
 int rand=1;
 
@@ -26,7 +26,8 @@ const char* instructions = " func                - print a simple message (compl
  paint               - simple keyboard controlled paint\n\
  paintBg *param*     - paint the console background (only once)\n\
  setupFont *param*   - setup font to write\n\
- kill *pid* *msg*	 - send a message to a process";
+ ps                  - list all processes\n\
+ kill *pid* *msg*	- send a message to a process";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
@@ -61,6 +62,7 @@ void initShell() {
 void clearScreen() {
 	clear();
 	shellIndex = 0;
+	leave();
 }
 
 void removeKey() {
@@ -86,7 +88,34 @@ void drawFractalc() {
 
 	rand+=rand*3^getSeconds()*500;
 	drawCFractalEquilateral(150,768,768,9,rand);
+	leave();
+}
 
+void func(int cargs, void ** pargs) {
+	printf("execute! cargs:%d arg:%s\n", cargs, *((int*)pargs));
+	leave();
+}
+
+void printTime() {	
+	printf("%d:%d\n", getHours(), getMinutes());
+	leave();
+}
+
+void printDate() {
+	printf("%d/%d/%d\n", getDay(), getMonth(), getYear());
+	leave();
+}
+
+/* (pargs)[0] -> tz */
+void callSetTimeZone(int cargs, void ** pargs) {
+	int tz = **((int**)pargs);
+	printf("changin tz to %d\n", tz);
+	if(tz>=-12 && tz<=12) {
+		setTimeZone(tz);
+		printf("\nTime set correctly to GTM %d \n",tz);
+	} else{
+		printf("\nInput error\n");
+	}
 	leave();
 }
 
@@ -99,20 +128,18 @@ void execute() {
 	int num, pidToKill, msg;
 	putc('\n');
 	if (strcmp(shellBuffer, "func") == 0) {
-		printf("execute!\n");
+		int* parg = malloc(64);
+		*parg = 98;
+		//func(1, &parg);
+		exec(&func, 1, &parg);
 	} else if (strcmp(shellBuffer, "clear") == 0) {
-		clearScreen();
+		exec(&clearScreen);
 	} else if(strcmp(shellBuffer, "time") == 0) {
-		printf("%d:%d\n", getHours(), getMinutes());
+		exec(&printTime);
 	} else if(strcmp(shellBuffer, "date") == 0) {
-		printf("%d/%d/%d\n", getDay(), getMonth(), getYear());
+		exec(&printDate);
 	} else if(sscanf("setTimeZone %d",shellBuffer,&tz)==1) {
-		if(tz>=-12 && tz<=12) {
-			setTimeZone(tz);
-			printf("\nTime set correctly to GTM %d \n",tz);
-		} else{
-			printf("\nInput error\n");
-		}
+		exec(&callSetTimeZone, 1, &tz);
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
 		clear();
 		int pid = exec(&drawFractal);
@@ -129,20 +156,22 @@ void execute() {
 		}
 		//clear();
 
-	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill)==1){
+	
+	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill, &msg)==1){
 		printf("killing %d %d\n", pidToKill, msg);
 		kill(pidToKill, msg);
 	} else if(strcmp(shellBuffer, "help") == 0) {
 		printf("%s\n", instructions);
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
-    philosphers();
-//		swStart();
+
+		exec(&playStarWars);
+
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		number = createMutex("sad");
 
 		printf("number: %d",number);
-//		runGedit();
+		runGedit();
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		paintLoop();
 	} else if(sscanf("paintBg %d", shellBuffer, &num) == 1) {
@@ -154,7 +183,7 @@ void execute() {
 		printf(arr);
 		printf("\n");
 	} else if(strcmp(shellBuffer, "ps") == 0) {
-		ps();
+		exec(&ps);
 	}else {
 		printf("Command not found.\n");
 	}

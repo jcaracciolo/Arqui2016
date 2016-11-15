@@ -7,8 +7,14 @@
 #include "include/types.h"
 
 #define NULL  (char*)0
-static char mutexNames[MAX_MUTEXES][MAX_MUTEX_NAME_LENGHT+1];
-static qword mutexes[MAX_MUTEXES];
+
+typedef struct {
+    char mutexName[MAX_MUTEX_NAME_LENGHT+1];
+    qword mutex=0;
+    int mutexQueue[MAX_MUTEX_QUEUE_SIZE+1];
+}mutex_t;
+
+static mutex_t mutexes[MAX_MUTEXES];
 
 static int savedMutexes=0;
 
@@ -80,18 +86,42 @@ int tryLockMutex(int mutex){
 // locks the mutex, blocks if the mutex is not available
 int lockMutex(int mutex){
     if(mutex<0 || mutex >= savedMutexes) return -1;
-    if (testAndSet(&(mutexes[mutex]))==1) {
-        return 1;
-    } else {
-        //tellSchedulerThatYouAreWaitingForThisMutex(mutex);
-        return 1;
+    int schedulerMutex = createMutex("schedulerMutex");
+    
+
+    if(!tryLock(schedulerMutex)){
+        print("THIS SHOULD NOT BE HAPPENING (schedulerMutex SET TO 1)");
+        int a=1/0;
     }
+    
+
+    if (testAndSet(&(mutexes[mutex]))!=1) {
+        //add to queue this PID
+        // set this PID to blocked
+        
+    }
+    unlockMutex(schedulerMutex);
+    return 1;
 }
 
 
 int unlockMutex(int mutex){
     if(mutex<0 || mutex >= savedMutexes) return -1;
+    int schedulerMutex = createMutex("schedulerMutex");
+    
+
+    if(!tryLock(schedulerMutex)){
+        print("THIS SHOULD NOT BE HAPPENING (schedulerMutex SET TO 1)");
+        int a=1/0;
+    }
+
+
     mutexes[mutex] = 0;
-    //wakeUpProcessesThatNeedThisMutexToContinue(mutex);
+
+    //pop first pid in queue
+    //set to not blocked
+
+    unlockMutex(schedulerMutex);
     return 1;
 }
+
