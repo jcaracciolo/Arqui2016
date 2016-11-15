@@ -45,7 +45,7 @@ int createMutex(char* name){
     if(savedMutexes == MAX_MUTEXES) return -1;
     if(*name=='\0') return -1;
     int pos = whereIs(name);
-    if(pos != -1) return pos;
+    if(pos != -1) return -1;
 
     pos = savedMutexes;
     saveName(pos,name);

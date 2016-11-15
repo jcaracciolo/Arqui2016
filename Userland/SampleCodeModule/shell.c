@@ -83,7 +83,7 @@ void drawFractal() {
 
 void drawFractalc() {
 
-	rand=rand*3+getSeconds()*500;
+	rand+=rand*3^getSeconds()*500;
 	drawCFractalEquilateral(150,768,768,9,rand);
 
 	leave();
@@ -120,11 +120,11 @@ void execute() {
 		//clear();
 	} else if(strcmp(shellBuffer, "multifractal") == 0) {
 		clear();
-		for(int i=0;i<20;i++){
+		for(int i=0;i<20;i++) {
 			int pid = exec(&drawFractalc);
 			//TODO sleep
-			int n=4000000;
-			while(n--);
+			int n = 4000000;
+			while (n--);
 		}
 
 	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill)==1){
