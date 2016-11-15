@@ -51,7 +51,7 @@ EXTERN next_process
 	pop rax
 %endmacro
 
-%macro deleteInterr 0  ; fuente: RowDaBoat/Proyect Wyrm
+%macro deleteInterr 0
 	pop rax
 	pop rax
 	pop rax

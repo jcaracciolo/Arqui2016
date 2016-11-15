@@ -5,7 +5,7 @@
 #define MAX_BLOCK_PAGES 512
 
 static char * pointer = (char*)MEMBEGIN;
-static char * mallocPointer = (char*)MEMBEGIN + 100*4*1024;  // TODO: sacar y linkear con las páginas
+static char * mallocPointer = (char*)MEMBEGIN + MAXMEMORY;
 static char * memory[MAX_BLOCK_PAGES];
 
 typedef struct {
