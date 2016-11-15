@@ -92,7 +92,7 @@ cpuVendor:
 
 _yield:
 	mov rax,rsp
-	
+
 	push QWORD 0
 	push QWORD 0
 	push rax
@@ -132,7 +132,7 @@ _set_rsp:
 	mov rsp, rdi
 	ret
 
-_get_rip
+_get_rip:
 	mov rax, $
 	ret
 
@@ -140,6 +140,6 @@ _pushAll:
 	push rax
 	ret
 
-_popAll
+_popAll:
 	popState
 	ret

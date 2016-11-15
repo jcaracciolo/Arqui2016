@@ -16,14 +16,10 @@
 #define SYSTEM_CALL_COUNT 26
 #define SYSTEM_CALL_START_INDEX 0x80
 
-extern void _yield();
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
 static sys sysCalls[SYSTEM_CALL_COUNT];
-/**
-  *
- */
 
 qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     clearScreen();
@@ -216,7 +212,7 @@ qword sys_getConsoleSize(qword rows, qword cols, qword rcx, qword r8, qword r9) 
 /*------------------------MUTEX ----------------------*/
 qword sys_createMutex(qword name, qword mutex, qword rcx, qword r8, qword r9) {
     int * ret = (int *) mutex;
-    *ret = createMutex((char*) name);
+    *ret = getMutex((char*) name);
     return 0;
 }
 
@@ -228,21 +224,17 @@ qword sys_releaseMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
 }
 
 
-qword sys_handleMutexLock(qword actionArg, qword mutexIDArg, qword returnArg, qword r8, qword r9) {
-    lockAction_type action = (lockAction_type) actionArg;
-    int * returnValue = (int *) returnArg;
-    int mutexID = (int ) mutexIDArg;
-    switch (action){
-        case LOCK:
-            *returnValue = lockMutex(mutexID);
-            break;
-        case TRY_LOCK:
-            *returnValue = tryLockMutex(mutexID);
-            break;
-        case UNLOCK:
-            *returnValue = unlockMutex(mutexID);
-            break;
-    }
+qword sys_tryLock(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
+    int * retVal = (int *) ret;
+    int mutexCode = (int ) mutex;
+    *retVal = lockMutex(mutexCode);
+    return 0;
+}
+
+qword sys_unLock(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
+    int * retVal = (int *) ret;
+    int mutexCode = (int ) mutex;
+    *retVal = unlockMutex(mutexCode);
     return 0;
 }
 
@@ -319,7 +311,7 @@ void setUpSyscalls(){
     sysCalls[18] = &sys_allocatePages;
     sysCalls[19] = &sys_createMutex;
     sysCalls[20] = &sys_releaseMutex;
-    sysCalls[21] = &sys_handleMutexLock;
+    sysCalls[21] = NULL;
     sysCalls[22] = &sys_exec;
     sysCalls[23] = &sys_ps;
     sysCalls[24] = &sys_kill;

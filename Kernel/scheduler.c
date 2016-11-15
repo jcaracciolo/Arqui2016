@@ -22,6 +22,7 @@ int insertProcess(void * entryPoint, int cargs, void ** pargs) {
 }
 
 int addProcessSlot(process * process) {
+
 	processSlot * slot = (processSlot *)malloc(sizeof(processSlot));
 	slot->process = process;
 
@@ -123,15 +124,12 @@ void freeProcessSlot(processSlot * slot) {
 }
 
 void * next_process(int current_rsp) {
-	int mutex = createMutex("schedulerMutex");
-	int lock = tryLock(mutex);
-	if (current == NULL || !lock) {
+	if (current == NULL || tryScheduler()) {
 		return current_rsp;
 	}
 	current->process->stack_pointer = current_rsp;
 
 	schedule();
-	unlockMutex(mutex);
 	return current->process->stack_pointer;
 }
 
@@ -148,8 +146,12 @@ void schedule() {
 		if (current->process->state == DEAD) {
 			print("Process found DEAD.\n");
 			removeProcess(current->process->pid);
-		} else 
-		current = current->next;
+		} else if (current->process->state == BLOCKED) {
+			print("Process found Blocked.\n");
+		}else{
+
+				current = current->next;
+			}
 	}
 
 	current->process->state = RUNNING;

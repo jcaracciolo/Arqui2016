@@ -5,18 +5,18 @@
 #ifndef ARQUI2016_MUTEX_H
 #define ARQUI2016_MUTEX_H
 
-int createMutex(char* name);
-
+int getMutex(char* name);
+int releaseMutex(char* name);
 int lockMutex(int mutex);
-
-int tryLockMutex(int mutex);
-
 int unlockMutex(int mutex);
 
-int releaseMutex(int mutex);
-
+int tryScheduler();
+void lockScheduler();
+void unlockScheduler();
 
 #define MAX_MUTEXES 256
 #define MAX_MUTEX_NAME_LENGHT 15
+#define MAX_MUTEX_QUEUE_SIZE 30
+#define MAX_MUTEX_PIDS 30
 
 #endif //ARQUI2016_MUTEX_H

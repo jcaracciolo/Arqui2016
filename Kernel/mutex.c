@@ -5,18 +5,26 @@
 #include "include/mutex.h"
 #include "include/testAndSet.h"
 #include "include/types.h"
+#include "include/scheduler.h"
+#include "include/process.h"
 
 #define NULL  (char*)0
 
+
 typedef struct {
-    char mutexName[MAX_MUTEX_NAME_LENGHT+1];
-    qword mutex=0;
-    int mutexQueue[MAX_MUTEX_QUEUE_SIZE+1];
+    char name[MAX_MUTEX_NAME_LENGHT+1];
+    int queue[MAX_MUTEX_QUEUE_SIZE];
+    int usingPids[MAX_MUTEX_PIDS];
+    qword mutex;
+    qword waiting;
+    qword using;
+    int lastIndex;
+    int firstIndex;
 }mutex_t;
 
 static mutex_t mutexes[MAX_MUTEXES];
-
 static int savedMutexes=0;
+static qword schedulerMutex=0;
 
 int strcmp(const char* str1, const char* str2) {
     while (*str1 != '\0') {
@@ -28,100 +36,171 @@ int strcmp(const char* str1, const char* str2) {
 }
 
 void saveName(int index,char* name){
+    if(index<0 || index>=MAX_MUTEX_NAME_LENGHT) return;
     int i;
     for(i=0;i<MAX_MUTEX_NAME_LENGHT && name!='\0';i++,name++){
-        mutexNames[index][i]=*name;
+        mutexes[index].name[i]=*name;
     }
-    mutexNames[index][i]='\0';
+    mutexes[index].name[i]='\0';
     savedMutexes++;
 }
 
 int whereIs(char* name){
+    if(*name=='\0') return -1;
     int i;
-    for(i=0;i<savedMutexes;i++){
-        if(strcmp(name,mutexNames[i])==0)
+    for(i=0;i<MAX_MUTEXES;i++){
+        if(strcmp(name,mutexes[i].name)==0)
             return i;
     }
     return -1;
 }
 
-int createMutex(char* name){
+int amIUsing(int index){
+
+    if(index<0 || index>=MAX_MUTEX_NAME_LENGHT || mutexes[index].name[0]=='\0') return -1;
+
+    int myPid=getCurrentPid();
+    for(int i=0;i<mutexes[index].using;i++){
+        if(myPid==mutexes[index].usingPids[i]){
+            return i;
+        }
+    }
+    return -1;
+}
+
+/*gets or Creates a mutex with the given Name*/
+int getMutex(char* name){
+    lockScheduler();
+
     if(savedMutexes == MAX_MUTEXES) return -1;
     if(*name=='\0') return -1;
+
     int pos = whereIs(name);
-    if(pos != -1) return -1;
 
-    pos = savedMutexes;
-    saveName(pos,name);
-    mutexes[pos]=0;
+    if(pos==-1){
+        /* Not Found */
+        pos= nextfree();
+        if(pos!=-1) {
+            /* There is Place */
+            mutex_t m=mutexes[pos];
+            saveName(pos,name);
+            m.mutex=0;
 
+            m.usingPids[0]=getCurrentPid();
+            m.using=1;
+
+            m.waiting=0;
+            m.lastIndex=0;
+            m.firstIndex=0;
+
+            savedMutexes++;
+
+        }
+    }else if(amIUsing(pos) == -1){
+
+        if(mutexes[pos].using==MAX_MUTEX_PIDS){
+            /*No More Place*/
+            unlockScheduler();
+            return -1;
+        }
+
+
+        /* Not Using it */
+        mutexes[pos].usingPids[mutexes[pos].using]=getCurrentPid();
+        mutexes[pos].using +=1;
+    }
+
+    unlockScheduler();
     return pos;
 }
 
-int releaseMutex(int mutex){
-        if(mutex<0 || mutex >= savedMutexes) return -1;
-        if(mutex == savedMutexes -1){
-            mutexNames[mutex][0] = '\0';
-            mutexes[mutex]=0;
-        } else {
-            saveName(mutex,mutexNames[savedMutexes-1]);
-            mutexes[mutex] = mutexes[savedMutexes-1];
-            mutexNames[savedMutexes-1][0] = '\0';
-            mutexes[savedMutexes-1]=0;
-        }
-
-        savedMutexes -= 1;
-        return 0;
+int nextfree(){
+    if(savedMutexes == MAX_MUTEXES) return -1;
+    int i;
+    for(i=0;i<MAX_MUTEXES;i++){
+        if(mutexes[i].name[0]=='\0')
+            return i;
+    }
+    return -1;
 }
 
-// 	tries to lock the mutex, returns if the mutex is not available
-int tryLockMutex(int mutex){
-    if(mutex<0 || mutex >= savedMutexes) return -1;
-    if (testAndSet(&(mutexes[mutex]))==1) {
-        return 1;
+/* release a mutex if it exists*/
+int releaseMutex(char* name){
+    lockScheduler();
+    int pos=whereIs(name);
+    if(pos!=-1){
+        mutex_t m=mutexes[pos];
+        if(m.using>1){
+            int myPos=amIUsing(pos);
+            m.usingPids[myPos]=-1;
+            m.using-=1;
+        }else{
+            mutexes[pos].name[0]='\0';
+            mutexes[pos].mutex=1;
+            savedMutexes-- ;
+        }
     }
-    else return testAndSet(mutexes[mutex]);
+    unlockScheduler();
+
+    return 0;
 }
 
 // locks the mutex, blocks if the mutex is not available
 int lockMutex(int mutex){
-    if(mutex<0 || mutex >= savedMutexes) return -1;
-    int schedulerMutex = createMutex("schedulerMutex");
-    
+    if(mutex<0 || mutex >= savedMutexes || mutexes[mutex].name[0]=='\0') return -1;
 
-    if(!tryLock(schedulerMutex)){
-        print("THIS SHOULD NOT BE HAPPENING (schedulerMutex SET TO 1)");
-        int a=1/0;
-    }
-    
+    lockScheduler();
 
-    if (testAndSet(&(mutexes[mutex]))!=1) {
-        //add to queue this PID
-        // set this PID to blocked
-        
+    if (! testAndSet(&(mutexes[mutex].mutex)) ) {
+        mutex_t m=mutexes[mutex];
+        if(m.waiting<MAX_MUTEX_QUEUE_SIZE){
+
+            int myPid=getCurrentPid();
+            m.waiting+=1;
+            m.queue[m.lastIndex] = myPid;
+            m.lastIndex = (m.lastIndex+1)%MAX_MUTEX_QUEUE_SIZE;
+            changeProcessState(myPid,BLOCKED);
+            unlockScheduler();
+            _yield();
+        }
     }
-    unlockMutex(schedulerMutex);
+
+    unlockScheduler();
     return 1;
 }
 
 
 int unlockMutex(int mutex){
-    if(mutex<0 || mutex >= savedMutexes) return -1;
-    int schedulerMutex = createMutex("schedulerMutex");
-    
+    if(mutex<0 || mutex >= savedMutexes || mutexes[mutex].name[0]=='\0') return -1;
 
-    if(!tryLock(schedulerMutex)){
-        print("THIS SHOULD NOT BE HAPPENING (schedulerMutex SET TO 1)");
-        int a=1/0;
+    lockScheduler();
+
+    mutex_t m=mutexes[mutex];
+
+    if(m.waiting>0){
+        m.waiting-=1;
+        changeProcessState(m.queue[m.firstIndex],READY);
+        m.firstIndex=(m.firstIndex+1)%MAX_MUTEX_QUEUE_SIZE;
     }
+    m.mutex=0;
 
-
-    mutexes[mutex] = 0;
-
-    //pop first pid in queue
-    //set to not blocked
-
-    unlockMutex(schedulerMutex);
+    unlockScheduler();
     return 1;
 }
 
+
+void lockScheduler(){
+    //TODO remove this and put just =1
+    if(!testAndSet(&schedulerMutex)){
+        print("THIS SHOULD NOT BE HAPPENING (schedulerMutex SET TO 1)");
+        int a=1/0;
+    }
+}
+
+void unlockScheduler(){
+    schedulerMutex=0;
+}
+
+int tryScheduler(){
+    return schedulerMutex;
+}
