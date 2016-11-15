@@ -37,6 +37,7 @@ int readBuffer();
 void decreaseTimerTick();
 void setupEverything();
 
+
 int main()
 {
 
@@ -45,9 +46,6 @@ int main()
 
 	setupEverything();
 
-
-
-    //insertProcess(sampleCodeModuleAddress);
     insertProcess(sampleCodeModuleAddress);
  	beginScheduler();
 

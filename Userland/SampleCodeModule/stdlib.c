@@ -29,3 +29,22 @@ void  free(){ return;}
 void setConsoleSize() {
 	int80(17,&ROWS,&COLS,0,0,0);
 }
+
+int exec(void * entry_point) {
+	int pid;
+	int80(22, entry_point, &pid, 0, 0, 0);
+	return pid;
+}
+
+void ps() {
+	int80(23, 0, 0, 0, 0, 0);
+}
+
+void kill(int pid, int msg) {
+	int80(24, pid, msg, 0, 0, 0);
+}
+
+void leave() {
+	int80(24, 0, -1, 0, 0, 0);	// removes process from scheduler
+	int80(25, 0, 0, 0, 0, 0);	// calls next process
+}

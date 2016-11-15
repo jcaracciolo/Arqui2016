@@ -13,4 +13,8 @@ int readData();
 
 void setConsoleSize();
 
+void leave();
+
+void kill(int pid, int msg);
+
 #endif

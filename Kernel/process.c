@@ -37,7 +37,7 @@ typedef struct {
 } stack_frame;
 
 int equalProcesses(process * p1, process * p2) {
-	return p1->pid - p2->pid;
+	return p1->pid == p2->pid;
 }
 
 
@@ -52,6 +52,7 @@ process * createProcess(void * entryPoint) {
 	newProcess->cantPages = INIT_PROCESS_PAGES;
 	newProcess->stack_pointer = fill_stack(entryPoint, newProcess->stack_base + newProcess->cantPages * PAGE_SIZE);
 	newProcess->pid = nextPID++;
+	newProcess->state = READY;
 
 	return newProcess;
 

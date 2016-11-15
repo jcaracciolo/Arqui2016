@@ -6,20 +6,29 @@
 struct processSlot_t{
 	process * process;
 	struct processSlot_t * next;
-	int a;	// Do not remove, if it isn't here the struct does not work well (why??)
 };
 
 typedef struct processSlot_t processSlot;
 
-void addProcess(process * process);
+int insertProcess(void * entryPoint);
 
-void removeProcess(process * process);
+int addProcessSlot(process * process);
+
+void removeProcess(int pid);
 
 void freeProcessSlot(processSlot * slot);
 
 void schedule();
 
 void beginScheduler();
+
+int getCurrentPid();
+
+void printAllProcesses();
+
+void setForeground(int pid);
+
+int getforegroundPid();
 
 int getCurrentPid();
 

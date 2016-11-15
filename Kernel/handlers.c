@@ -83,7 +83,6 @@ void sleep(unsigned int time){
 }
 
 void executeSchedule() {
-	//schedule();
 	_change_process();
 
 }
@@ -91,7 +90,7 @@ void executeSchedule() {
 void activateScheduler() {
 
 	_cli();
-	addTimerListener(&executeSchedule, 5);
+	addTimerListener(&executeSchedule, 2);
 	_sti();
 }
 

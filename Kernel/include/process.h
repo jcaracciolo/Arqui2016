@@ -3,12 +3,15 @@
 
 #include "lib.h"
 
+typedef enum processState_t {RUNNING, READY, BLOCKED, DEAD} processState;
+
 typedef struct process_t{
 	void * entry_point;		// instruction pointer
 	void * stack_base;		// beggining of stack's pages
 	void * stack_pointer;	// relative to stack_base
 
 	uint64_t cantPages;
+	processState state;
 
 	uint64_t pid;
 	uint64_t ppid;
