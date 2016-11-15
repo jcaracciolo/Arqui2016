@@ -74,7 +74,7 @@ void * fill_stack(void * entryPoint, void * stack_base, int cargs, void ** pargs
 	frame->r10 =	0x008;
 	frame->r9 =		0x009;
 	frame->r8 =		0x00A;
-	frame->rsi =	*pargs;
+	frame->rsi =	pargs;
 	frame->rdi =	cargs;
 	frame->rbp =	0x00D;
 	frame->rdx =	0x00E;
