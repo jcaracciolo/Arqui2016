@@ -133,23 +133,23 @@ void execute() {
 		//func(1, &parg);
 		exec(&func, 1, &parg);
 	} else if (strcmp(shellBuffer, "clear") == 0) {
-		exec(&clearScreen);
+		exec(&clearScreen,0, (void**) 0);
 	} else if(strcmp(shellBuffer, "time") == 0) {
-		exec(&printTime);
+		exec(&printTime,0, (void**) 0);
 	} else if(strcmp(shellBuffer, "date") == 0) {
-		exec(&printDate);
+		exec(&printDate,0, (void**) 0);
 	} else if(sscanf("setTimeZone %d",shellBuffer,&tz)==1) {
 		exec(&callSetTimeZone, 1, &tz);
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
 		clear();
-		int pid = exec(&drawFractal);
+		int pid = exec(&drawFractal,0, (void**) 0);
 
 		//sleep(1000);
 		//clear();
 	} else if(strcmp(shellBuffer, "multifractal") == 0) {
 		clear();
 		for(int i=0;i<20;i++) {
-			int pid = exec(&drawFractalc);
+			int pid = exec(&drawFractalc,0, (void**) 0);
 			//TODO sleep
 			int n = 4000000;
 			while (n--);
@@ -165,7 +165,9 @@ void execute() {
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 
-		exec(&playStarWars);
+		exec(&playStarWars,0, (void**) 0);
+	} else if(strcmp(shellBuffer, "philo") == 0) {
+        philosphers();
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		number = createMutex("sad");
@@ -183,7 +185,7 @@ void execute() {
 		printf(arr);
 		printf("\n");
 	} else if(strcmp(shellBuffer, "ps") == 0) {
-		exec(&ps);
+		exec(&ps,0, (void**) 0);
 	}else {
 		printf("Command not found.\n");
 	}

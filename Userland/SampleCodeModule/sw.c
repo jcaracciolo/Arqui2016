@@ -2,6 +2,7 @@
 // Created by julian on 6/16/16.
 //
 #include "include/stdio.h"
+#include "include/stdlib.h"
 #include "include/sw_movie.h"
 #include "include/stdvid.h"
 #include "include/stdtime.h"
@@ -9,6 +10,8 @@
 static int lastFrame;
 static int frameIndex =0;
 static boolean finished = false;
+
+void swStart();
 
 
 void printFrame(){
