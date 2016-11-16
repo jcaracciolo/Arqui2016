@@ -199,7 +199,6 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"date";	
 		exec(&printDate, 1, parg);
-
 	} else if(sscanf("setTimeZone %d",shellBuffer,&tz)==1) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"setTimeZone";
@@ -211,7 +210,6 @@ void execute() {
 		parg[0] = (void*)"fractal";
 		clear();
 		int pid = exec(&drawFractal, 1, parg);
-
 		//sleep(1000);
 		//clear();
 
@@ -244,6 +242,8 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"starwars";
 		exec(&playStarWars, 1, parg);
+	} else if(strcmp(shellBuffer, "philo") == 0) {
+        philosphers();
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));

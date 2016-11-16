@@ -107,3 +107,39 @@ void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size, uint32 recursion, q
 	drawCFractalEquilateral(x+size/4,y-h/2,size/2,recursion-1,color);
 }
 
+//https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+void drawCEmptyCircle(int x, int y, int radius, qword color) {
+	int deltax = radius;
+	int deltay = 0;
+	int err = 0;
+
+	while (deltax >= deltay)
+	{
+		drawCPixel(x + deltax, y + deltay, color);
+		drawCPixel(x + deltay, y + deltax, color);
+		drawCPixel(x - deltay, y + deltax, color);
+		drawCPixel(x - deltax, y + deltay, color);
+		drawCPixel(x - deltax, y - deltay, color);
+		drawCPixel(x - deltay, y - deltax, color);
+		drawCPixel(x + deltay, y - deltax, color);
+		drawCPixel(x + deltax, y - deltay, color);
+
+		deltay += 1;
+		err += 1 + 2*deltay;
+		if (2*(err-deltax) + 1 > 0)
+		{
+			deltax -= 1;
+			err += 1 - 2*deltax;
+		}
+	}
+}
+void drawCFullCircle(int x, int y, int radius, qword color) {
+	int i;
+	for(i=0; i< radius; i +=1){
+		drawCEmptyCircle(x,y,i,color);
+		drawCEmptyCircle(x-1,y-1,i,color);
+		drawCEmptyCircle(x+1,y+1,i,color);
+		drawCEmptyCircle(x+1,y-1,i,color);
+		drawCEmptyCircle(x-1,y+1,i,color);
+	}
+}

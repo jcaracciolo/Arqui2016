@@ -18,4 +18,7 @@ char* readInt(char* string, int* num);
 int scanf(const char* format,...);
 
 int sscanf(const char* format, const char* str, ...);
+
+void changeFont(int n);
+
 #endif

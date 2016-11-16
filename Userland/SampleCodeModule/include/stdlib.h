@@ -19,4 +19,6 @@ void kill(int pid, int msg);
 
 void ps();
 
+int exec(void * entry_point, int cargs, void ** pargs);
+
 #endif

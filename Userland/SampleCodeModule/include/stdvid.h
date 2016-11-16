@@ -9,6 +9,7 @@
 
 
 
+
 void clear();
 void setColor(qword color);
 void drawCLine(int x1, int y1, int x2, int y2, qword color);
@@ -26,4 +27,7 @@ void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size,uint32 recursion,qwo
 void setCursorPos(int pos);
 int getCursorPos();
 void drawFractal();
+void drawCEmptyCircle(int x, int y, int radius, qword color);
+void drawCFullCircle(int x, int y, int radius, qword color);
+
 #endif

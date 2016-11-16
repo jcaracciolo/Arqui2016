@@ -310,13 +310,12 @@ void setUpSyscalls(){
     sysCalls[16] = &sys_changeFont;
     sysCalls[17] = &sys_getConsoleSize;
 
-
-
     sysCalls[18] = &sys_allocatePages;
     sysCalls[19] = &sys_freePages;
     sysCalls[20] = &sys_reallocatePages;
     sysCalls[21] = &sys_allocateNewMemory;
     sysCalls[22] = &sys_reallocateNewMemory;
+
     sysCalls[23] = &sys_createMutex;
     sysCalls[24] = &sys_releaseMutex;
     sysCalls[25] = &sys_tryLock;

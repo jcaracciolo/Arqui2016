@@ -1,4 +1,6 @@
 #ifndef PHILOSOPHERS_H
 #define PHILOSOPHERS_H
-int philosphers();
+void philosphers();
+void philosophize();
+
 #endif
