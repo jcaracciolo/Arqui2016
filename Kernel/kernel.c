@@ -48,7 +48,9 @@ int main()
 
 	setupEverything();
 
-    insertProcess(sampleCodeModuleAddress, 0, NULL);
+	void ** pargs= (void**)malloc(sizeof(void*));
+	pargs[0] = (void*)"shell";
+    insertProcess(sampleCodeModuleAddress, 1, pargs);
  	beginScheduler();
 
  	//((EntryPoint)sampleCodeModuleAddress)();

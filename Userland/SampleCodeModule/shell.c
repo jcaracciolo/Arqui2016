@@ -67,8 +67,8 @@ void clearScreen() {
 
 void removeKey() {
 	if (shellIndex != 0) {
-		shellIndex--;
-		putc('\b');
+		shellIndex--
+;		putc('\b');
 	}
 }
 
@@ -91,8 +91,8 @@ void drawFractalc() {
 	leave();
 }
 
-void func(int cargs, void ** pargs) {
-	printf("execute! cargs:%d arg:%s\n", cargs, *((int*)pargs));
+void func() {
+	printf("execute!");
 	leave();
 }
 
@@ -106,10 +106,9 @@ void printDate() {
 	leave();
 }
 
-/* (pargs)[0] -> tz */
+/* pargs[1] -> tz */
 void callSetTimeZone(int cargs, void ** pargs) {
-	int tz = **((int**)pargs);
-	printf("changin tz to %d\n", tz);
+	int tz = pargs[1];
 	if(tz>=-12 && tz<=12) {
 		setTimeZone(tz);
 		printf("\nTime set correctly to GTM %d \n",tz);
@@ -119,37 +118,109 @@ void callSetTimeZone(int cargs, void ** pargs) {
 	leave();
 }
 
+void printInstructions() {
+		printf("%s\n", instructions);
+		leave();
+}
+
+void callRunGedit() {
+	runGedit();
+	leave();
+}
+
+void callPaintLoop() {
+	paintLoop();
+	leave();
+}
+
+/*
+ *	parg[0]: process description
+ *	parg[1]: color
+ */
+void paintBg(int carg, void ** pargs) {
+	drawCSquare(0,0,768,1024, pargs[1]);
+	setCursorPos(0);
+	leave();
+}
+
+/*
+ *	parg[0]: process description
+ *	parg[1]: font id
+ */
+void callChangeFont(int carg, void ** pargs) {
+	changeFont(pargs[1]);
+	leave();
+}
+
+/*
+ *	parg[0]: process description
+ *	parg[1]: msg
+ */
+void callEcho(int carg, void ** pargs) {
+	printf(pargs[1]);
+	printf("\n");
+	leave();
+}
+
+/*
+ *	pargs[0]: process description
+ *	pargs[1]: pid
+ *	pargs[2]: msg
+ */
+void callKill(int cargs, void ** pargs) {
+	kill(pargs[1], pargs[2]);
+	leave();
+}
+
 void execute() {
 	char arr[100];
 	int number = 0;
 
 	int tz;
 	shellBuffer[shellIndex] = '\0';
-	int num, pidToKill, msg;
+	int num, pidToKill, msg = 0;
 	putc('\n');
 	if (strcmp(shellBuffer, "func") == 0) {
-		int* parg = malloc(64);
-		*parg = 98;
-		//func(1, &parg);
-		exec(&func, 1, &parg);
+		void** parg = (void**)malloc(sizeof(void*) * 2);
+		parg[0] = (void*)"func";
+		exec(&func, 2, parg);
+
 	} else if (strcmp(shellBuffer, "clear") == 0) {
-		exec(&clearScreen);
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"clear";
+		exec(&clearScreen, 1, parg);
+
 	} else if(strcmp(shellBuffer, "time") == 0) {
-		exec(&printTime);
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"time";
+		exec(&printTime, 1, parg);
+
 	} else if(strcmp(shellBuffer, "date") == 0) {
-		exec(&printDate);
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"date";	
+		exec(&printDate, 1, parg);
+
 	} else if(sscanf("setTimeZone %d",shellBuffer,&tz)==1) {
-		exec(&callSetTimeZone, 1, &tz);
+		void** parg = (void**)malloc(sizeof(void*) * 2);
+		parg[0] = (void*)"setTimeZone";
+		parg[1] = (void*)tz;
+		exec(&callSetTimeZone, 2, parg);
+
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"fractal";
 		clear();
-		int pid = exec(&drawFractal);
+		int pid = exec(&drawFractal, 1, parg);
 
 		//sleep(1000);
 		//clear();
+
 	} else if(strcmp(shellBuffer, "multifractal") == 0) {
 		clear();
-		for(int i=0;i<20;i++) {
-			int pid = exec(&drawFractalc);
+		for(int i=0;i<8;i++) {
+			void** parg = (void**)malloc(sizeof(void*));
+			parg[0] = (void*)"colorfractal";
+			int pid = exec(&drawFractalc, 1, parg);
 			//TODO sleep
 			int n = 4000000;
 			while (n--);
@@ -158,32 +229,54 @@ void execute() {
 
 	
 	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill, &msg)==1){
-		printf("killing %d %d\n", pidToKill, msg);
-		kill(pidToKill, msg);
+		void** parg = (void**)malloc(sizeof(void*) * 3);
+		parg[0] = (void*)"kill";
+		parg[1] = (void*)pidToKill;
+		parg[2] = (void*)msg;
+		exec(&callKill, 3, parg);
+
 	} else if(strcmp(shellBuffer, "help") == 0) {
-		printf("%s\n", instructions);
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"help";
+		exec(&printInstructions, 1, parg);
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
-
-		exec(&playStarWars);
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"starwars";
+		exec(&playStarWars, 1, parg);
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
-		number = createMutex("sad");
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"gedit";
+		exec(&callRunGedit, 1, parg);
 
-		printf("number: %d",number);
-		runGedit();
 	} else if(strcmp(shellBuffer, "paint") == 0) {
-		paintLoop();
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"paint";
+		exec(&callPaintLoop, 1, parg);
+
 	} else if(sscanf("paintBg %d", shellBuffer, &num) == 1) {
-			drawCSquare(0,0,768,1024,num);
-			setCursorPos(0);
+		void** parg = (void**)malloc(sizeof(void*) * 2);
+		parg[0] = (void*)"paintBg";
+		parg[1] = (void*)num;
+		exec(&paintBg, 2, parg);
+
 	} else if(sscanf("setupFont %d", shellBuffer, &num) == 1) {
-		changeFont(num);
+		void** parg = (void**)malloc(sizeof(void*) * 2);
+		parg[0] = (void*)"setupFont";
+		parg[1] = (void*)num;
+		exec(callChangeFont, 2, parg);
+
 	}else if(sscanf("echo %s",shellBuffer,arr)==1) {
-		printf(arr);
-		printf("\n");
+		void** parg = (void**)malloc(sizeof(void*) * 2);
+		parg[0] = (void*)"echo";
+		parg[1] = (void*)arr;
+		exec(&callEcho, 2, parg);
+
 	} else if(strcmp(shellBuffer, "ps") == 0) {
-		exec(&ps);
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"ps";
+		exec(&ps, 1, parg);
 	}else {
 		printf("Command not found.\n");
 	}

@@ -4,6 +4,7 @@
 #include "lib.h"
 
 typedef enum processState_t {RUNNING, READY, BLOCKED, DEAD, SLEEPING} processState;
+static char* stateDescription[5] = {"running", "ready", "blocked", "dead", "sleeping"};
 
 typedef struct process_t{
 	void * entry_point;		// instruction pointer
@@ -14,7 +15,7 @@ typedef struct process_t{
 	processState state;
 
 	uint64_t pid;
-	uint64_t ppid;
+	char * descr;
 } process;
 
 

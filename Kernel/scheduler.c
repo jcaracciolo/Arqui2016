@@ -128,7 +128,7 @@ void printAllProcesses() {
 	processSlot * slot  = current;
 	int i = 0;
 	for(; i < cantProcesses; i++) {
-		print("pid: "); printNum(slot->process->pid); print(" state: "); printNum(slot->process->state); print("\n");
+		print(slot->process->descr); print(" pid: "); printNum(slot->process->pid); print(" "); print(stateDescription[slot->process->state]); print("\n");
 		slot = slot->next;
 	}
 	unlockScheduler();
@@ -167,7 +167,6 @@ void schedule() {
 		} else if (current->process->state == BLOCKED) {
 			print("Process found Blocked.\n");
 		}else{
-
 				current = current->next;
 			}
 	}
