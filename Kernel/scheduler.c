@@ -145,10 +145,11 @@ void * next_process(int current_rsp) {
 	if (current == NULL || tryScheduler()) {
 		return current_rsp;
 	}
-	lockScheduler();
+	//lockScheduler();
 	current->process->stack_pointer = current_rsp;
 
 	schedule();
+    //unlockScheduler();
 	return current->process->stack_pointer;
 }
 
