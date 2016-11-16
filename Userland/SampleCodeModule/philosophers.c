@@ -34,9 +34,10 @@ void philosphers(){
         drawPhilosopher(i, i%3);
     }
     int a = createMutex("asda");
-    lockMutex(a);
-    unlockMutex(a);
-    lockMutex(a);
+    printf("try to lock a mutex(this should be 1): %d\n", lockMutex(a));
+    printf("try to unlock a mutex(this should be 1): %d\n", unlockMutex(a));
+    printf("try to lock a mutex(this should be 1): %d\n", lockMutex(a));
+    printf("try to lock a mutex(this should be 0): %d\n", lockMutex(a));
 //  addPhilosopher();
 //  addPhilosopher();
 }
@@ -63,11 +64,13 @@ void philosophize(){
         switch (status){
             case THINKING:
                 printf("Philo %d is thinking",id);
+                drawPhilosopher(id,THINKING);
                 n = 4000;
                 while (n--);
                 status = HUNGRY;
             break;
             case HUNGRY:
+                drawPhilosopher(id,HUNGRY);
                 if(philAmount >1){
                     printf("Philo %d is HUNGRY",id);
                     left = leftFrom(id);
@@ -87,6 +90,7 @@ void philosophize(){
                 }
                 break;
             case EATING:
+                drawPhilosopher(id,EATING);
                 printf("Philo %d is eating",id);
                 n = 2500;
                 while (n--);
