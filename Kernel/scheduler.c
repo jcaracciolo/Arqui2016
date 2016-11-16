@@ -89,7 +89,6 @@ void changeProcessState(int pid, processState state) {
 
 
 void removeProcess(int pid) {
-	lockScheduler();
 	if (current == NULL) {
 
 		unlockScheduler();
@@ -122,7 +121,6 @@ void removeProcess(int pid) {
 	freeProcessSlot(slotToRemove);
 	cantProcesses--;
 
-	unlockScheduler();
 }
 
 void printAllProcesses() {
@@ -145,11 +143,11 @@ void * next_process(int current_rsp) {
 	if (current == NULL || tryScheduler()) {
 		return current_rsp;
 	}
-	//lockScheduler();
+	lockScheduler();
 	current->process->stack_pointer = current_rsp;
 
 	schedule();
-    //unlockScheduler();
+    unlockScheduler();
 	return current->process->stack_pointer;
 }
 
