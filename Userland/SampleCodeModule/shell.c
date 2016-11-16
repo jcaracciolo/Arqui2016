@@ -251,7 +251,7 @@ void execute() {
 		exec(&playStarWars, 1, parg);
 
 	} else if(strcmp(shellBuffer, "philo") == 0) {
-        exec(&philosphers,0,NILL
+        exec(&philosphers,0,0);
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
