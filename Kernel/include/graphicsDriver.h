@@ -80,6 +80,7 @@ void _drawStraightLine(uint32 x, uint32 y, uint32 length);
 void _drawVerticalLine(uint32 x, uint32 y, uint32 length);
 void _drawLine(uint32 x1, uint32 y1, uint32 x2, uint32 y2);
 void _drawCLine(uint32 x1, uint32 y1, uint32 x2, uint32 y2, Color c);
+//void _drawCCircle(uint32 x1, uint32 y1, uint32 radius, Color c);
 
 
 #endif //GRAPHICSDRIVER_H
