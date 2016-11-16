@@ -7,7 +7,7 @@
 #include "include/types.h"
 #include "include/scheduler.h"
 #include "include/process.h"
-
+#include "include/videoDriver.h"
 #define NULL  (char*)0
 
 
@@ -28,29 +28,39 @@ static qword schedulerMutex=0;
 
 int strcmp(const char* str1, const char* str2) {
     while (*str1 != '\0') {
-        if (*str1 - *str2) return *str1 - *str2;
+        if (*str1 - *str2){
+            return *str1 - *str2;
+        }
         str1++; str2++;
     }
-    if (*str2 == '\0') return 0;
+    if (*str2 == '\0'){
+        return 0;
+    }
     return -1;
+}
+
+void initializeMutex(){
+    for(int i=0;i<MAX_MUTEXES;i++){
+        mutexes[i].name[0]=='\0';
+    }
 }
 
 void saveName(int index,char* name){
     if(index<0 || index>=MAX_MUTEX_NAME_LENGHT) return;
     int i;
-    for(i=0;i<MAX_MUTEX_NAME_LENGHT && name!='\0';i++,name++){
+    for(i=0;i<MAX_MUTEX_NAME_LENGHT && (*name)!='\0';i++,name++){
         mutexes[index].name[i]=*name;
     }
     mutexes[index].name[i]='\0';
-    savedMutexes++;
 }
 
 int whereIs(char* name){
     if(*name=='\0') return -1;
     int i;
     for(i=0;i<MAX_MUTEXES;i++){
-        if(strcmp(name,mutexes[i].name)==0)
+        if(strcmp(name,mutexes[i].name)==0){
             return i;
+        }
     }
     return -1;
 }
@@ -82,16 +92,16 @@ int getMutex(char* name){
         pos= nextfree();
         if(pos!=-1) {
             /* There is Place */
-            mutex_t m=mutexes[pos];
+            mutex_t* m=&mutexes[pos];
             saveName(pos,name);
-            m.mutex=0;
+            m->mutex=0;
 
-            m.usingPids[0]=getCurrentPid();
-            m.using=1;
+            m->usingPids[0]=getCurrentPid();
+            m->using=1;
 
-            m.waiting=0;
-            m.lastIndex=0;
-            m.firstIndex=0;
+            m->waiting=0;
+            m->lastIndex=0;
+            m->firstIndex=0;
 
             savedMutexes++;
 
@@ -105,6 +115,7 @@ int getMutex(char* name){
         }
 
 
+
         /* Not Using it */
         mutexes[pos].usingPids[mutexes[pos].using]=getCurrentPid();
         mutexes[pos].using +=1;
@@ -114,12 +125,15 @@ int getMutex(char* name){
     return pos;
 }
 
+
+
 int nextfree(){
     if(savedMutexes == MAX_MUTEXES) return -1;
     int i;
     for(i=0;i<MAX_MUTEXES;i++){
-        if(mutexes[i].name[0]=='\0')
+        if(mutexes[i].name[0]=='\0'){
             return i;
+        }
     }
     return -1;
 }
@@ -129,11 +143,11 @@ int releaseMutex(char* name){
     lockScheduler();
     int pos=whereIs(name);
     if(pos!=-1){
-        mutex_t m=mutexes[pos];
-        if(m.using>1){
+        mutex_t* m=&mutexes[pos];
+        if(m->using>1){
             int myPos=amIUsing(pos);
-            m.usingPids[myPos]=-1;
-            m.using-=1;
+            m->usingPids[myPos]=-1;
+            m->using-=1;
         }else{
             mutexes[pos].name[0]='\0';
             mutexes[pos].mutex=1;
@@ -152,13 +166,13 @@ int lockMutex(int mutex){
     lockScheduler();
 
     if (! testAndSet(&(mutexes[mutex].mutex)) ) {
-        mutex_t m=mutexes[mutex];
-        if(m.waiting<MAX_MUTEX_QUEUE_SIZE){
+        mutex_t* m=&mutexes[mutex];
+        if(m->waiting<MAX_MUTEX_QUEUE_SIZE){
 
             int myPid=getCurrentPid();
-            m.waiting+=1;
-            m.queue[m.lastIndex] = myPid;
-            m.lastIndex = (m.lastIndex+1)%MAX_MUTEX_QUEUE_SIZE;
+            m->waiting+=1;
+            m->queue[m->lastIndex] = myPid;
+            m->lastIndex = (m->lastIndex+1)%MAX_MUTEX_QUEUE_SIZE;
             changeProcessState(myPid,BLOCKED);
             unlockScheduler();
             _yield();
@@ -175,26 +189,25 @@ int unlockMutex(int mutex){
 
     lockScheduler();
 
-    mutex_t m=mutexes[mutex];
+    mutex_t* m=&mutexes[mutex];
 
-    if(m.waiting>0){
-        m.waiting-=1;
-        changeProcessState(m.queue[m.firstIndex],READY);
-        m.firstIndex=(m.firstIndex+1)%MAX_MUTEX_QUEUE_SIZE;
+    if(m->waiting>0){
+
+        m->waiting-=1;
+        changeProcessState(m->queue[m->firstIndex],READY);
+        m->firstIndex=(m->firstIndex+1)%MAX_MUTEX_QUEUE_SIZE;
+
     }
-    m.mutex=0;
+    m->mutex=0;
+
 
     unlockScheduler();
     return 1;
 }
 
 
-void lockScheduler(){
-    //TODO remove this and put just =1
-    if(!testAndSet(&schedulerMutex)){
-        print("THIS SHOULD NOT BE HAPPENING (schedulerMutex SET TO 1)");
-        int a=1/0;
-    }
+int lockScheduler(){
+    return testAndSet(&schedulerMutex);
 }
 
 void unlockScheduler(){

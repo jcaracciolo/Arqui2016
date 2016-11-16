@@ -4,7 +4,7 @@
 #include "../../../Kernel/include/videoDriver.h"
 #include "types.h"
 
-static boolean firstTime = true; 
+static boolean firstTime = true;
 static char save[ROWS * COLS + 1] = {0};
 static char text[ROWS * COLS + 1] = {0};
 

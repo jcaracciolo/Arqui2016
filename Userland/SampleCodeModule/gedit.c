@@ -2,7 +2,6 @@
 #include "types.h"
 #include "include/stdvid.h"
 #include "include/stdio.h"
-#include "../../../Kernel/include/videoDriver.h"
 
 static boolean writeMode = false;
 

@@ -28,18 +28,15 @@ void drawPhilosopher(int id, int status);
 int getPhilosopherX(int id);
 
 void philosphers(){
-    philAmount = 15;
 
-    for(int i=0; i < philAmount; i++){
-        drawPhilosopher(i, i%3);
+    for(int i=0; i < MAX_PHILOSOPHERS; i++){
+        drawPhilosopher(i, 0);
+        addPhilosopher();
+        philAmount++;
     }
-    int a = createMutex("asda");
-    printf("try to lock a mutex(this should be 1): %d\n", lockMutex(a));
-    printf("try to unlock a mutex(this should be 1): %d\n", unlockMutex(a));
-    printf("try to lock a mutex(this should be 1): %d\n", lockMutex(a));
-    printf("try to lock a mutex(this should be 0): %d\n", lockMutex(a));
-//  addPhilosopher();
-//  addPhilosopher();
+
+
+
 }
 
 
@@ -47,10 +44,10 @@ void addPhilosopher(){
     printf("%s\n", getMutexName(philAmount));
     philMutex[philAmount]=createMutex(getMutexName(philAmount));
     printf("mutex %d\n", philMutex[philAmount]);
-    printf("Philo %d got %d fork",philAmount,lockMutex(philMutex[0]));
+    printf("Philo %d got %d fork",philAmount,lockMutex(philMutex[philAmount]));
     philAmount++;
 
-//    exec(&philosophize,0, (void**) 0);
+    exec(&philosophize,0, (void**) 0);
 }
 
 void philosophize(){

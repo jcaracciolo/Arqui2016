@@ -125,7 +125,9 @@ void printInstructions() {
 }
 
 void callRunGedit() {
+	lockMutex(createMutex("shell"));
 	runGedit();
+	unlockMutex(createMutex("shell"));
 	leave();
 }
 
@@ -249,12 +251,16 @@ void execute() {
 		exec(&playStarWars, 1, parg);
 
 	} else if(strcmp(shellBuffer, "philo") == 0) {
-        philosphers();
+        exec(&philosphers,0,NILL
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"gedit";
 		exec(&callRunGedit, 1, parg);
+		int n = 400000;
+		while (n--);
+		lockMutex(createMutex("shell"));
+		unlockMutex(createMutex("shell"));
 
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));

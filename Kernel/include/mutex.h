@@ -11,8 +11,10 @@ int lockMutex(int mutex);
 int unlockMutex(int mutex);
 
 int tryScheduler();
-void lockScheduler();
+int lockScheduler();
 void unlockScheduler();
+
+void initializeMutex();
 
 #define MAX_MUTEXES 256
 #define MAX_MUTEX_NAME_LENGHT 15

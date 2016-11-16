@@ -17,6 +17,7 @@
 #include "include/getTime.h"
 #include "include/logo.h"
 #include "include/buddyMemManager.h"
+#include "include/mutex.h"
 
 
 extern uint8_t text;
@@ -139,6 +140,8 @@ void setupEverything(){
 	initializeHeap();
     print("  Giving listeners ears.....\n");
 	addTimerListener(&blinkCursor,750);
+	print("  Initializing synchornization\n");
+	initializeMutex();
 	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n");
 	decreaseTimerTick();
 

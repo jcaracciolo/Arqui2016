@@ -14,6 +14,7 @@ extern void _popAll();
 static processSlot * current = NULL;
 static processSlot * foreground = NULL;
 static int cantProcesses = 0;
+static int inf=0;
 
 
 int insertProcess(void * entryPoint, int cargs, void ** pargs) {
@@ -141,10 +142,9 @@ void freeProcessSlot(processSlot * slot) {
 }
 
 void * next_process(int current_rsp) {
-	if (current == NULL || tryScheduler()) {
+	if (current == NULL || !lockScheduler()) {
 		return current_rsp;
 	}
-	lockScheduler();
 	current->process->stack_pointer = current_rsp;
 
 	schedule();
@@ -165,11 +165,9 @@ void schedule() {
 		if (current->process->state == DEAD) {
 			print("Process found DEAD.\n");
 			removeProcess(current->process->pid);
-		} else if (current->process->state == BLOCKED) {
-			print("Process found Blocked.\n");
-		}else{
+		} else{
 				current = current->next;
-			}
+		}
 	}
 
 	current->process->state = RUNNING;
