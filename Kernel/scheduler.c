@@ -17,7 +17,9 @@ static int cantProcesses = 0;
 
 
 int insertProcess(void * entryPoint, int cargs, void ** pargs) {
+	lockScheduler();
 	process * p = createProcess(entryPoint, (int)cargs, (void **)pargs);
+	unlockScheduler();
 	return addProcessSlot(p);
 }
 
@@ -48,31 +50,38 @@ int getforegroundPid() {
 }
 
 void setForeground(int pid) {
+	lockScheduler();
 	int i = 0;
 	processSlot * slot = foreground;
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
 			// new foreground process found
 			foreground = slot;
+			unlockScheduler();
 			return;
 		}
 		slot = slot->next;
 	}
 	// pid does not exists
+	unlockScheduler();
 	return;
 }
 
 void changeProcessState(int pid, processState state) {
+	lockScheduler();
 	int i = 0;
 	processSlot * slot = current;
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
 			// process found
 			slot->process->state = state;
+
+			unlockScheduler();
 			return;
 		}
 		slot = slot->next;
 	}
+	unlockScheduler();
 	// pid does not exists
 	return;
 }
@@ -80,7 +89,10 @@ void changeProcessState(int pid, processState state) {
 
 
 void removeProcess(int pid) {
+	lockScheduler();
 	if (current == NULL) {
+
+		unlockScheduler();
 		return;
 	} else if(equalProcesses(current->process, current->next->process) && current->process->pid == pid) {
 		// process to remove is the current and only one process in list
@@ -88,6 +100,8 @@ void removeProcess(int pid) {
 		current = NULL;
 		foreground = NULL;
 		cantProcesses--;
+
+		unlockScheduler();
 		return;
 	}
 
@@ -107,15 +121,19 @@ void removeProcess(int pid) {
 	prevSlot->next = slotToRemove->next;
 	freeProcessSlot(slotToRemove);
 	cantProcesses--;
+
+	unlockScheduler();
 }
 
 void printAllProcesses() {
+	lockScheduler();
 	processSlot * slot  = current;
 	int i = 0;
 	for(; i < cantProcesses; i++) {
 		print("pid: "); printNum(slot->process->pid); print(" state: "); printNum(slot->process->state); print("\n");
 		slot = slot->next;
 	}
+	unlockScheduler();
 }
 
 void freeProcessSlot(processSlot * slot) {
@@ -127,6 +145,7 @@ void * next_process(int current_rsp) {
 	if (current == NULL || tryScheduler()) {
 		return current_rsp;
 	}
+	lockScheduler();
 	current->process->stack_pointer = current_rsp;
 
 	schedule();

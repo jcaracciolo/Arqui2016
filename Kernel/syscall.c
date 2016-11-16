@@ -13,7 +13,7 @@
 #include "include/buddyMemManager.h"
 #include "include/process.h"
 
-#define SYSTEM_CALL_COUNT 26
+#define SYSTEM_CALL_COUNT 32
 #define SYSTEM_CALL_START_INDEX 0x80
 
 
@@ -231,7 +231,7 @@ qword sys_tryLock(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
-qword sys_unLock(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
+qword sys_unlock(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
     int * retVal = (int *) ret;
     int mutexCode = (int ) mutex;
     *retVal = unlockMutex(mutexCode);
@@ -276,6 +276,7 @@ qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
 
 qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     changeProcessState(getCurrentPid(), DEAD);
+    _yield();
     return 0;
 }
 
@@ -308,21 +309,26 @@ void setUpSyscalls(){
     sysCalls[15] = &sys_readData;
     sysCalls[16] = &sys_changeFont;
     sysCalls[17] = &sys_getConsoleSize;
-    sysCalls[18] = &sys_allocatePages;
-    sysCalls[19] = &sys_createMutex;
-    sysCalls[20] = &sys_releaseMutex;
-    sysCalls[21] = NULL;
-    sysCalls[22] = &sys_exec;
-    sysCalls[23] = &sys_ps;
-    sysCalls[24] = &sys_kill;
-    sysCalls[25] = &sys_yield;
 
-    //sys_freePages
-    //sys_allocateNewMemory
-    //sys_reallocateNewMemory
-    //sys_reallocatePages
-    //sys_reallocate
-    //sys_leave
+
+
+    sysCalls[18] = &sys_allocatePages;
+    sysCalls[19] = &sys_freePages;
+    sysCalls[20] = &sys_reallocatePages;
+    sysCalls[21] = &sys_allocateNewMemory;
+    sysCalls[22] = &sys_reallocateNewMemory;
+    sysCalls[23] = &sys_createMutex;
+    sysCalls[24] = &sys_releaseMutex;
+    sysCalls[25] = &sys_tryLock;
+    sysCalls[26] = &sys_unlock;
+
+    sysCalls[27] = &sys_exec;
+    sysCalls[28] = &sys_ps;
+    sysCalls[29] = &sys_kill;
+    sysCalls[30] = &sys_leave;
+    sysCalls[31] = &sys_yield;
+
+
     //sys_openPipe
     //sys_closePipe
 

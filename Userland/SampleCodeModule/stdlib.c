@@ -32,20 +32,19 @@ void setConsoleSize() {
 
 int exec(void * entry_point, int cargs, void ** pargs) {
 	int pid;
-	int80(22, entry_point, &pid, cargs, pargs, 0);
+	int80(27, entry_point, &pid, cargs, pargs, 0);
 	return pid;
 }
 
 void ps() {
-	int80(23, 0, 0, 0, 0, 0);
+	int80(28, 0, 0, 0, 0, 0);
 	leave();
 }
 
 void kill(int pid, int msg) {
-	int80(24, pid, msg, 0, 0, 0);
+	int80(29, pid, msg, 0, 0, 0);
 }
 
 void leave() {
-	int80(24, 0, -1, 0, 0, 0);	// removes process from scheduler
-	int80(25, 0, 0, 0, 0, 0);	// calls next process
+	int80(30, 0, 0, 0, 0, 0);
 }
