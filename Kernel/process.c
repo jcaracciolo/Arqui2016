@@ -55,8 +55,11 @@ process * createProcess(void * entryPoint, int cargs, void ** pargs) {
 	newProcess->stack_pointer = fill_stack(entryPoint, newProcess->stack_base + newProcess->cantPages * PAGE_SIZE, cargs, pargs);
 	newProcess->pid = nextPID++;
 	newProcess->state = READY;
-	newProcess->descr = pargs[0];
-
+	if(cargs != 0) {
+		newProcess->descr = pargs[0];
+	} else {
+		newProcess->descr = "no_descr";
+	}
 	return newProcess;
 
 }

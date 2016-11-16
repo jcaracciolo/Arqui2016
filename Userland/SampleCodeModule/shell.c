@@ -27,6 +27,7 @@ const char* instructions = " func                - print a simple message (compl
  paintBg *param*     - paint the console background (only once)\n\
  setupFont *param*   - setup font to write\n\
  ps                  - list all processes\n\
+ newps                  - create a useless process\n\
  kill *pid* *msg*	- send a message to a process";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -172,6 +173,10 @@ void callKill(int cargs, void ** pargs) {
 	leave();
 }
 
+void uslessPs(){
+	while(1);
+}
+
 void execute() {
 	char arr[100];
 	int number = 0;
@@ -199,6 +204,7 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"date";	
 		exec(&printDate, 1, parg);
+
 	} else if(sscanf("setTimeZone %d",shellBuffer,&tz)==1) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"setTimeZone";
@@ -215,7 +221,7 @@ void execute() {
 
 	} else if(strcmp(shellBuffer, "multifractal") == 0) {
 		clear();
-		for(int i=0;i<8;i++) {
+		for(int i=0;i<20;i++) {
 			void** parg = (void**)malloc(sizeof(void*));
 			parg[0] = (void*)"colorfractal";
 			int pid = exec(&drawFractalc, 1, parg);
@@ -224,9 +230,8 @@ void execute() {
 			while (n--);
 		}
 		//clear();
-
 	
-	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill, &msg)==1){
+	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill, &msg)==2){
 		void** parg = (void**)malloc(sizeof(void*) * 3);
 		parg[0] = (void*)"kill";
 		parg[1] = (void*)pidToKill;
@@ -242,6 +247,7 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"starwars";
 		exec(&playStarWars, 1, parg);
+
 	} else if(strcmp(shellBuffer, "philo") == 0) {
         philosphers();
 
@@ -277,6 +283,10 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"ps";
 		exec(&ps, 1, parg);
+	} else if(strcmp(shellBuffer, "newps") == 0) {		
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)0;
+		exec(&uslessPs, 0, 0);//parg);
 	}else {
 		printf("Command not found.\n");
 	}

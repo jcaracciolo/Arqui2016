@@ -83,6 +83,7 @@ void changeProcessState(int pid, processState state) {
 	}
 	unlockScheduler();
 	// pid does not exists
+	print("pid not found: "); printNum(pid); print("\n");
 	return;
 }
 

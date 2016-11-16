@@ -270,6 +270,11 @@ qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
         case 1:
             // sleep custom process
             changeProcessState(pid, SLEEPING);
+            break;
+        case 2:
+            // wake up custom process
+            changeProcessState(pid, READY);
+            break;
     }
     return 0;
 }
@@ -326,10 +331,6 @@ void setUpSyscalls(){
     sysCalls[29] = &sys_kill;
     sysCalls[30] = &sys_leave;
     sysCalls[31] = &sys_yield;
-
-
-    //sys_openPipe
-    //sys_closePipe
 
 
 
