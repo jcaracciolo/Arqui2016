@@ -2,6 +2,7 @@
 #include "include/lib.h"
 #include "include/buddyMemManager.h"
 #include "include/videoDriver.h"
+#include "include/syscall.h"
 
 #define INIT_PROCESS_PAGES 4
 
@@ -67,8 +68,6 @@ process * createProcess(void * entryPoint, int cargs, void ** pargs) {
 void callProcess(int cargs, void ** pargs, void * entryPoint) {
 	((int (*)(int, void**))(entryPoint))(cargs, pargs);
 
-	// Leave function
-	print("leaving process\n");
 	sys_leave(0, 0, 0, 0, 0);
 }
 

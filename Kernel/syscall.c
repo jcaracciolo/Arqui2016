@@ -247,7 +247,6 @@ qword sys_exec(qword entry_point, qword pid, qword cargs, qword pargs, qword r9)
     int * retPid = (int *) pid;
     *retPid = insertProcess((void *)entry_point, (int)cargs, (void **)pargs);
     setForeground(*retPid);
-    printAllProcesses();
     return 0;
 }
 
@@ -285,6 +284,7 @@ qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
 }
 
 qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
+    setForeground(1); // give forground to shell
     changeProcessState(getCurrentPid(), DEAD);
     _yield();
     return 0;
