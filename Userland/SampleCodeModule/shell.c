@@ -35,7 +35,8 @@ extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9
 char screen[ROWS * COLS] = {0};
 int screenIndex = 0;
 
-char shellBuffer[COLS + 1] = {0};	// + 1 to add '\0' at the end
+char sbuffer[COLS + 1] = {0};	// + 1 to add '\0' at the end
+char * shellBuffer;
 int shellIndex = 0;
 
 
@@ -44,6 +45,7 @@ void initShell() {
 	printf("-- WELCOME THE SHELL --\n\n  >>");
 	setTimeZone(-3);
 	setConsoleSize();
+	shellBuffer = sbuffer[0];
 
 	while(1) {
 		int c = getc();
@@ -169,40 +171,44 @@ void execute() {
 	int number = 0;
 
 	int tz;
-	shellBuffer[shellIndex] = '\0';
-	int num, pidToKill, msg = 0;
+	sbuffer[shellIndex] = '\0';
+	int num, pidToKill, msg = 0, psToFg;
 	putc('\n');
+	if(shellBuffer[0] == '&') {
+		psToFg = 0;
+		shellBuffer++;
+	}
 	if (strcmp(shellBuffer, "func") == 0) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"func";
-		exec(&func, 1, parg);
+		exec(&func, 1, parg, psToFg);
 
 	} else if (strcmp(shellBuffer, "clear") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"clear";
-		exec(&clearScreen, 1, parg);
+		exec(&clearScreen, 1, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "time") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"time";
-		exec(&printTime, 1, parg);
+		exec(&printTime, 1, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "date") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"date";	
-		exec(&printDate, 1, parg);
+		exec(&printDate, 1, parg, psToFg);
 
 	} else if(sscanf("setTimeZone %d",shellBuffer,&tz)==1) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"setTimeZone";
 		parg[1] = (void*)tz;
-		exec(&callSetTimeZone, 2, parg);
+		exec(&callSetTimeZone, 2, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "fractal Zelda") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"fractal";
 		clear();
-		int pid = exec(&drawFractal, 1, parg);
+		int pid = exec(&drawFractal, 1, parg, psToFg);
 		//sleep(1000);
 		//clear();
 
@@ -211,7 +217,7 @@ void execute() {
 		for(int i=0;i<20;i++) {
 			void** parg = (void**)malloc(sizeof(void*));
 			parg[0] = (void*)"colorfractal";
-			int pid = exec(&drawFractalc, 1, parg);
+			int pid = exec(&drawFractalc, 1, parg, psToFg);
 			//TODO sleep
 			int n = 4000000;
 			while (n--);
@@ -223,25 +229,25 @@ void execute() {
 		parg[0] = (void*)"kill";
 		parg[1] = (void*)pidToKill;
 		parg[2] = (void*)msg;
-		exec(&callKill, 3, parg);
+		exec(&callKill, 3, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "help") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"help";
-		exec(&printInstructions, 1, parg);
+		exec(&printInstructions, 1, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "star wars") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"starwars";
-		exec(&playStarWars, 1, parg);
+		exec(&playStarWars, 1, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "philo") == 0) {
-        exec(&philosphers,0,0);
+        exec(&philosphers,0,0, psToFg);
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"gedit";
-		exec(&callRunGedit, 1, parg);
+		exec(&callRunGedit, 1, parg, psToFg);
 		int n = 400000;
 		while (n--);
 		lockMutex(createMutex("shell"));
@@ -250,36 +256,36 @@ void execute() {
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"paint";
-		exec(&callPaintLoop, 1, parg);
+		exec(&callPaintLoop, 1, parg, psToFg);
 
 	} else if(sscanf("paintBg %d", shellBuffer, &num) == 1) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"paintBg";
 		parg[1] = (void*)num;
-		exec(&paintBg, 2, parg);
+		exec(&paintBg, 2, parg, psToFg);
 
 	} else if(sscanf("setupFont %d", shellBuffer, &num) == 1) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"setupFont";
 		parg[1] = (void*)num;
-		exec(callChangeFont, 2, parg);
+		exec(callChangeFont, 2, parg, psToFg);
 
 	}else if(sscanf("echo %s",shellBuffer,arr)==1) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"echo";
 		parg[1] = (void*)arr;
-		exec(&callEcho, 2, parg);
+		exec(&callEcho, 2, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "ps") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"ps";
-		exec(&ps, 1, parg);
+		exec(&ps, 1, parg, psToFg);
 	} else if(strcmp(shellBuffer, "newps") == 0) {		
 		void** parg = (void**)malloc(sizeof(void*));
-		parg[0] = (void*)0;
-		exec(&uslessPs, 0, 0);//parg);
+		parg[0] = (void*)"uslessPs";
+		exec(&uslessPs, parg, psToFg, psToFg);
 	}else {
-		printf("Command not found.\n");
+		printf("Command not found: %s\n", shellBuffer);
 	}
 	printf("  >>");
 	cleanBuffer();

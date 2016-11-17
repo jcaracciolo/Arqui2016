@@ -246,7 +246,6 @@ qword sys_unlock(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
 qword sys_exec(qword entry_point, qword pid, qword cargs, qword pargs, qword r9) {
     int * retPid = (int *) pid;
     *retPid = insertProcess((void *)entry_point, (int)cargs, (void **)pargs);
-    setForeground(*retPid);
     return 0;
 }
 
@@ -278,6 +277,9 @@ qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
         case 2:
             // wake up custom process
             changeProcessState(pid, READY);
+            break;
+        case 3:
+            setForeground(pid);
             break;
     }
     return 0;

@@ -32,9 +32,12 @@ void setConsoleSize() {
 	int80(17,&ROWS,&COLS,0,0,0);
 }
 
-int exec(void * entry_point, int cargs, void ** pargs) {
+int exec(void * entry_point, int cargs, void ** pargs, int giveFg) {
 	int pid;
 	int80(27, entry_point, &pid, cargs, pargs, 0);
+	if (giveFg) {
+		kill(pid, 3); // set process to foreground
+	}
 	return pid;
 }
 
