@@ -75,7 +75,6 @@ int scanf(const char* format,...){
 	va_start( args, format );
 
 	int n=0;
-    char strnum[10];
 
 	char* str = readLine();
     char* character;

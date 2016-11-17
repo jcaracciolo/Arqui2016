@@ -13,7 +13,7 @@ static int mutex;
 
 void initializeMalloc(){
 
-    mutex=getMutex("__MALLOC__MUTEX");
+    mutex=getMutex(MALLOCMUTEX);
 }
 int liballoc_lock()
 {

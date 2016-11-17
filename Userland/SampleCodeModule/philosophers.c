@@ -29,7 +29,7 @@ int getPhilosopherX(int id);
 
 void philosphers(){
 
-    for(int i=0; i < MAX_PHILOSOPHERS; i++){
+    for(int i=0; i < 5; i++){
         drawPhilosopher(i, 0);
         addPhilosopher();
         philAmount++;
@@ -41,18 +41,21 @@ void philosphers(){
 
 
 void addPhilosopher(){
-    printf("%s\n", getMutexName(philAmount));
-    philMutex[philAmount]=createMutex(getMutexName(philAmount));
+    char* mutexName=getMutexName(philAmount);
+    printf("%s\n", mutexName);
+    philMutex[philAmount]=createMutex(mutexName);
     printf("mutex %d\n", philMutex[philAmount]);
     printf("Philo %d got %d fork",philAmount,lockMutex(philMutex[philAmount]));
-    philAmount++;
 
-    exec(&philosophize,0, (void**) 0);
+    void** parg = (void**)malloc(sizeof(void*) * 2);
+    parg[0] = (void*)mutexName;
+    parg[1] = (void*)philAmount;
+    exec(&philosophize,2,parg);
+    philAmount++;
 }
 
-void philosophize(){
+void philosophize(int id){
     printf("Philo  is born\n");
-    int id = philAmount-1;
     int status = THINKING;
     int left;
     int right;
@@ -60,7 +63,7 @@ void philosophize(){
     while (1){
         switch (status){
             case THINKING:
-                printf("Philo %d is thinking",id);
+                //printf("Philo %d is thinking",id);
                 drawPhilosopher(id,THINKING);
                 n = 4000;
                 while (n--);
@@ -69,26 +72,26 @@ void philosophize(){
             case HUNGRY:
                 drawPhilosopher(id,HUNGRY);
                 if(philAmount >1){
-                    printf("Philo %d is HUNGRY",id);
+                    //printf("Philo %d is HUNGRY",id);
                     left = leftFrom(id);
                     right = rightFrom(id);
                     if(id == philAmount-1) {
                         lockMutex(philMutex[right]);
-                        printf("Philo %d got %d fork",id,right);
+                        //printf("Philo %d got %d fork",id,right);
                         lockMutex(philMutex[left]);
-                        printf("Philo %d got %d fork",id,left);
+                        //printf("Philo %d got %d fork",id,left);
                     } else {
                         lockMutex(philMutex[left]);
-                        printf("Philo %d got %d fork",id,left);
+                        //printf("Philo %d got %d fork",id,left);
                         lockMutex(philMutex[right]);
-                        printf("Philo %d got %d fork",id,right);
+                        //printf("Philo %d got %d fork",id,right);
                     }
                     status = EATING;
                 }
                 break;
             case EATING:
                 drawPhilosopher(id,EATING);
-                printf("Philo %d is eating",id);
+                //printf("Philo %d is eating",id);
                 n = 2500;
                 while (n--);
                 unlockMutex(philMutex[left]);
