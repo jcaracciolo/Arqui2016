@@ -41,6 +41,31 @@ void saveName(int index,char* name){
     mutexes[index].name[i]='\0';
 }
 
+/* FUNCIONES NO TESTEADAS */
+
+/* Returns mutex ID if pid is waiting a mutex */
+int isPidWaitingMutex(int pid) {
+    int i;
+    for(i=0;i<MAX_MUTEXES;i++) {
+        if (isPidWaiting(mutexes[i], pid)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int isPidWaiting(mutex_t mutex, int pid) {
+    int i;
+    for (i = 0; i < mutex.waiting; i++) {
+        if (mutex.queue[i] == pid) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/* FIN DE FUNCIONES NO TESTEADAS */
+
 int whereIs(char* name){
     if(*name=='\0') return -1;
     int i;

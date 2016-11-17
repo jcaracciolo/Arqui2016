@@ -84,7 +84,11 @@ qword sys_reallocate(qword address, qword size, qword rcx, qword r8, qword r9) {
 /*------------------------------------------------------------------------*/
 
 qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9) {
-
+    char name[16] = {0};
+    strcpy(name, "read", 4);
+    intToString(name+4, getCurrentPid());
+    getMutex(name);
+    lockMutex(name);
     if (file == 0) {
         char *charbuffer = (char *) buffer;
         int i = 0;
@@ -95,6 +99,7 @@ qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9) {
         }
         charbuffer[i] = 0;
     }
+    unlockMutex(name);
     return 1;
 }
 
@@ -279,11 +284,17 @@ qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
             // wake up custom process
             changeProcessState(pid, READY);
             break;
+        case 3:
+            setForeground(pid);
+            break;
     }
     return 0;
 }
 
 qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
+    if (getForegroundPid() == getCurrentPid()) {
+        setForeground(1); // give forground to shell
+    }
     changeProcessState(getCurrentPid(), DEAD);
     _yield();
     return 0;

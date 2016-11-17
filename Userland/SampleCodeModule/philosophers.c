@@ -39,7 +39,6 @@ void philosphers(){
 
 }
 
-
 void addPhilosopher(){
     char* mutexName=getMutexName(philAmount);
     printf("%s\n", mutexName);
@@ -50,7 +49,7 @@ void addPhilosopher(){
     void** parg = (void**)malloc(sizeof(void*) * 2);
     parg[0] = (void*)mutexName;
     parg[1] = (void*)philAmount;
-    exec(&philosophize,2,parg);
+    exec(&philosophize,2,parg, 1);
     philAmount++;
 }
 

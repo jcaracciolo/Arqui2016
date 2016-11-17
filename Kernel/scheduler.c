@@ -19,8 +19,6 @@ static int cantProcesses = 0;
 static int amountFreeableProcess=0;
 static processSlot * processToFree[100];
 
-
-
 int debug=0;
 
 int addPipe(pipe_t p){
@@ -72,7 +70,7 @@ int getCurrentPid() {
 	return current==NULL?-1:current->process->pid;
 }
 
-int getforegroundPid() {
+int getForegroundPid() {
 	return foreground->process->pid;
 }
 
@@ -102,6 +100,12 @@ void changeProcessState(int pid, processState state) {
 		if (slot->process->pid == pid) {
 			// process found
 			slot->process->state = state;
+
+			if (slot->process->pid == getForegroundPid()) {
+				setForeground(1);
+				printAllProcesses();
+			}
+
 			unlockScheduler();
 			return;
 		}
@@ -155,7 +159,15 @@ void printAllProcesses() {
 	processSlot * slot  = current;
 	int i = 0;
 	for(; i < cantProcesses; i++) {
-		print(slot->process->descr); print(" pid: "); printNum(slot->process->pid); print(" "); print(stateDescription[slot->process->state]); print("\n");
+		print(slot->process->descr);
+		print(" pid: "); printNum(slot->process->pid);
+		print(" "); print(stateDescription[slot->process->state]);
+		if (getForegroundPid() == slot->process->pid) {
+			print(" "); print("fg");
+		} else {
+			print(" "); print("bg");
+		}
+		print("\n");
 		slot = slot->next;
 	}
 	unlockScheduler();
@@ -175,10 +187,9 @@ void freeWaitingProcess(){
 
 void * next_process(int current_rsp) {
 	if (current == NULL || !lockScheduler()) {
-        return current_rsp;
-    }
-
-    current->process->stack_pointer = current_rsp;
+		return current_rsp;
+	}
+	current->process->stack_pointer = current_rsp;
 
 	schedule();
     int ans=current->process->stack_pointer;
@@ -188,7 +199,6 @@ void * next_process(int current_rsp) {
 }
 
 void schedule() {
-    //printAllProcesses();
     amountFreeableProcess=0;
 
 	if (current->process->state == DEAD) {
