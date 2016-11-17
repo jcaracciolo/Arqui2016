@@ -2,6 +2,7 @@
 #include "include/lib.h"
 #include "include/buddyMemManager.h"
 #include "include/videoDriver.h"
+#include "include/pipe.h"
 
 #define INIT_PROCESS_PAGES 4
 
@@ -42,7 +43,6 @@ int equalProcesses(process * p1, process * p2) {
 	return p1->pid == p2->pid;
 }
 
-
 void freeProcess(process * process) {
 	buddyFree(process->stack_base);
 }
@@ -54,6 +54,9 @@ process * createProcess(void * entryPoint, int cargs, void ** pargs) {
 	newProcess->cantPages = INIT_PROCESS_PAGES;
 	newProcess->stack_pointer = fill_stack(entryPoint, newProcess->stack_base + newProcess->cantPages * PAGE_SIZE, cargs, pargs);
 	newProcess->pid = nextPID++;
+	for(int i=0;i<5;i++){
+		newProcess->fd[i]=0;
+	}
 	newProcess->state = READY;
 	if(cargs != 0) {
 		newProcess->descr = pargs[0];

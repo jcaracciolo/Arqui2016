@@ -13,8 +13,9 @@
 #include "include/buddyMemManager.h"
 #include "include/process.h"
 #include "include/liballoc.h"
+#include "include/scheduler.h"
 
-#define SYSTEM_CALL_COUNT 32
+#define SYSTEM_CALL_COUNT 34
 #define SYSTEM_CALL_START_INDEX 0x80
 
 
@@ -24,7 +25,7 @@ static sys sysCalls[SYSTEM_CALL_COUNT];
 
 qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     clearScreen();
-   // clearChars();
+    clearChars();
     return 0;
 }
 
@@ -290,10 +291,16 @@ qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
 
 /*------------------------- PIPES ------------------------------------*/
 
-    //TODO these
-    //sys_openPipe
-    //sys_closePipe
+    qword sys_openPipe(qword name, qword ans, qword rcx, qword r8, qword r9) {
+        int * a = (int *) ans;
+        *a = addPipe(getPipe((char*)name));
+    return 0;
+    }
 
+    qword sys_closePipe(qword name, qword rdx, qword rcx, qword r8, qword r9) {
+        releasePipe(name);
+        return;
+    }
 
 
 /*--------------------------------------------------------------------*/
@@ -334,6 +341,10 @@ void setUpSyscalls(){
     sysCalls[29] = &sys_kill;
     sysCalls[30] = &sys_leave;
     sysCalls[31] = &sys_yield;
+
+
+    sysCalls[32] = &sys_openPipe;
+    sysCalls[33] = &sys_closePipe;
 
 
 

@@ -2,7 +2,7 @@
 
 
 /* Converts num into a '\0' ended string in str parameter*/
-	void intToString(char* str, int num) {
+void intToString(char* str, int num) {
 	int length = numLength(num);
 	int numLength = length;
 	int i;
@@ -20,6 +20,7 @@
 
 	reverseCharArray(str, length);
 	str[length] = '\0';
+	return length;
 }
 
 void reverseCharArray(char* str, int length) {
@@ -41,11 +42,28 @@ void toUpper(char* str) {
 	}
 }
 
-void strcpy(char* str1, char* str2, int length) {
+
+int strlen(const char* str) {
+	int length = 0;
+	while (*(str++) != '\0') {
+		length++;
+	}
+	return length;
+}
+
+
+void strcpy(char* str1, const char* str2, int length) {
 	int i;
-	for (i = 0; i < length; i++) {
+	for (i = 0; i < length && str2[i]!='\0'; i++) {
 		str1[i] = str2[i];
 	}
+}
+
+void strCatNum(char* ans,char* str,int num){
+	int len=strlen(str);
+	strcpy(ans,str,-1);
+	intToString(ans+len,num);
+	return ans;
 }
 
 int numLength(int num) {
@@ -61,4 +79,17 @@ int numLength(int num) {
 		num /= 10;
 	}
 	return length;
+}
+
+int strcmp(const char* str1, const char* str2) {
+	while (*str1 != '\0') {
+		if (*str1 - *str2){
+			return *str1 - *str2;
+		}
+		str1++; str2++;
+	}
+	if (*str2 == '\0'){
+		return 0;
+	}
+	return -1;
 }

@@ -20,6 +20,7 @@
 #include "include/mutex.h"
 #include "include/liballoc.h"
 #include "include/scheduler.h"
+#include "include/pipe.h"
 
 
 extern uint8_t text;
@@ -156,6 +157,7 @@ void setupEverything(){
 	decreaseTimerTick();
 
 	initializeMalloc();
+	initIPC();
 
 	print(logo);
 	print("\n\n\n");

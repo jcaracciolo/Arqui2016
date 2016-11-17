@@ -2,6 +2,7 @@
 #define PROCESS_H
 
 #include "lib.h"
+#include "pipe.h"
 
 typedef enum processState_t {RUNNING, READY, BLOCKED, DEAD, SLEEPING} processState;
 static char* stateDescription[5] = {"running", "ready", "blocked", "dead", "sleeping"};
@@ -16,6 +17,8 @@ typedef struct process_t{
 
 	uint64_t pid;
 	char * descr;
+
+	pipe_t fd[5];
 } process;
 
 
@@ -27,5 +30,7 @@ void freeProcess(process * process);
 
 void * fill_stack(void * entryPoint, void * stack_base, int cargs, void ** pargs);
 process * createProcess(void * entryPoint, int cargs, void ** pargs);
+
+
 
 #endif

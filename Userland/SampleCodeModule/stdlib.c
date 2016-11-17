@@ -1,6 +1,7 @@
 #include "include/stdlib.h"
 #include "include/shell.h";
 #include "include/types.h"
+#include "include/stdio.h"
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
@@ -27,6 +28,17 @@ int readData(){
 void free(void * p){
 	int80(2, p, 0, 0, 0, 0);
 }
+
+int openPipe(char * name){
+	int fd;
+	int80(32, name, &fd, 0, 0, 0);
+	return fd;
+}
+
+void closePipe(char * name){
+	int80(33, name, 0, 0, 0, 0);
+}
+
 
 void setConsoleSize() {
 	int80(17,&ROWS,&COLS,0,0,0);

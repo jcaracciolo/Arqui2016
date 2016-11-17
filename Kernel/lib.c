@@ -1,11 +1,10 @@
 #include <stdint.h>
 #include "./include/videoDriver.h"
-#include "lib.h"
-
+#include "include/lib.h"
+#include "include/liballoc.h"
 #define MAX_BLOCK_PAGES 512
 
 static char * pointer = (char*)MEMBEGIN;
-static char * mallocPointer = (char*)MEMBEGIN + MAXMEMORY;
 static char * memory[MAX_BLOCK_PAGES];
 
 typedef struct {
@@ -15,6 +14,12 @@ typedef struct {
 
 static pageBlock pageBlockTable[MAX_BLOCK_PAGES];
 static int tableSize = 0;
+
+
+void * allocatePages(int cantPages);
+void * reallocatePages(int * address, int cantPages);
+
+
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -109,17 +114,15 @@ void deletePageBlock(void * address){
 }
 
 void * malloc(int bytes) {
-	allocate(bytes);
+	return lib_malloc(bytes);
 }
 
-void * free(void * p) {
-	
+void free(void * p) {
+	return lib_free(p);
 }
 
 void * allocate(int bytes){
-	char * temp = mallocPointer;
-	mallocPointer += bytes;
-	return temp;
+	return lib_malloc(bytes);
 }
 
 int pageIndexToMemory(int index) {
@@ -186,7 +189,6 @@ void printPagesArray(int n) {
 }
 
 
-
 void * allocatePages(int cantPages){
 	return reallocatePages(-1, cantPages);
 }
@@ -200,12 +202,12 @@ void * reallocatePages(int * address, int cantPages){
 	if(block == (pageBlock *)0) {
 		// address was not allocated
 		int memInit = getFreeBlock(cantPages);
-	//print("\nmeminit: "); printNum(memInit);
+		//print("\nmeminit: "); printNum(memInit);
 		markPages(memInit, cantPages);
 		addPageBlock(pageIndexToMemory(memInit), cantPages);
-	//print("\npointer:"); printNum(memInit);
-	//printTable();
-	//printPagesArray(70);
+		//print("\npointer:"); printNum(memInit);
+		//printTable();
+		//printPagesArray(70);
 		return pageIndexToMemory(memInit);
 	}
 
@@ -213,18 +215,18 @@ void * reallocatePages(int * address, int cantPages){
 		// reallocing more memory
 		unmarkPages(memoryToPageIndex(address), block->cantPages);
 		int memInit = getFreeBlock(cantPages);
-	//print("\npointer(realloc):"); printNum(memInit);
+		//print("\npointer(realloc):"); printNum(memInit);
 		markPages(memInit, cantPages);
 		deletePageBlock(address);
 		addPageBlock(pageIndexToMemory(memInit), cantPages);
 		copyBlocks(memInit, address, block->cantPages);
-	//printTable();
-	//printPagesArray(70);
+		//printTable();
+		//printPagesArray(70);
 		return pageIndexToMemory(memInit);
 	}
 
 	//realloc less memory
-print("\nno entro a nada");
+	print("\nno entro a nada");
 	unmarkPages(memoryToPageIndex(address) + cantPages, block->cantPages - cantPages);
 //print("\n start to delete: "); printNum(memoryToPageIndex(address) + cantPages);
 //print("\n delete length: "); printNum(block->cantPages); print("-"); printNum(cantPages);
@@ -232,5 +234,5 @@ print("\nno entro a nada");
 	addPageBlock(address, cantPages);
 //printTable();
 //printPagesArray(70);
-	return address;	
+	return address;
 }

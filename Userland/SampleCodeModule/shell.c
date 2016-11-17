@@ -86,6 +86,7 @@ void drawFractalc() {
 
 	rand+=rand*3^getSeconds()*500;
 	drawCFractalEquilateral(150,768,768,9,rand);
+	printf("\n\n\n\n");
 }
 
 void func() {
@@ -273,10 +274,15 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"ps";
 		exec(&ps, 1, parg);
+
 	} else if(strcmp(shellBuffer, "newps") == 0) {		
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)0;
 		exec(&uslessPs, 0, 0);//parg);
+	} else if(strcmp(shellBuffer, "mt") == 0) {
+		printf("%d<--fd \n",openPipe("hola"));
+		printf("%d<--fd \n",openPipe("hola2"));
+		printf("%d<--fd \n",openPipe("hola3"));
 	}else {
 		printf("Command not found.\n");
 	}

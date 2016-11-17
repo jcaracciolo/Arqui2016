@@ -26,19 +26,6 @@ static mutex_t mutexes[MAX_MUTEXES];
 static int savedMutexes=0;
 static qword schedulerMutex=0;
 
-int strcmp(const char* str1, const char* str2) {
-    while (*str1 != '\0') {
-        if (*str1 - *str2){
-            return *str1 - *str2;
-        }
-        str1++; str2++;
-    }
-    if (*str2 == '\0'){
-        return 0;
-    }
-    return -1;
-}
-
 void initializeMutex(){
     for(int i=0;i<MAX_MUTEXES;i++){
         mutexes[i].name[0]=='\0';

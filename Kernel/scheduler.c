@@ -4,6 +4,7 @@
 #include "include/defs.h"
 #include "include/videoDriver.h"
 #include "include/mutex.h"
+#include "include/scheduler.h"
 
 extern void * _get_rsp();
 extern void _set_rsp(void * rsp);
@@ -18,7 +19,25 @@ static int cantProcesses = 0;
 static int amountFreeableProcess=0;
 static processSlot * processToFree[100];
 
+
+
 int debug=0;
+
+int addPipe(pipe_t p){
+	if(p==0) return 0;
+
+	process* me=current->process;
+	int i;
+	for (i = 0; i < 5; ++i) {
+		if(me->fd[i]==0){
+			me->fd[i]=p;
+			break;
+		}else if(me->fd[i] == p){
+            break;
+        }
+	}
+	return (i==5)?-1:i;
+}
 
 
 int insertProcess(void * entryPoint, int cargs, void ** pargs) {
@@ -156,9 +175,10 @@ void freeWaitingProcess(){
 
 void * next_process(int current_rsp) {
 	if (current == NULL || !lockScheduler()) {
-		return current_rsp;
-	}
-	current->process->stack_pointer = current_rsp;
+        return current_rsp;
+    }
+
+    current->process->stack_pointer = current_rsp;
 
 	schedule();
     int ans=current->process->stack_pointer;
