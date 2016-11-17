@@ -64,6 +64,14 @@ process * createProcess(void * entryPoint, int cargs, void ** pargs) {
 
 }
 
+void callProcess(int cargs, void ** pargs, void * entryPoint) {
+	((int (*)(int, void**))(entryPoint))(cargs, pargs);
+
+	// Leave function
+	changeProcessState(getCurrentPid(), DEAD);
+    _yield();
+}
+
 void * fill_stack(void * entryPoint, void * stack_base, int cargs, void ** pargs) {
 	stack_frame * frame =  (stack_frame *)(stack_base - sizeof(stack_frame) -1);
 
@@ -80,13 +88,13 @@ void * fill_stack(void * entryPoint, void * stack_base, int cargs, void ** pargs
 	frame->rsi =	pargs;
 	frame->rdi =	cargs;
 	frame->rbp =	0x00D;
-	frame->rdx =	0x00E;
+	frame->rdx =	entryPoint;
 	frame->rcx =	0x00F;
 	frame->rbx =	0x010;
 	frame->rax =	0x011;
 
     //iret hook
-	frame->rip =	entryPoint;
+	frame->rip =	(void*) &callProcess;
 	frame->cs =		0x008;
 	frame->eflags = 0x202;
 	frame->rsp =	(uint64_t)&(frame->base);

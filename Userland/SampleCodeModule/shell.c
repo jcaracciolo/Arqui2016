@@ -63,7 +63,6 @@ void initShell() {
 void clearScreen() {
 	clear();
 	shellIndex = 0;
-	leave();
 }
 
 void removeKey() {
@@ -81,30 +80,24 @@ void addToShellBuffer(char c) {
 
 void drawFractal() {	
 	drawCFractalEquilateral(150,768,768,9,readData());
-
-	leave();
 }
 
 void drawFractalc() {
 
 	rand+=rand*3^getSeconds()*500;
 	drawCFractalEquilateral(150,768,768,9,rand);
-	leave();
 }
 
 void func() {
 	printf("execute!");
-	leave();
 }
 
 void printTime() {	
 	printf("%d:%d\n", getHours(), getMinutes());
-	leave();
 }
 
 void printDate() {
 	printf("%d/%d/%d\n", getDay(), getMonth(), getYear());
-	leave();
 }
 
 /* pargs[1] -> tz */
@@ -116,24 +109,20 @@ void callSetTimeZone(int cargs, void ** pargs) {
 	} else{
 		printf("\nInput error\n");
 	}
-	leave();
 }
 
 void printInstructions() {
 		printf("%s\n", instructions);
-		leave();
 }
 
 void callRunGedit() {
 	lockMutex(createMutex("shell"));
 	runGedit();
 	unlockMutex(createMutex("shell"));
-	leave();
 }
 
 void callPaintLoop() {
 	paintLoop();
-	leave();
 }
 
 /*
@@ -143,7 +132,6 @@ void callPaintLoop() {
 void paintBg(int carg, void ** pargs) {
 	drawCSquare(0,0,768,1024, pargs[1]);
 	setCursorPos(0);
-	leave();
 }
 
 /*
@@ -152,7 +140,6 @@ void paintBg(int carg, void ** pargs) {
  */
 void callChangeFont(int carg, void ** pargs) {
 	changeFont(pargs[1]);
-	leave();
 }
 
 /*
@@ -162,7 +149,6 @@ void callChangeFont(int carg, void ** pargs) {
 void callEcho(int carg, void ** pargs) {
 	printf(pargs[1]);
 	printf("\n");
-	leave();
 }
 
 /*
@@ -172,7 +158,6 @@ void callEcho(int carg, void ** pargs) {
  */
 void callKill(int cargs, void ** pargs) {
 	kill(pargs[1], pargs[2]);
-	leave();
 }
 
 void uslessPs(){
@@ -190,7 +175,8 @@ void execute() {
 	if (strcmp(shellBuffer, "func") == 0) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"func";
-		exec(&func, 2, parg);
+		//exec(&func, 1, parg);
+		exec(&printf, 1, parg);
 
 	} else if (strcmp(shellBuffer, "clear") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));

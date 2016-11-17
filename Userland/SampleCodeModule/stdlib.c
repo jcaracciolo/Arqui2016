@@ -38,13 +38,8 @@ int exec(void * entry_point, int cargs, void ** pargs) {
 
 void ps() {
 	int80(28, 0, 0, 0, 0, 0);
-	leave();
 }
 
 void kill(int pid, int msg) {
 	int80(29, pid, msg, 0, 0, 0);
-}
-
-void leave() {
-	int80(30, 0, 0, 0, 0, 0);
 }
