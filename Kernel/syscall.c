@@ -286,7 +286,9 @@ qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
 }
 
 qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
-    setForeground(1); // give forground to shell
+    if (getForegroundPid() == getCurrentPid()) {
+        setForeground(1); // give forground to shell
+    }
     changeProcessState(getCurrentPid(), DEAD);
     _yield();
     return 0;

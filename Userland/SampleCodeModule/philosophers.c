@@ -39,7 +39,6 @@ void philosphers(){
 
 }
 
-
 void addPhilosopher(){
     char* mutexName=getMutexName(philAmount);
     printf("%s\n", mutexName);

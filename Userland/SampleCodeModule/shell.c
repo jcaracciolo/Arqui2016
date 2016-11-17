@@ -46,6 +46,7 @@ void initShell() {
 	setTimeZone(-3);
 	setConsoleSize();
 	shellBuffer = sbuffer[0];
+	cleanBuffer();
 
 	while(1) {
 		int c = getc();
@@ -69,7 +70,8 @@ void clearScreen() {
 
 void removeKey() {
 	if (shellIndex != 0) {
-		shellIndex--
+		shellIndex--;
+		shellBuffer[shellIndex] = '\0';
 ;		putc('\b');
 	}
 }
@@ -170,9 +172,10 @@ void execute() {
 	char arr[100];
 	int number = 0;
 
+
 	int tz;
 	sbuffer[shellIndex] = '\0';
-	int num, pidToKill, msg = 0, psToFg;
+	int num, pidToKill, msg = 0, psToFg = 1;
 	putc('\n');
 	if(shellBuffer[0] == '&') {
 		psToFg = 0;
@@ -286,6 +289,10 @@ void execute() {
 		exec(&uslessPs, parg, psToFg, psToFg);
 	}else {
 		printf("Command not found: %s\n", shellBuffer);
+	}
+
+	if (psToFg == 0) {
+		shellBuffer--;
 	}
 	printf("  >>");
 	cleanBuffer();
