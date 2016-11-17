@@ -1,6 +1,7 @@
-#include "include/stdvid.h"
+#include"include/stdvid.h"
 #include "include/stdtime.h"
 #include "include/types.h"
+#include "include/stdlib.h"
 
 extern void int80(qword rax, qword rdi, qword rsi, qword rdx, qword r8, qword r9);
 
@@ -96,9 +97,6 @@ void drawCFractalEquilateral(uint32 x,uint32 y, uint32 size, uint32 recursion, q
 
 	
 	int h=round(size*sqrt3/2.0);
-
-	if(recursion%3==0)sleep(1);
-
 	
 	drawCFractalEquilateral(x,y,size/2,recursion-1,color);
 

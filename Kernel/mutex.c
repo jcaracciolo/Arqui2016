@@ -166,6 +166,7 @@ int lockMutex(int mutex){
     lockScheduler();
 
     if (! testAndSet(&(mutexes[mutex].mutex)) ) {
+
         mutex_t* m=&mutexes[mutex];
         if(m->waiting<MAX_MUTEX_QUEUE_SIZE){
 

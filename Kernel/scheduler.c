@@ -83,7 +83,6 @@ void changeProcessState(int pid, processState state) {
 		if (slot->process->pid == pid) {
 			// process found
 			slot->process->state = state;
-
 			unlockScheduler();
 			return;
 		}
@@ -176,7 +175,8 @@ void schedule() {
 			removeProcess(current->process->pid);
 	}
 
-	current->process->state = READY;
+	if(current->process->state == RUNNING)
+		current->process->state = READY;
 
 	current = current->next;
 	while (current->process->state != READY) {

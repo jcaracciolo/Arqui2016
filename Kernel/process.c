@@ -5,7 +5,7 @@
 
 #define INIT_PROCESS_PAGES 4
 
-static uint64_t nextPID = 1;
+static uint64_t nextPID = 0;
 
 typedef struct {
 	//Registers restore context

@@ -9,6 +9,7 @@ GLOBAL _popAll
 GLOBAL _pushAll
 GLOBAL _change_process
 GLOBAL _yield
+GLOBAL _halt
 
 EXTERN next_process
 
@@ -143,3 +144,7 @@ _pushAll:
 _popAll:
 	popState
 	ret
+
+_halt:
+    hlt
+    ret

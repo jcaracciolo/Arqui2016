@@ -89,7 +89,7 @@ void drawFractalc() {
 }
 
 void func() {
-	printf("execute!");
+    printf("execute!");
 }
 
 void printTime() {	
@@ -212,10 +212,9 @@ void execute() {
 			void** parg = (void**)malloc(sizeof(void*));
 			parg[0] = (void*)"colorfractal";
 			int pid = exec(&drawFractalc, 1, parg);
-			//TODO sleep
-			int n = 4000000;
-			while (n--);
+			sleep(500);
 		}
+
 		//clear();
 	
 	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill, &msg)==2){

@@ -19,6 +19,7 @@
 #include "include/buddyMemManager.h"
 #include "include/mutex.h"
 #include "include/liballoc.h"
+#include "include/scheduler.h"
 
 
 extern uint8_t text;
@@ -40,7 +41,7 @@ typedef int (*EntryPoint)();
 int readBuffer();
 void decreaseTimerTick();
 void setupEverything();
-
+int init();
 
 int main()
 {
@@ -51,13 +52,21 @@ int main()
 	setupEverything();
 
 	void ** pargs= (void**)malloc(sizeof(void*));
+	pargs[0] = (void*)"init";
+	insertProcess(&init, 1, pargs);
 	pargs[0] = (void*)"shell";
-    insertProcess(sampleCodeModuleAddress, 1, pargs);
+	insertProcess(sampleCodeModuleAddress, 1, pargs);
  	beginScheduler();
 
  	//((EntryPoint)sampleCodeModuleAddress)();
 
 	return 0;
+}
+
+int init(){
+	while(1) {
+		_halt();
+	}
 }
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
