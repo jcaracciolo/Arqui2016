@@ -34,7 +34,6 @@ void printFrame(){
 
 void playStarWars() {
     swStart();
-    leave();
 }
 
 void swStart(){
