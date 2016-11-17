@@ -32,6 +32,8 @@ int getForegroundPid();
 
 int getCurrentPid();
 
+process* getMyProcessData();
+
 void changeProcessState(int pid, processState state);
 
 #endif

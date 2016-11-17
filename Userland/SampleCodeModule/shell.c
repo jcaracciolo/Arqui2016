@@ -221,7 +221,7 @@ void execute() {
 		for(int i=0;i<20;i++) {
 			void** parg = (void**)malloc(sizeof(void*));
 			parg[0] = (void*)"colorfractal";
-			int pid = exec(&drawFractalc, 1, parg);
+			int pid = exec(&drawFractalc, 1, parg, psToFg);
 			sleep(500);
 		}
 
@@ -287,13 +287,15 @@ void execute() {
 	} else if(strcmp(shellBuffer, "newps") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"uslessPs";
-		exec(&uslessPs, parg, psToFg, psToFg);
-		parg[0] = (void*)0;
-		exec(&uslessPs, 0, 0);//parg);
+		exec(&uslessPs, 1,parg, psToFg);
 	} else if(strcmp(shellBuffer, "mt") == 0) {
 		printf("%d<--fd \n",openPipe("hola"));
 		printf("%d<--fd \n",openPipe("hola2"));
 		printf("%d<--fd \n",openPipe("hola3"));
+		write(3,"AAAAA",5);
+		char buffa[6]={0};
+		read(3,&buffa,5);
+		printf(buffa);
 	}else {
 		printf("Command not found: %s\n", shellBuffer);
 	}

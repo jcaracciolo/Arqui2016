@@ -21,20 +21,8 @@ static processSlot * processToFree[100];
 
 int debug=0;
 
-int addPipe(pipe_t p){
-	if(p==0) return 0;
-
-	process* me=current->process;
-	int i;
-	for (i = 0; i < 5; ++i) {
-		if(me->fd[i]==0){
-			me->fd[i]=p;
-			break;
-		}else if(me->fd[i] == p){
-            break;
-        }
-	}
-	return (i==5)?-1:i;
+process* getMyProcessData(){
+	return current->process;
 }
 
 

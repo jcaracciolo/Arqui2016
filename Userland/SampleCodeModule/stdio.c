@@ -22,6 +22,13 @@ int getc() {
 	return *a;
 }
 
+void read(int fd,char* buffer,int size){
+	int80(3,fd,buffer,size,0,0);
+}
+
+void write(int fd,char* msg,int size){
+	int80(4,fd,msg,size,0,0);
+}
 // cambiar por printf
 void printCharArray(char* arr, int length) {
 	int80(4,1,arr,length,0,0);

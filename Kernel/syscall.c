@@ -98,6 +98,9 @@ qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9) {
             i++;
         }
         charbuffer[i] = 0;
+    }else if(file>2 && file<8){
+        pipe_t pipe=getMyProcessData()->fd[file-3];
+        readPipe(pipe,buffer,size);
     }
     unlockMutex(name);
     return 1;
@@ -120,6 +123,9 @@ qword sys_write(qword file, qword buffer, qword size, qword r8, qword r9){
 
         }
         _setColor(aux);
+    }else if(file>2 && file<8){
+        pipe_t pipe=getMyProcessData()->fd[file-3];
+        writePipe(pipe,buffer,size);
     }
 
 return 1;
