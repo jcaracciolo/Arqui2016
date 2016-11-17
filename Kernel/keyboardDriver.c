@@ -15,6 +15,7 @@ static boolean lshift= false;
 static boolean rshift=false;
 static boolean lalt=false;
 static boolean caps=false;
+
 void addToBuffer(){
     int key=read_key();
 
@@ -54,13 +55,9 @@ void addToBuffer(){
             }
         }
     }
-
-
 }
 
 int readBuffer(){
-
-
     if(actualIndex!=lastIndex){
         char aux=buffer[actualIndex];
         actualIndex=(actualIndex+1)%BUFFER_SIZE;

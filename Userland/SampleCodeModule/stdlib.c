@@ -24,7 +24,9 @@ int readData(){
 	return n;
 }
 
-void  free(){ return;}
+void free(void * p){
+	int80(2, p, 0, 0, 0, 0);
+}
 
 void setConsoleSize() {
 	int80(17,&ROWS,&COLS,0,0,0);

@@ -68,8 +68,8 @@ void callProcess(int cargs, void ** pargs, void * entryPoint) {
 	((int (*)(int, void**))(entryPoint))(cargs, pargs);
 
 	// Leave function
-	changeProcessState(getCurrentPid(), DEAD);
-    _yield();
+	print("leaving process\n");
+	sys_leave(0, 0, 0, 0, 0)
 }
 
 void * fill_stack(void * entryPoint, void * stack_base, int cargs, void ** pargs) {

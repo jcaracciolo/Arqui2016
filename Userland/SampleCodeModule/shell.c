@@ -175,8 +175,7 @@ void execute() {
 	if (strcmp(shellBuffer, "func") == 0) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"func";
-		//exec(&func, 1, parg);
-		exec(&printf, 1, parg);
+		exec(&func, 1, parg);
 
 	} else if (strcmp(shellBuffer, "clear") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
