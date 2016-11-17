@@ -79,7 +79,7 @@ void addToShellBuffer(char c) {
 }
 
 void drawFractal() {	
-	drawCFractalEquilateral(150,768,768,9,readData());
+	drawCFractalEquilateral(150,768,768,10,readData());
 }
 
 void drawFractalc() {
@@ -208,7 +208,7 @@ void execute() {
 
 	} else if(strcmp(shellBuffer, "multifractal") == 0) {
 		clear();
-		for(int i=0;i<20;i++) {
+		for(int i=0;i<2000;i++) {
 			void** parg = (void**)malloc(sizeof(void*));
 			parg[0] = (void*)"colorfractal";
 			int pid = exec(&drawFractalc, 1, parg);

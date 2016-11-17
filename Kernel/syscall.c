@@ -24,7 +24,7 @@ static sys sysCalls[SYSTEM_CALL_COUNT];
 
 qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     clearScreen();
-    clearChars();
+   // clearChars();
     return 0;
 }
 

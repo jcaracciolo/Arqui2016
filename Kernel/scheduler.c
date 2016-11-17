@@ -168,10 +168,11 @@ void * next_process(int current_rsp) {
 }
 
 void schedule() {
+    //printAllProcesses();
     amountFreeableProcess=0;
 
 	if (current->process->state == DEAD) {
-			print("Process found DEAD.\n");
+			//print("Process found DEAD.\n");
 			removeProcess(current->process->pid);
 	}
 
@@ -181,7 +182,7 @@ void schedule() {
 	current = current->next;
 	while (current->process->state != READY) {
 		if (current->process->state == DEAD) {
-			print("Process found DEAD.\n");
+			//print("Process found DEAD.\n");
 			removeProcess(current->process->pid);
 		} else{
 				current = current->next;

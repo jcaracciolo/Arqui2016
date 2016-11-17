@@ -6,6 +6,7 @@
 #define GRAPHICSDRIVER_H
 
 #include "types.h"
+#include "videoDriver.h"
 
 
 #define CHAR_WIDTH 6
@@ -25,6 +26,8 @@
 #define abs(n) ((n)>=0?(n):-(n))
 #define round(n) (int)((n) < 0 ? ((n) - 0.5) : ((n) + 0.5));
 #define sqrt3 1.73205080757
+
+#define CURSOR_HEIGHT (CHAR_HEIGHT*FONT_SCALE)
 
 
 typedef  unsigned short uint16;
@@ -80,6 +83,8 @@ void _drawStraightLine(uint32 x, uint32 y, uint32 length);
 void _drawVerticalLine(uint32 x, uint32 y, uint32 length);
 void _drawLine(uint32 x1, uint32 y1, uint32 x2, uint32 y2);
 void _drawCLine(uint32 x1, uint32 y1, uint32 x2, uint32 y2, Color c);
+void graphicScroll();
+void graphicScrollWeird();
 //void _drawCCircle(uint32 x1, uint32 y1, uint32 radius, Color c);
 
 

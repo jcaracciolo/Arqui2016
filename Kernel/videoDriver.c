@@ -12,24 +12,16 @@
 #define CURSOR_HEIGHT (CHAR_HEIGHT*FONT_SCALE)
 
 static char *video = (char *) 0xB8000;
+modeInfo *infv = (modeInfo *)0x5c00;
 static int cursor = 0;
 static boolean on = false;
-static char screen[COLS * ROWS] = {0};
+//static char screen[COLS * ROWS] = {0};
 
 
 
 void scroll() {
-	int begincpy = LINES_TO_SCROLL * COLS;
-	int length = COLS * ROWS - begincpy;
-	//strcpy(screen, &(screen[begincpy]), length);
-	 int j;
-	for (int i = begincpy,j = 0; j < length; i++, j++) {
-		screen[j] = screen[i];
-	}
-	for (j = length; j < ROWS * COLS; j++) {
-		screen[j] = ' ';
-	}
-	cursor -= begincpy;
+	graphicScroll();
+	cursor=COLS*(ROWS-3);
 }
 
 void setCursorPosition(int pos) {
@@ -62,19 +54,21 @@ void printChar(int c){
 	}else if(c=='\t') {
 		for(int i=0;i<4;i++) {
 			drawChar(' ', cursorX(cursor), cursorY(cursor));
-			screen[cursor++] = (char)c;
+			//screen[cursor++] = (char)c;
+			cursor++;
 		}
 	}else{
 		drawChar(c,cursorX(cursor),cursorY(cursor));
 
-		screen[cursor++] = (char)c;
+		cursor++;
+//		screen[cursor++] = (char)c;
 //		video[cursor++] = (char)c;
 //		video[cursor++] = 0x07;
 	}
 	if (cursor >= MAX_LINE_TO_WRITE * COLS) {
 		//clear();
 		scroll();
-		printScreenArray();
+		//printScreenArray();
 	}
 	//cursor = cursor % (ROWS * COLS * 2);
 }
@@ -82,7 +76,7 @@ void printChar(int c){
 void printScreenArray() {
 
 	for (int i = 0; i < COLS * ROWS; i ++) {
-		drawChar(screen[i],cursorX(i),cursorY(i));
+//		drawChar(screen[i],cursorX(i),cursorY(i));
 //		video[i+1] = cc(BLACK,WHITE);
 	}
 
@@ -138,9 +132,9 @@ void backspace() {
 
 
 void clearChars() {
-	for (int i = 0; i < COLS * ROWS; i++) {
-		screen[i] = 0;
-	}
+//	for (int i = 0; i < COLS * ROWS; i++) {
+//		screen[i] = 0;
+//	}
 	cursor = 0;
 }
 
