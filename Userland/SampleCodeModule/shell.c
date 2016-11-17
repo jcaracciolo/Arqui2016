@@ -81,25 +81,20 @@ void addToShellBuffer(char c) {
 
 void drawFractal() {	
 	drawCFractalEquilateral(150,768,768,9,readData());
-
-	leave();
 }
 
 void drawFractalc() {
 
 	rand+=rand*3^getSeconds()*500;
 	drawCFractalEquilateral(150,768,768,9,rand);
-	leave();
 }
 
 void func() {
 	printf("execute!");
-	leave();
 }
 
 void printTime() {	
 	printf("%d:%d\n", getHours(), getMinutes());
-	leave();
 }
 
 void printDate() {
@@ -190,7 +185,8 @@ void execute() {
 	if (strcmp(shellBuffer, "func") == 0) {
 		void** parg = (void**)malloc(sizeof(void*) * 2);
 		parg[0] = (void*)"func";
-		exec(&func, 2, parg);
+		//exec(&func, 1, parg);
+		exec(&printf, 1, parg);
 
 	} else if (strcmp(shellBuffer, "clear") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
