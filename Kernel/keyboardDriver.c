@@ -2,6 +2,8 @@
 #include "include/types.h"
 #include "include/videoDriver.h"
 #include "include/scanCodes.h"
+#include "include/scheduler.h"
+#include "include/process.h"
 
 extern char read_key();
 
@@ -10,16 +12,22 @@ extern char read_key();
 static int buffer[BUFFER_SIZE];
 static int actualIndex=0;
 static int lastIndex=0;
+static boolean bufferEmpty = true;
 
 static boolean lshift= false;
 static boolean rshift=false;
 static boolean lalt=false;
 static boolean caps=false;
+static boolean ctrl=false;
 
 void addToBuffer(){
     int key=read_key();
 
-    if(key==0x36 || key==-74){
+    if (key == 0x1D) {
+        ctrl = true; // ctrl pressed
+    } else if (key == -99) {
+        ctrl = false; // ctrl released
+    } else if(key==0x36 || key==-74){
         rshift=!rshift;
     }else if(key==0x2A || key==-86){
         lshift=!lshift;
@@ -35,7 +43,13 @@ void addToBuffer(){
             if(ASCII_VALUE[key]!=0){
                 if(lshift || rshift){
                    aux = SHIFT_ASCII_VALUE[key];
-                }else{
+                } else if (ctrl) {
+                    switch (key) {
+                        case 0x2E: // C
+                            changeProcessState(getForegroundPid(), DEAD);
+                            return;
+                    }
+                } else {
                     aux = ASCII_VALUE[key];
                 }
 
@@ -46,12 +60,9 @@ void addToBuffer(){
                         aux=aux+'a'-'A';
                     }
                 }
-
                 buffer[lastIndex]=aux;
                 lastIndex = (lastIndex + 1) % BUFFER_SIZE;
-            }else{
-
-
+                bufferEmpty = false;
             }
         }
     }
@@ -63,7 +74,7 @@ int readBuffer(){
         actualIndex=(actualIndex+1)%BUFFER_SIZE;
         return  aux;
     }
-
+    bufferEmpty = true;
     return EOF;
 }
 

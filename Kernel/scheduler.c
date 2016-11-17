@@ -84,6 +84,11 @@ void changeProcessState(int pid, processState state) {
 			// process found
 			slot->process->state = state;
 
+			if (slot->process->pid == getForegroundPid()) {
+				setForeground(1);
+				printAllProcesses();
+			}
+
 			unlockScheduler();
 			return;
 		}
