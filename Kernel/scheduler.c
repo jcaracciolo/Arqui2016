@@ -18,6 +18,8 @@ static int cantProcesses = 0;
 static int amountFreeableProcess=0;
 static processSlot * processToFree[100];
 
+int debug=0;
+
 
 int insertProcess(void * entryPoint, int cargs, void ** pargs) {
 	process * p = createProcess(entryPoint, (int)cargs, (void **)pargs);
@@ -144,6 +146,7 @@ void printAllProcesses() {
 void freeProcessSlot(processSlot * slot) {
 	freeProcess(slot->process);
 	free(slot);
+
 }
 
 void freeWaitingProcess(){
@@ -159,9 +162,10 @@ void * next_process(int current_rsp) {
 	current->process->stack_pointer = current_rsp;
 
 	schedule();
+    int ans=current->process->stack_pointer;
     unlockScheduler();
-    freeWaitingProcess();
-	return current->process->stack_pointer;
+
+    return ans;
 }
 
 void schedule() {
