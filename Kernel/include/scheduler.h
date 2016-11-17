@@ -28,7 +28,7 @@ void printAllProcesses();
 
 void setForeground(int pid);
 
-int getforegroundPid();
+int getForegroundPid();
 
 int getCurrentPid();
 

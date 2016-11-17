@@ -51,7 +51,7 @@ int getCurrentPid() {
 	return current==NULL?-1:current->process->pid;
 }
 
-int getforegroundPid() {
+int getForegroundPid() {
 	return foreground->process->pid;
 }
 
@@ -135,7 +135,15 @@ void printAllProcesses() {
 	processSlot * slot  = current;
 	int i = 0;
 	for(; i < cantProcesses; i++) {
-		print(slot->process->descr); print(" pid: "); printNum(slot->process->pid); print(" "); print(stateDescription[slot->process->state]); print("\n");
+		print(slot->process->descr);
+		print(" pid: "); printNum(slot->process->pid);
+		print(" "); print(stateDescription[slot->process->state]);
+		if (getForegroundPid() == slot->process->pid) {
+			print(" "); print("fg");
+		} else {
+			print(" "); print("bg");
+		}
+		print("\n");
 		slot = slot->next;
 	}
 	unlockScheduler();
