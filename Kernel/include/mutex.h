@@ -16,6 +16,9 @@ void unlockScheduler();
 
 void initializeMutex();
 
+#define MALLOCMUTEX "__MALLOC__MUTEX"
+#define PAGESMUTEX "__PAGES__MUTEX"
+
 #define MAX_MUTEXES 256
 #define MAX_MUTEX_NAME_LENGHT 15
 #define MAX_MUTEX_QUEUE_SIZE 30

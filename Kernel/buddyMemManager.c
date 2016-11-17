@@ -6,6 +6,7 @@
 #include "include/buddyMemManager.h"
 #include "include/videoDriver.h"
 #include "include/lib.h"
+#include "include/mutex.h"
 #define NULL ((void*)0)
 
 /* Initializing heap*/
@@ -33,6 +34,7 @@ static uint16_t heap[MAXHEAPSIZE];
 static uint64_t heapSize;
 static uint64_t block;
 static void* beginning=(void*)MEMBEGIN;
+static int mutex;
 
 uint64_t roundUpPower2(uint64_t v){
 
@@ -56,16 +58,28 @@ uint64_t pow2(uint64_t n){
 void* buddyAllocate(uint64_t amount){
     if(amount<=0) return NULL;
 
+    lockMutex(mutex);
+
     uint64_t pages=roundUpPower2( amount/block );
     pages=pages==0?1:pages;
-    return addNblocks(pages);
+    void* ans = addNblocks(pages);
+
+    unlockMutex(mutex);
+
+    return ans;
 }
 
 void* buddyAllocatePages(uint64_t pages){
     if (pages==0) return NULL;
-    return addNblocks(pages);
-}
 
+    lockMutex(mutex);
+
+    void* ans=addNblocks(pages);
+
+    unlockMutex(mutex);
+
+    return ans;
+}
 
 void* buddyReallocatePages(void* address,uint64_t pages){
     if( buddyFree(address) != -1){
@@ -129,6 +143,7 @@ int isPowerOfTwo (uint64_t x){
 }
 
 void initializeHeap(){
+    mutex=getMutex(PAGESMUTEX);
     block=MINPAGE;
     heapSize=MAXHEAPSIZE;
     recursiveMark(1);
@@ -188,14 +203,22 @@ int isInt(float f){
 }
 
 int buddyFree(void* address){
+    int ans;
+
+    lockMutex(mutex);
+
     address= (void*)((char*)address -  (char*)beginning);
 
     if(!isInt((uint64_t)address/(block*1.0f))){
-        return -1;
+        ans= -1;
     } else{
         int position=((uint64_t)address)/block;
-        return searchUp(heapSize/2 + 1 + position,1);
+        ans= searchUp(heapSize/2 + 1 + position,1);
     }
+
+    unlockMutex(mutex);
+
+    return ans;
 
 }
 

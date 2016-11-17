@@ -14,19 +14,22 @@ extern void _popAll();
 static processSlot * current = NULL;
 static processSlot * foreground = NULL;
 static int cantProcesses = 0;
-static int inf=0;
+
+static int amountFreeableProcess=0;
+static processSlot * processToFree[100];
 
 
 int insertProcess(void * entryPoint, int cargs, void ** pargs) {
-	lockScheduler();
 	process * p = createProcess(entryPoint, (int)cargs, (void **)pargs);
-	unlockScheduler();
-	return addProcessSlot(p);
+    return addProcessSlot(p);
+
 }
 
 int addProcessSlot(process * process) {
 
 	processSlot * slot = (processSlot *)malloc(sizeof(processSlot));
+    lockScheduler();
+
 	slot->process = process;
 
 	if (current == NULL) {
@@ -38,6 +41,8 @@ int addProcessSlot(process * process) {
 		current->next = slot;
 	}
 	cantProcesses++;
+
+    unlockScheduler();
 
 	return process->pid;
 }
@@ -51,9 +56,9 @@ int getforegroundPid() {
 }
 
 void setForeground(int pid) {
-	lockScheduler();
 	int i = 0;
-	processSlot * slot = foreground;
+    lockScheduler();
+    processSlot * slot = foreground;
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
 			// new foreground process found
@@ -69,9 +74,9 @@ void setForeground(int pid) {
 }
 
 void changeProcessState(int pid, processState state) {
-	lockScheduler();
 	int i = 0;
-	processSlot * slot = current;
+    lockScheduler();
+    processSlot * slot = current;
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
 			// process found
@@ -88,22 +93,22 @@ void changeProcessState(int pid, processState state) {
 	return;
 }
 
-
+void addToFreeQueue(processSlot * slot){
+    processToFree[amountFreeableProcess]=slot;
+    amountFreeableProcess++;
+}
 
 void removeProcess(int pid) {
 	if (current == NULL) {
-
-		unlockScheduler();
 		return;
+
 	} else if(equalProcesses(current->process, current->next->process) && current->process->pid == pid) {
 		// process to remove is the current and only one process in list
-		freeProcessSlot(current);
-		current = NULL;
-		foreground = NULL;
-		cantProcesses--;
-
-		unlockScheduler();
-		return;
+        addToFreeQueue(current);
+        current = NULL;
+        foreground = NULL;
+        cantProcesses--;
+        return;
 	}
 
 	processSlot * prevSlot = current;
@@ -120,8 +125,8 @@ void removeProcess(int pid) {
 	}
 
 	prevSlot->next = slotToRemove->next;
-	freeProcessSlot(slotToRemove);
 	cantProcesses--;
+    addToFreeQueue(slotToRemove);
 
 }
 
@@ -141,6 +146,12 @@ void freeProcessSlot(processSlot * slot) {
 	free(slot);
 }
 
+void freeWaitingProcess(){
+    for(int i=0;i<amountFreeableProcess;i++){
+        freeProcessSlot(processToFree[i]);
+    }
+}
+
 void * next_process(int current_rsp) {
 	if (current == NULL || !lockScheduler()) {
 		return current_rsp;
@@ -149,10 +160,13 @@ void * next_process(int current_rsp) {
 
 	schedule();
     unlockScheduler();
+    freeWaitingProcess();
 	return current->process->stack_pointer;
 }
 
 void schedule() {
+    amountFreeableProcess=0;
+
 	if (current->process->state == DEAD) {
 			print("Process found DEAD.\n");
 			removeProcess(current->process->pid);
