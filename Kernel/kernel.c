@@ -18,6 +18,7 @@
 #include "include/logo.h"
 #include "include/buddyMemManager.h"
 #include "include/mutex.h"
+#include "include/liballoc.h"
 
 
 extern uint8_t text;
@@ -144,6 +145,8 @@ void setupEverything(){
 	initializeMutex();
 	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n");
 	decreaseTimerTick();
+
+	initializeMalloc();
 
 	print(logo);
 	print("\n\n\n");

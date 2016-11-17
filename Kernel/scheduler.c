@@ -43,7 +43,7 @@ int addProcessSlot(process * process) {
 }
 
 int getCurrentPid() {
-	return current->process->pid;
+	return current==NULL?-1:current->process->pid;
 }
 
 int getforegroundPid() {

@@ -12,6 +12,7 @@
 #include "include/mutex.h"
 #include "include/buddyMemManager.h"
 #include "include/process.h"
+#include "include/liballoc.h"
 
 #define SYSTEM_CALL_COUNT 32
 #define SYSTEM_CALL_START_INDEX 0x80
@@ -63,17 +64,19 @@ qword sys_reallocateNewMemory(qword address, qword amountBytes, qword rcx, qword
 
 qword sys_allocate(qword address, qword size, qword rcx, qword r8, qword r9) {
      void** ad =(void**)address;
-    *ad=allocate((int)size);
+    *ad=lib_malloc((int)size);
     return 0;
 }
 
-qword sys_free(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
+qword sys_free(qword address, qword rdx, qword rcx, qword r8, qword r9) {
+    void** ad =(void**)address;
+    lib_free(*ad);
     return 0;
 }
 
 qword sys_reallocate(qword address, qword size, qword rcx, qword r8, qword r9) {
     void** ad =(void**)address;
-    *ad=allocate((int)size);
+    *ad=lib_realloc(*ad,(int)size);
     return 0;
 }
 
