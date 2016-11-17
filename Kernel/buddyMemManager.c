@@ -75,9 +75,6 @@ void* buddyAllocatePages(uint64_t pages){
     lockMutex(mutex);
 
     void* ans=addNblocks(pages);
-    print("------------\n");
-    printNum(ans);
-    print("\n------------\n");
 
     unlockMutex(mutex);
 
