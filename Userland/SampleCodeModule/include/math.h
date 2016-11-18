@@ -12,4 +12,10 @@ void cos(float x, float * res);
 
 void sin(float x, float * res);
 
+void srand(unsigned int seed);
+
+int randM(void); // RAND_MAX assumed to be 32767
+
+int randBound(int min, int max);
+
 #endif //ARQUI2016_MATH_H

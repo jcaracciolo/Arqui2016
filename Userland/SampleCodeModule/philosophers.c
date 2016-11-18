@@ -5,101 +5,168 @@
 #include "include/strings.h"
 #include "include/stdvid.h"
 #include "include/math.h"
+#include "include/stdtime.h"
 
 #define MAX_PHILOSOPHERS 50
 #define THINKING 0
 #define HUNGRY 1
 #define EATING 2
-#define SCREEN_CENTER_X 350
+#define DEAD 3
+#define SCREEN_CENTER_X 450
 #define SCREEN_CENTER_Y 350
+#define TIME_SCALE 8000
+#define THINKING_TO_EATING_RATIO 2
+
+#define SAFE lockMutex(safeSpace)
+#define UNSAFE unlockMutex(safeSpace)
 
 int philState[MAX_PHILOSOPHERS];
 int philMutex[MAX_PHILOSOPHERS];
+int neighborsMutex;
 int philAmount = 0;
 int tableRadius = 200;
 int philosopherRadius = 30;
+int safeSpace;
 
 void philosophize();
 void addPhilosopher();
 int leftFrom(int index);
 int rightFrom(int index);
 char * getMutexName(int philNumber);
-void drawPhilosopher(int id, int status);
-int getPhilosopherX(int id);
+void drawPhilosopher(int id, int status, int currPhil);
+int getPhilosopherX(int id, int currPhil);
+int getPhilosopherY(int id, int currPhil);
+void killPhilosophers(int currAmount);
+void drawMyself(int id);
 
 void philosphers(){
-
+    clear();
+    neighborsMutex = createMutex("philosophersNeighbors");
+    safeSpace = createMutex("philosophersSafeSpace");
     for(int i=0; i < 5; i++){
-        drawPhilosopher(i, 0);
         addPhilosopher();
-        philAmount++;
+//        sleep(2000);
     }
+    int c = 0;
+    while (c != 'x'){
+        c = getc();
+        if(c!=-1) {
+            switch (c) {
+                case 'q':
+                case 'Q':
+                    addPhilosopher();
+                    break;
+                case 'e':
+                case 'E':
+                    removePhilosopher();
+                    break;
+            }
+        }
+    }
+}
 
 
 
+void removePhilosopher(){
+    clear();
+    philAmount--;
+    drawPhilosophers(philAmount);
 }
 
 void addPhilosopher(){
     char* mutexName=getMutexName(philAmount);
-    printf("%s\n", mutexName);
+//    printf("%s\n", mutexName);
     philMutex[philAmount]=createMutex(mutexName);
-    printf("mutex %d\n", philMutex[philAmount]);
-    printf("Philo %d got %d fork",philAmount,lockMutex(philMutex[philAmount]));
-
+    philState[philAmount]=THINKING;
+//    printf("mutex %d\n", philMutex[philAmount]);
+//    printf("Philo %d got %d fork",philAmount,));
+//
     void** parg = (void**)malloc(sizeof(void*) * 2);
-    parg[0] = (void*)mutexName;
-    parg[1] = (void*)philAmount;
-    exec(&philosophize,2,parg, 1);
+    parg[0] = (void*)philAmount;
+//    lockMutex(philMutex[philAmount]);
+    exec(&philosophize,philAmount,parg, 1);
+//    killPhilosophers(philAmount);
+    clear();
+    lockMutex(neighborsMutex);
     philAmount++;
+    unlockMutex(neighborsMutex);
+    drawPhilosophers(philAmount);
 }
 
-void philosophize(int id){
-    printf("Philo  is born\n");
-    int status = THINKING;
+void philosophize( int id){
+    printf("Philo %d is born\n",id);
     int left;
     int right;
     int n;
+
     while (1){
-        switch (status){
+        switch (philState[id]){
             case THINKING:
-                //printf("Philo %d is thinking",id);
-                drawPhilosopher(id,THINKING);
-                n = 4000;
-                while (n--);
-                status = HUNGRY;
+                SAFE;
+//                printf("Philo %d is thinking\n",id);
+                UNSAFE;
+
+                drawMyself(id);
+                sleep(randBound(TIME_SCALE*THINKING_TO_EATING_RATIO,2*TIME_SCALE*THINKING_TO_EATING_RATIO));
+                philState[id] = HUNGRY;
             break;
             case HUNGRY:
-                drawPhilosopher(id,HUNGRY);
+                drawMyself(id);
                 if(philAmount >1){
-                    //printf("Philo %d is HUNGRY",id);
+                    SAFE;
+//                    printf("Philo %d is HUNGRY\n",id);
+                    UNSAFE;
+
+                    lockMutex(neighborsMutex);
                     left = leftFrom(id);
                     right = rightFrom(id);
-                    if(id == philAmount-1) {
+                    unlockMutex(neighborsMutex);
+
+                    if(id == philAmount -1) {
                         lockMutex(philMutex[right]);
-                        //printf("Philo %d got %d fork",id,right);
+                        SAFE;
+//                        printf("Philo %d got right %d fork\n",id,right);
+                        UNSAFE;
                         lockMutex(philMutex[left]);
-                        //printf("Philo %d got %d fork",id,left);
+                        SAFE;
+//                        printf("Philo %d got left %d fork\n",id,left);
+                        UNSAFE;
                     } else {
                         lockMutex(philMutex[left]);
-                        //printf("Philo %d got %d fork",id,left);
+                        SAFE;
+//                        printf("Philo %d got left %d fork\n",id,left);
+                        UNSAFE;
                         lockMutex(philMutex[right]);
-                        //printf("Philo %d got %d fork",id,right);
+                        SAFE;
+//                        printf("Philo %d got right %d fork\n",id,right);
+                        UNSAFE;
                     }
-                    status = EATING;
+                    philState[id] = EATING;
                 }
                 break;
             case EATING:
-                drawPhilosopher(id,EATING);
-                //printf("Philo %d is eating",id);
-                n = 2500;
-                while (n--);
-                unlockMutex(philMutex[left]);
+                drawMyself(id);
+                SAFE;
+//                printf("Philo %d is eating\n",id);
+                UNSAFE;
+                sleep(randBound(TIME_SCALE,2*TIME_SCALE));
+
+                philState[id] = THINKING;
+                drawMyself(id);
+                SAFE;
+//                printf("Philo %d released %d \n",id,right);
+                UNSAFE;
                 unlockMutex(philMutex[right]);
-                status = THINKING;
+                SAFE;
+//                printf("Philo %d released %d \n",id,left);
+                UNSAFE;
+                unlockMutex(philMutex[left]);
+
             break;
         }
     }
 }
+
 
 int leftFrom(int index){
   return index;
@@ -125,9 +192,41 @@ char * getMutexName(int philNumber){
   return mutexName;
 }
 
+void killPhilosophers(int currPhil){
+    if(currPhil == 0) return;
+    int i;
+    for(i=0;i<currPhil;i++){
+        drawPhilosopher(i,DEAD,currPhil);
+    }
+}
+
+void drawPhilosophers(int currPhil){
+    if(currPhil == 0) return;
+    int i;
+    for(i=0;i<currPhil;i++){
+        drawPhilosopher(i,philState[i],currPhil);
+    }
+}
+
+int getPhilosopherX(int id, int currPhil){
+    float angle = (M_2_PI / currPhil)*id;
+    float res;
+    cos(angle,&res);
+    return res * tableRadius + SCREEN_CENTER_X;
+}
+int getPhilosopherY(int id, int currPhil){
+    float angle = (M_2_PI / currPhil)*id;
+    float res;
+    sin(angle,&res);
+    return res * tableRadius + SCREEN_CENTER_Y;
+}
+
+void drawMyself(int id){
+    drawPhilosopher(id,philState[id],philAmount);
+}
 
 
-void drawPhilosopher(int id, int status){
+void drawPhilosopher(int id, int status, int currPhil){
     qword color = 0x00AAAAAA;
     switch (status){
         case THINKING:
@@ -139,23 +238,10 @@ void drawPhilosopher(int id, int status){
         case EATING:
             color = 0x00BA55D3;
             break;
+        case DEAD:
+            color = 0x00000000;
+            break;
     }
-    drawCFullCircle(getPhilosopherX(id),getPhilosopherY(id),philosopherRadius,color);
-//    drawCSquare(getPhilosopherX(id),40,100,100,0x00AAAAAA);
+    drawCFullCircle(getPhilosopherX(id,currPhil),getPhilosopherY(id,currPhil)
+            ,philosopherRadius,color);
 }
-
-
-int getPhilosopherX(int id){
-    float angle = (M_2_PI / philAmount)*id;
-    float res;
-    cos(angle,&res);
-    return res * tableRadius + SCREEN_CENTER_X;
-}
-int getPhilosopherY(int id){
-    float angle = (M_2_PI / philAmount)*id;
-    float res;
-    sin(angle,&res);
-    return res * tableRadius + SCREEN_CENTER_Y;
-}
-
-
