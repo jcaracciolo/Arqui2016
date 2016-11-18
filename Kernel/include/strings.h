@@ -11,7 +11,7 @@ void reverseCharArray(char* str, int length);
 int numLength(int num);
 
 /* str1: destination, str2: origin */
-void strcpy(char* str1, const char* str2, int length);
+int strcpy(char* str1, const char* str2, int length);
 
 /* convert str, '\0' ended string, to uppercase */
 void toUpper(char* str);

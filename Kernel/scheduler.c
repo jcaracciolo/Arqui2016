@@ -5,6 +5,7 @@
 #include "include/videoDriver.h"
 #include "include/mutex.h"
 #include "include/scheduler.h"
+#include "include/strings.h"
 
 extern void * _get_rsp();
 extern void _set_rsp(void * rsp);
@@ -83,6 +84,7 @@ void setForeground(int pid) {
 }
 
 void changeProcessState(int pid, processState state) {
+
 	int i = 0;
     int notPreviouslyLocked=lockScheduler();
     processSlot * slot = current;
@@ -141,6 +143,64 @@ void removeProcess(int pid) {
 	cantProcesses--;
     addToFreeQueue(slotToRemove);
 
+}
+
+void sprintAllProcesses(char* buff, int size){
+    int index=0;
+    lockScheduler();
+    processSlot * slot  = current;
+    int i = 0;
+    int copied;
+    char pid[0];
+    for(; i < cantProcesses; i++) {
+
+        copied=strcpy(buff+index,slot->process->descr,size);
+        index+=copied;
+        size-=copied;
+        if(size<=0) break;
+
+        copied=strcpy(buff+index," pid: ",size);
+        index+=copied;
+        size-=copied;
+        if(size<=0) break;
+
+        intToString(pid,slot->process->pid);
+        copied=strcpy(buff+index,pid,size);
+        index+=copied;
+        size-=copied;
+        if(size<=0) break;
+
+        copied=strcpy(buff+index," ",size);
+        index+=copied;
+        size-=copied;
+        if(size<=0) break;
+
+        copied=strcpy(buff+index,stateDescription[slot->process->state],size);
+        index+=copied;
+        size-=copied;
+        if(size<=0) break;
+
+
+        copied=strcpy(buff+index," ",size);
+        index+=copied;
+        size-=copied;
+        if(size<=0) break;
+
+        if(getForegroundPid() == slot->process->pid){
+            copied=strcpy(buff+index," fg\n",size);
+            index+=copied;
+            size-=copied;
+            if(size<=0) break;
+        }else{
+            copied=strcpy(buff+index," bg\n",size);
+            index+=copied;
+            size-=copied;
+            if(size<=0) break;
+        }
+        slot = slot->next;
+    }
+    buff[index]='\0';
+    unlockScheduler();
 }
 
 void printAllProcesses() {

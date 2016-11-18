@@ -59,7 +59,10 @@ int exec(void * entry_point, int cargs, void ** pargs, int giveFg) {
 }
 
 void ps() {
-	int80(28, 0, 0, 0, 0, 0);
+    char * buffer=malloc(3000);
+	int80(28, buffer, 3000, 0, 0, 0);
+    printf(buffer);
+    free(buffer);
 }
 
 void kill(int pid, int msg) {

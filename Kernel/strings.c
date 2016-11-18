@@ -52,11 +52,13 @@ int strlen(const char* str) {
 }
 
 
-void strcpy(char* str1, const char* str2, int length) {
+int strcpy(char* str1, const char* str2, int length) {
 	int i;
 	for (i = 0; i < length && str2[i]!='\0'; i++) {
 		str1[i] = str2[i];
 	}
+	if(i!=length) str1[i]='\0';
+	return i;
 }
 
 void strCatNum(char* ans,char* str,int num){

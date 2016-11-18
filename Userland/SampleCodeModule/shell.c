@@ -223,7 +223,7 @@ void execute() {
 
 	} else if(strcmp(shellBuffer, "multifractal") == 0) {
 		clear();
-		for(int i=0;i<20;i++) {
+		for(int i=0;i<50;i++) {
 			void** parg = (void**)malloc(sizeof(void*));
 			parg[0] = (void*)"colorfractal";
 			int pid = exec(&drawFractalc, 1, parg, psToFg);
@@ -250,7 +250,9 @@ void execute() {
 		exec(&playStarWars, 1, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "philo") == 0) {
-        exec(&philosphers,0,0, psToFg);
+        void** parg = (void**)malloc(sizeof(void*));
+        parg[0] = (void*)"philoManager";
+        exec(&philosphers,1,parg, psToFg);
 
 	}else if(strcmp(shellBuffer, "prod") == 0) {
         exec(&producerConsumer,0,0, psToFg);

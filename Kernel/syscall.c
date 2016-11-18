@@ -19,7 +19,6 @@
 #define SYSTEM_CALL_COUNT 38
 #define SYSTEM_CALL_START_INDEX 0x80
 
-
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
 static sys sysCalls[SYSTEM_CALL_COUNT];
@@ -71,8 +70,8 @@ qword sys_allocate(qword address, qword size, qword rcx, qword r8, qword r9) {
 }
 
 qword sys_free(qword address, qword rdx, qword rcx, qword r8, qword r9) {
-    void** ad =(void**)address;
-    lib_free(*ad);
+    void* ad =(void*)address;
+    lib_free(ad);
     return 0;
 }
 
@@ -85,11 +84,6 @@ qword sys_reallocate(qword address, qword size, qword rcx, qword r8, qword r9) {
 /*------------------------------------------------------------------------*/
 
 qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9) {
-    char name[16] = {0};
-    strcpy(name, "read", 4);
-    intToString(name+4, getCurrentPid());
-    getMutex(name);
-    lockMutex(name);
     if (file == 0) {
         char *charbuffer = (char *) buffer;
         int i = 0;
@@ -103,7 +97,6 @@ qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9) {
         pipe_t pipe=getMyProcessData()->fd[file-3];
         readPipe(pipe,buffer,size);
     }
-    unlockMutex(name);
     return 1;
 }
 
@@ -262,8 +255,9 @@ qword sys_exec(qword entry_point, qword pid, qword cargs, qword pargs, qword r9)
     return 0;
 }
 
-qword sys_ps(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
-    printAllProcesses();
+qword sys_ps(qword buff, qword num, qword rcx, qword r8, qword r9) {
+    sprintAllProcesses(buff,num);
+    //printAllProcesses();
     return 0;
 }
 

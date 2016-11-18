@@ -14,7 +14,7 @@
 #define DEAD 3
 #define SCREEN_CENTER_X 450
 #define SCREEN_CENTER_Y 350
-#define TIME_SCALE 8000
+#define TIME_SCALE 1000
 #define THINKING_TO_EATING_RATIO 2
 
 #define SAFE lockMutex(safeSpace)
@@ -43,13 +43,14 @@ void philosphers(){
     clear();
     neighborsMutex = createMutex("philosophersNeighbors");
     safeSpace = createMutex("philosophersSafeSpace");
-    for(int i=0; i < 5; i++){
+    for(int i=0; i < 20; i++){
         addPhilosopher();
-//        sleep(2000);
+        //sleep(2000);
     }
-    int c = 0;
-    while (c != 'x'){
-        c = getc();
+    return;
+    while(1){
+        int c = getc();
+        printf("%d",c);
         if(c!=-1) {
             switch (c) {
                 case 'q':
@@ -60,10 +61,15 @@ void philosphers(){
                 case 'E':
                     removePhilosopher();
                     break;
+                case 'x':
+                case 'X':
+                    return;
             }
         }
     }
 }
+
+
 
 void removePhilosopher(){
     clear();
@@ -72,27 +78,32 @@ void removePhilosopher(){
 }
 
 void addPhilosopher(){
+    if(philAmount!=0) lockMutex(philMutex[0]);
     char* mutexName=getMutexName(philAmount);
 //    printf("%s\n", mutexName);
     philMutex[philAmount]=createMutex(mutexName);
     philState[philAmount]=THINKING;
-    printf("mutex %d\n", mutexName);
+//    printf("mutex %d\n", philMutex[philAmount]);
 //    printf("Philo %d got %d fork",philAmount,));
 //
     void** parg = (void**)malloc(sizeof(void*) * 2);
-    parg[0] = mutexName;
+    printf("%s\n",mutexName);
+    parg[0] = (void*)mutexName;
     parg[1] = (void*)philAmount;
 //    lockMutex(philMutex[philAmount]);
-    exec(&philosophize,philAmount,parg, 1);
+    lockMutex(neighborsMutex);
+    exec(&philosophize,2,parg, 1);
 //    killPhilosophers(philAmount);
-//    clear();
+    clear();
     lockMutex(neighborsMutex);
     philAmount++;
     unlockMutex(neighborsMutex);
     drawPhilosophers(philAmount);
+    if(philAmount!=1) unlockMutex(philMutex[0]);
 }
 
-void philosophize( int id){
+void philosophize( int carg, void** args){
+    int id=args[1];
     printf("Philo %d is born\n",id);
     int left;
     int right;

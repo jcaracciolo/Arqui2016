@@ -30,6 +30,7 @@ void initializeMutex(){
     for(int i=0;i<MAX_MUTEXES;i++){
         mutexes[i].name[0]=='\0';
     }
+    stdinMutex=getMutex("__STDIN__MUT");
 }
 
 void saveName(int index,char* name){
