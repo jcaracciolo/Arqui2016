@@ -229,9 +229,3 @@ void unlockScheduler(){
 int tryScheduler(){
     return schedulerMutex;
 }
-
-//TODO: this does what i think it does?
-void unlockAndSleep(int mutex, int pid){
-    changeProcessState(pid,BLOCKED);
-    unlockMutex(mutex);
-}

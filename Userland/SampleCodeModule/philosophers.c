@@ -65,8 +65,6 @@ void philosphers(){
     }
 }
 
-
-
 void removePhilosopher(){
     clear();
     philAmount--;
@@ -85,7 +83,7 @@ void addPhilosopher(){
     parg[0] = mutexName;
     parg[1] = (void*)philAmount;
 //    lockMutex(philMutex[philAmount]);
-    exec(&philosophize,2,parg, 1);
+    exec(&philosophize,philAmount,parg, 1);
 //    killPhilosophers(philAmount);
 //    clear();
     lockMutex(neighborsMutex);
@@ -110,7 +108,6 @@ void philosophize( int id){
             case HUNGRY:
                 drawMyself(id);
                 if(philAmount >1){
-
                     lockMutex(neighborsMutex);
                     left = leftFrom(id);
                     right = rightFrom(id);
@@ -118,30 +115,22 @@ void philosophize( int id){
 
                     if(id == philAmount -1) {
                         lockMutex(philMutex[right]);
-
                         lockMutex(philMutex[left]);
-
                     } else {
                         lockMutex(philMutex[left]);
-
                         lockMutex(philMutex[right]);
-
                     }
                     philState[id] = EATING;
                 }
                 break;
             case EATING:
                 drawMyself(id);
-
                 sleep(randBound(TIME_SCALE,2*TIME_SCALE));
 
                 philState[id] = THINKING;
                 drawMyself(id);
-
                 unlockMutex(philMutex[right]);
-
                 unlockMutex(philMutex[left]);
-
             break;
         }
     }

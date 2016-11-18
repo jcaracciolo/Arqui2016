@@ -6,7 +6,10 @@
 #include "include/strings.h"
 #include "include/mutex.h"
 #include "include/process.h"
+#include "include/scheduler.h"
 
+void addToCondVarQueue(condVar_t * condVar, int pid);
+int removeFromCondVarQueue(condVar_t * condVar);
 
 
 void initCondVar(condVar_t * condVar){
@@ -14,18 +17,21 @@ void initCondVar(condVar_t * condVar){
     condVar->queueSize=0;
 }
 
-void waitCondVar(condVar_t * condVar, int mutex, int pid){
+void waitCondVar(condVar_t * condVar, int mutex){
     lockScheduler();
     condVar->mutex = mutex;
-    addToCondVarQueue(condVar,pid);
-    unlockAndSleep(mutex,pid);
+    addToCondVarQueue(condVar,getCurrentPid());
+    changeProcessState(getCurrentPid(),BLOCKED);
+    unlockMutex(mutex);
     unlockScheduler();
+    _yield();
+    lockMutex(mutex);
 }
 
 void signalCondVar(condVar_t * condVar){
-    lockMutex(condVar->mutex);
-    changeProcessState(removeFromCondVarQueue(condVar),READY);
-    _yield();
+    int pid = removeFromCondVarQueue(condVar);
+    if(pid != -1) changeProcessState(pid,READY);
+//    _yield();
 }
 
 void addToCondVarQueue(condVar_t * condVar, int pid){

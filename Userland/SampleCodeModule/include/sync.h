@@ -25,7 +25,7 @@ typedef struct {
 
 void initCondVar(condVar_t * condVar);
 
-void waitCondVar(condVar_t * condVar, int mutex, int pid);
+void waitCondVar(condVar_t * condVar, int mutex);
 
 void signalCondVar(condVar_t * condVar);
 

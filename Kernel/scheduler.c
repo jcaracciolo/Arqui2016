@@ -35,7 +35,7 @@ int insertProcess(void * entryPoint, int cargs, void ** pargs) {
 int addProcessSlot(process * process) {
 
 	processSlot * slot = (processSlot *)malloc(sizeof(processSlot));
-    lockScheduler();
+	int notPreviouslyLocked=lockScheduler();
 
 	slot->process = process;
 
@@ -48,8 +48,7 @@ int addProcessSlot(process * process) {
 		current->next = slot;
 	}
 	cantProcesses++;
-
-    unlockScheduler();
+	if(notPreviouslyLocked) unlockScheduler();
 
 	return process->pid;
 }
@@ -64,25 +63,28 @@ int getForegroundPid() {
 
 void setForeground(int pid) {
 	int i = 0;
-    lockScheduler();
-    processSlot * slot = foreground;
+	int notPreviouslyLocked=lockScheduler();
+
+	processSlot * slot = foreground;
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
 			// new foreground process found
 			foreground = slot;
-			unlockScheduler();
+			if(notPreviouslyLocked) unlockScheduler();
+
 			return;
 		}
 		slot = slot->next;
 	}
 	// pid does not exists
-	unlockScheduler();
+	if(notPreviouslyLocked) unlockScheduler();
+
 	return;
 }
 
 void changeProcessState(int pid, processState state) {
 	int i = 0;
-    lockScheduler();
+    int notPreviouslyLocked=lockScheduler();
     processSlot * slot = current;
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
@@ -93,13 +95,12 @@ void changeProcessState(int pid, processState state) {
 				setForeground(1);
 //				printAllProcesses();
 			}
-
-			unlockScheduler();
+			if(notPreviouslyLocked) unlockScheduler();
 			return;
 		}
 		slot = slot->next;
 	}
-	unlockScheduler();
+	if(notPreviouslyLocked) unlockScheduler();
 	// pid does not exists
 	print("pid not found: "); printNum(pid); print("\n");
 	return;
@@ -143,7 +144,8 @@ void removeProcess(int pid) {
 }
 
 void printAllProcesses() {
-	lockScheduler();
+	int notPreviouslyLocked=lockScheduler();
+
 	processSlot * slot  = current;
 	int i = 0;
 	for(; i < cantProcesses; i++) {
@@ -158,7 +160,8 @@ void printAllProcesses() {
 		print("\n");
 		slot = slot->next;
 	}
-	unlockScheduler();
+	if(notPreviouslyLocked) unlockScheduler();
+
 }
 
 void freeProcessSlot(processSlot * slot) {

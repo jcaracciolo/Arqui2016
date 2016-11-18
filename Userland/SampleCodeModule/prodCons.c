@@ -7,49 +7,70 @@
 #include "include/stdio.h"
 #include "include/stdlib.h"
 #include "include/stdtime.h"
+#include "include/math.h"
+#include "include/stdvid.h"
 
 #define MAX_PRODUCT_QUEUE_SIZE 30
 
 void producer();
 void consumer();
+void addToProductQueue(int productNum);
+int removeFromProductQueue();
 
 static int queue[MAX_PRODUCT_QUEUE_SIZE];
 static int queueSize;
 static int queueIndex;
+static condVar_t condVar;
+static int mutex;
+
+
+
 
 void producerConsumer(){
     sleep(200);
     printf("hi there");
+
     queueSize = 0;
     queueIndex =0;
+    mutex = createMutex("prodConsumer");
+    initCondVar(&condVar);
+
     void** parg = (void**)malloc(sizeof(void*));
     parg[0] = (void*)"producer";
     exec(&producer,1,parg, 1);
     parg[0] = (void*)"consumer";
     exec(&consumer,1,parg, 1);
+
+    drawCFullCircle(100,100,30,0x00EEEEEE);
+    drawCFullCircle(150,100,70,0x00EEEEEE);
 }
 
 void producer(){
-    int mut = createMutex("asd");
-    lockMutex(mut);
     printf("hi, i am a producer\n");
-    addToProductQueue(26);
-    addToProductQueue(275);
-    addToProductQueue(21);
-    addToProductQueue(45);
-    addToProductQueue(77);
+    int i = 0;
+    while (i < 50){
+        i++;
+        sleep(500);
+        lockMutex(mutex);
+        addToProductQueue(i);
+        printf("prod %d\n",i);
+        signalCondVar(&condVar);
+        unlockMutex(mutex);
+    }
     printf("releasing size: %d, index: %d\n",queueSize,queueIndex);
-    unlockMutex(mut);
 }
 
 void consumer(){
-    int mut = createMutex("asd");
-    lockMutex(mut);
+    sleep(randBound(5000,15000));
+
+    lockMutex(mutex);
     printf("hi, i am a consumer\n");
-    while (queueSize > 0){
-        printf("i got %d\n", removeFromProductQueue());
+    while (1){
+        while (queueSize <= 0)waitCondVar(&condVar,mutex);
+
+        printf("cons %d\n", removeFromProductQueue());
     }
-    unlockMutex(mut);
+    unlockMutex(mutex);
 }
 
 

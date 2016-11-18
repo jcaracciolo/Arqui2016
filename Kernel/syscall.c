@@ -329,11 +329,10 @@ qword sys_myPID(qword ans, qword pid, qword rcx, qword r8, qword r9) {
 
 /*------------------------- CONDITIONAL VARIABLES ----------------------*/
 
-    qword sys_waitCondVar(qword condVarArg, qword mutexArg, qword pidArg, qword r8, qword r9) {
+    qword sys_waitCondVar(qword condVarArg, qword mutexArg, qword rcx, qword r8, qword r9) {
         condVar_t * condVar = (condVar_t *) condVarArg;
         int mutex = (int ) mutexArg;
-        int pid = (int ) pidArg;
-        waitCondVar(condVar,mutex,pid);
+        waitCondVar(condVar,mutex);
     return 0;
     }
 
