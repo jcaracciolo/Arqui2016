@@ -210,7 +210,9 @@ int unlockMutex(int mutex){
         changeProcessState(m->queue[m->firstIndex],READY);
         m->firstIndex=(m->firstIndex+1)%MAX_MUTEX_QUEUE_SIZE;
 
-    }else{
+    }
+
+    if(m->waiting==0){
         m->mutex=0;
     }
 
