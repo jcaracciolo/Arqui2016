@@ -26,6 +26,10 @@ void read(int fd,char* buffer,int size){
 	int80(3,fd,buffer,size,0,0);
 }
 
+void printError(char *msg){
+	write(2,msg,strlen(msg));
+}
+
 void write(int fd,char* msg,int size){
 	int80(4,fd,msg,size,0,0);
 }

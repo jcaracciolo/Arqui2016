@@ -59,17 +59,17 @@ void _drawSquare(int x, int y, int height, int width){
 
 void graphicScroll(){
     int width=inf->Xres;
-    int height=inf->Yres-3;
+    int height=inf->Yres-(3*CURSOR_HEIGHT);
     int bpp=inf->bpp/8;
     int line=bpp*(width);
     char * vi= inf->physbase;
     for(int i=0;i<height;i++){
         for(int j=0;j<width;j++){
-            *((char*)vi)=*((char*)(vi+line*CURSOR_HEIGHT));
+            *((char*)vi)=*((char*)(vi+line*3*CURSOR_HEIGHT));
             vi++;
-            *((char*)vi)=*((char*)(vi+line*CURSOR_HEIGHT));
+            *((char*)vi)=*((char*)(vi+line*3*CURSOR_HEIGHT));
             vi++;
-            *((char*)vi)=*((char*)(vi+line*CURSOR_HEIGHT));
+            *((char*)vi)=*((char*)(vi+line*3*CURSOR_HEIGHT));
             vi++;
         }
         vi-=line;

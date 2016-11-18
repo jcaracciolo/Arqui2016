@@ -19,4 +19,9 @@ void ps();
 
 int exec(void * entry_point, int cargs, void ** pargs, int giveFg);
 
+int getPID();
+
+void closePipe(char * name);
+
+int openPipe(char * name);
 #endif

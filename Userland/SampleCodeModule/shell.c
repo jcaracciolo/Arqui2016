@@ -166,6 +166,10 @@ void callKill(int cargs, void ** pargs) {
 }
 
 void uslessPs(){
+    printf("%d<--fd \n",openPipe("hola"));
+    char buffa[6]={0};
+    read(3,&buffa,5);
+    printf("%s -- mypid: %d",buffa,getPID());
 	while(1);
 }
 
@@ -293,9 +297,11 @@ void execute() {
 		printf("%d<--fd \n",openPipe("hola2"));
 		printf("%d<--fd \n",openPipe("hola3"));
 		write(3,"AAAAA",5);
-		char buffa[6]={0};
-		read(3,&buffa,5);
-		printf(buffa);
+        void** parg = (void**)malloc(sizeof(void*));
+        parg[0] = (void*)"uslessPs";
+        exec(&uslessPs, 1,parg, psToFg);
+
+
 	}else {
 		printf("Command not found: %s\n", shellBuffer);
 	}

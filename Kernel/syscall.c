@@ -15,7 +15,7 @@
 #include "include/liballoc.h"
 #include "include/scheduler.h"
 
-#define SYSTEM_CALL_COUNT 34
+#define SYSTEM_CALL_COUNT 35
 #define SYSTEM_CALL_START_INDEX 0x80
 
 
@@ -306,6 +306,12 @@ qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
+qword sys_myPID(qword ans, qword pid, qword rcx, qword r8, qword r9) {
+    int * retPid = (int *) pid;
+    *retPid = getCurrentPid();
+    return 0;
+}
+
 /*------------------------- PIPES ------------------------------------*/
 
     qword sys_openPipe(qword name, qword ans, qword rcx, qword r8, qword r9) {
@@ -358,10 +364,13 @@ void setUpSyscalls(){
     sysCalls[29] = &sys_kill;
     sysCalls[30] = &sys_leave;
     sysCalls[31] = &sys_yield;
+    sysCalls[32] = &sys_myPID;
 
 
-    sysCalls[32] = &sys_openPipe;
-    sysCalls[33] = &sys_closePipe;
+    sysCalls[33] = &sys_openPipe;
+    sysCalls[34] = &sys_closePipe;
+
+
 
 
 

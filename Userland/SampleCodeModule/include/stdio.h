@@ -25,5 +25,7 @@ void read(int fd,char* buffer,int size);
 
 void write(int fd,char* buffer,int size);
 
+void printError(char *msg);
+
 
 #endif
