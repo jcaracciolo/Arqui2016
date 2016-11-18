@@ -28,3 +28,18 @@ int unlockMutex(int mutex) {
 	int80(26, mutex,(qword) &ret, 0, 0, 0);
 	return ret;
 }
+
+
+void initCondVar(condVar_t * condVar){
+	int80(35,(qword) condVar,0,0,0,0);
+}
+
+void signalCondVar(condVar_t * condVar){
+	int80(36,(qword) condVar,0,0,0,0);
+
+}
+
+void waitCondVar(condVar_t * condVar, int mutex, int pid){
+	int80(37,(qword) condVar,(qword) mutex,(qword) pid,0,0);
+
+}

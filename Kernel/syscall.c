@@ -14,8 +14,9 @@
 #include "include/process.h"
 #include "include/liballoc.h"
 #include "include/scheduler.h"
+#include "include/condvar.h"
 
-#define SYSTEM_CALL_COUNT 35
+#define SYSTEM_CALL_COUNT 38
 #define SYSTEM_CALL_START_INDEX 0x80
 
 
@@ -326,6 +327,28 @@ qword sys_myPID(qword ans, qword pid, qword rcx, qword r8, qword r9) {
     }
 
 
+/*------------------------- CONDITIONAL VARIABLES ----------------------*/
+
+    qword sys_waitCondVar(qword condVarArg, qword mutexArg, qword pidArg, qword r8, qword r9) {
+        condVar_t * condVar = (condVar_t *) condVarArg;
+        int mutex = (int ) mutexArg;
+        int pid = (int ) pidArg;
+        waitCondVar(condVar,mutex,pid);
+    return 0;
+    }
+
+    qword sys_signalCondVar(qword condVarArg, qword rdx, qword rcx, qword r8, qword r9) {
+        condVar_t * condVar = (condVar_t *) condVarArg;
+        signalCondVar(condVar);
+        return;
+    }
+
+    qword sys_initCondVar(qword condVarArg, qword rdx, qword rcx, qword r8, qword r9) {
+        condVar_t * condVar = (condVar_t *) condVarArg;
+        initCondVar(condVar);
+        return;
+    }
+
 /*--------------------------------------------------------------------*/
 
 void setUpSyscalls(){
@@ -366,13 +389,12 @@ void setUpSyscalls(){
     sysCalls[31] = &sys_yield;
     sysCalls[32] = &sys_myPID;
 
-
     sysCalls[33] = &sys_openPipe;
     sysCalls[34] = &sys_closePipe;
 
-
-
-
+    sysCalls[35] = &sys_initCondVar;
+    sysCalls[36] = &sys_signalCondVar;
+    sysCalls[37] = &sys_waitCondVar;
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }

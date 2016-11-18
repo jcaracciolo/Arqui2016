@@ -78,15 +78,16 @@ void addPhilosopher(){
 //    printf("%s\n", mutexName);
     philMutex[philAmount]=createMutex(mutexName);
     philState[philAmount]=THINKING;
-//    printf("mutex %d\n", philMutex[philAmount]);
+    printf("mutex %d\n", mutexName);
 //    printf("Philo %d got %d fork",philAmount,));
 //
     void** parg = (void**)malloc(sizeof(void*) * 2);
-    parg[0] = (void*)philAmount;
+    parg[0] = mutexName;
+    parg[1] = (void*)philAmount;
 //    lockMutex(philMutex[philAmount]);
-    exec(&philosophize,philAmount,parg, 1);
+    exec(&philosophize,2,parg, 1);
 //    killPhilosophers(philAmount);
-    clear();
+//    clear();
     lockMutex(neighborsMutex);
     philAmount++;
     unlockMutex(neighborsMutex);
@@ -102,10 +103,6 @@ void philosophize( int id){
     while (1){
         switch (philState[id]){
             case THINKING:
-                SAFE;
-//                printf("Philo %d is thinking\n",id);
-                UNSAFE;
-
                 drawMyself(id);
                 sleep(randBound(TIME_SCALE*THINKING_TO_EATING_RATIO,2*TIME_SCALE*THINKING_TO_EATING_RATIO));
                 philState[id] = HUNGRY;
@@ -113,9 +110,6 @@ void philosophize( int id){
             case HUNGRY:
                 drawMyself(id);
                 if(philAmount >1){
-                    SAFE;
-//                    printf("Philo %d is HUNGRY\n",id);
-                    UNSAFE;
 
                     lockMutex(neighborsMutex);
                     left = leftFrom(id);
@@ -124,42 +118,28 @@ void philosophize( int id){
 
                     if(id == philAmount -1) {
                         lockMutex(philMutex[right]);
-                        SAFE;
-//                        printf("Philo %d got right %d fork\n",id,right);
-                        UNSAFE;
+
                         lockMutex(philMutex[left]);
-                        SAFE;
-//                        printf("Philo %d got left %d fork\n",id,left);
-                        UNSAFE;
+
                     } else {
                         lockMutex(philMutex[left]);
-                        SAFE;
-//                        printf("Philo %d got left %d fork\n",id,left);
-                        UNSAFE;
+
                         lockMutex(philMutex[right]);
-                        SAFE;
-//                        printf("Philo %d got right %d fork\n",id,right);
-                        UNSAFE;
+
                     }
                     philState[id] = EATING;
                 }
                 break;
             case EATING:
                 drawMyself(id);
-                SAFE;
-//                printf("Philo %d is eating\n",id);
-                UNSAFE;
+
                 sleep(randBound(TIME_SCALE,2*TIME_SCALE));
 
                 philState[id] = THINKING;
                 drawMyself(id);
-                SAFE;
-//                printf("Philo %d released %d \n",id,right);
-                UNSAFE;
+
                 unlockMutex(philMutex[right]);
-                SAFE;
-//                printf("Philo %d released %d \n",id,left);
-                UNSAFE;
+
                 unlockMutex(philMutex[left]);
 
             break;
@@ -178,7 +158,7 @@ int rightFrom(int index){
 
 char * getMutexName(int philNumber){
   char * mutexName = (char*) malloc(16);
-  char base[] = "philo";
+  char* base = "philo";
   if(philAmount > 9) {
     strcpy(mutexName,base,5);
     mutexName[5] = (philNumber/10)+'0';

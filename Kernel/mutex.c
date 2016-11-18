@@ -129,8 +129,8 @@ int getMutex(char* name){
 
 
         /* Not Using it */
-        mutexes[pos].usingPids[mutexes[pos].using]=getCurrentPid();
-        mutexes[pos].using +=1;
+//        mutexes[pos].usingPids[mutexes[pos].using]=getCurrentPid();
+//        mutexes[pos].using +=1;
     }
 
     unlockScheduler();
@@ -201,21 +201,17 @@ int unlockMutex(int mutex){
     if(mutex<0 || mutex >= savedMutexes || mutexes[mutex].name[0]=='\0') return -1;
 
     lockScheduler();
-
     mutex_t* m=&mutexes[mutex];
 
     if(m->waiting>0){
-
         m->waiting-=1;
         changeProcessState(m->queue[m->firstIndex],READY);
         m->firstIndex=(m->firstIndex+1)%MAX_MUTEX_QUEUE_SIZE;
-
     }
 
     if(m->waiting==0){
         m->mutex=0;
     }
-
 
     unlockScheduler();
     return 1;
@@ -232,4 +228,10 @@ void unlockScheduler(){
 
 int tryScheduler(){
     return schedulerMutex;
+}
+
+//TODO: this does what i think it does?
+void unlockAndSleep(int mutex, int pid){
+    changeProcessState(pid,BLOCKED);
+    unlockMutex(mutex);
 }

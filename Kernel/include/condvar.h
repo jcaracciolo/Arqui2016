@@ -1,19 +1,13 @@
 //
-// Created by juanfra on 13/11/16.
+// Created by julian on 11/18/16.
 //
 
-#ifndef ARQUI2016_SYNC_H
-#define ARQUI2016_SYNC_H
+#ifndef ARQUI2016_CONDVAR_H
+#define ARQUI2016_CONDVAR_H
 
+#define MAX_COND_VAR_NAME_LENGHT 50
 #define MAX_COND_VAR_QUEUE_SIZE 50
-
-int createMutex(char* name);
-
-int lockMutex(int mutex);
-
-int unlockMutex(int mutex);
-
-int releaseMutex(int mutex);
+#define MAX_COND_VAR 30
 
 
 typedef struct {
@@ -24,9 +18,7 @@ typedef struct {
 }condVar_t;
 
 void initCondVar(condVar_t * condVar);
-
 void waitCondVar(condVar_t * condVar, int mutex, int pid);
-
 void signalCondVar(condVar_t * condVar);
 
-#endif //ARQUI2016_SYNC_H
+#endif //ARQUI2016_CONDVAR_H

@@ -16,4 +16,10 @@ void strcpy(char* str1, const char* str2, int length);
 /* convert str, '\0' ended string, to uppercase */
 void toUpper(char* str);
 
+
+int strcmp(const char* str1, const char* str2) ;
+
+int strlen(const char* str) ;
+
+
 #endif

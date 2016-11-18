@@ -61,6 +61,7 @@ process * createProcess(void * entryPoint, int cargs, void ** pargs) {
 	newProcess->state = READY;
 	if(cargs != 0) {
 		newProcess->descr = pargs[0];
+//		print("NAME->"print(newProcess->descr);
 	} else {
 		newProcess->descr = "no_descr";
 	}

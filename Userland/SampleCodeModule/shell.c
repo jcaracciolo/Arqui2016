@@ -10,6 +10,7 @@
 #include "include/sync.h"
 #include "include/philosophers.h"
 #include "include/stdlib.h"
+#include "include/prodCons.h"
 
 int rand=1;
 
@@ -250,6 +251,9 @@ void execute() {
 
 	} else if(strcmp(shellBuffer, "philo") == 0) {
         exec(&philosphers,0,0, psToFg);
+
+	}else if(strcmp(shellBuffer, "prod") == 0) {
+        exec(&producerConsumer,0,0, psToFg);
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
