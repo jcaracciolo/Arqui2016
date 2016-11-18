@@ -11,7 +11,6 @@
 void addToCondVarQueue(condVar_t * condVar, int pid);
 int removeFromCondVarQueue(condVar_t * condVar);
 
-
 void initCondVar(condVar_t * condVar){
     condVar->queueIndex=0;
     condVar->queueSize=0;
@@ -31,7 +30,6 @@ void waitCondVar(condVar_t * condVar, int mutex){
 void signalCondVar(condVar_t * condVar){
     int pid = removeFromCondVarQueue(condVar);
     if(pid != -1) changeProcessState(pid,READY);
-//    _yield();
 }
 
 void addToCondVarQueue(condVar_t * condVar, int pid){
