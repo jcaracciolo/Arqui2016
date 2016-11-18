@@ -131,13 +131,12 @@ void drawCEmptyCircle(int x, int y, int radius, qword color) {
 		}
 	}
 }
+
+//http://stackoverflow.com/questions/1201200/fast-algorithm-for-drawing-filled-circles
 void drawCFullCircle(int x, int y, int radius, qword color) {
 	int i;
-	for(i=0; i< radius; i +=1){
-		drawCEmptyCircle(x,y,i,color);
-		drawCEmptyCircle(x-1,y-1,i,color);
-		drawCEmptyCircle(x+1,y+1,i,color);
-		drawCEmptyCircle(x+1,y-1,i,color);
-		drawCEmptyCircle(x-1,y+1,i,color);
-	}
+	for(int tempY=-radius; tempY<=radius; tempY++)
+		for(int tempX=-radius; tempX<=radius; tempX++)
+			if(tempX*tempX+tempY*tempY <= radius*radius)
+				drawCPixel(x+tempX, y+tempY,color);
 }
