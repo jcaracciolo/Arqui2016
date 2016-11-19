@@ -5,10 +5,14 @@
 #ifndef KEYBOARDDRIVER_H
 #define KEYBOARDDRIVER_H
 
+
 void addToBuffer();
 
 int readBuffer();
-void preFillBuffer();
+
+void readFull(char * buffer, int size);
+
+condVar_t * getSTDINCondVar();
 
 
 #endif //KEYBOARDDRIVER_H

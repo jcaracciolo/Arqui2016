@@ -114,6 +114,9 @@ int nextfreePipe(char* name){
 void deletePipe(pipe_t pipe){
     free(pipe->name);
     buddyFree(pipe->buffer);
+    releaseMutexFromPos(pipe->writeMutex);
+    releaseMutexFromPos(pipe->readMutex);
+    releaseMutexFromPos(pipe->mutex);
     free(pipe);
 }
 

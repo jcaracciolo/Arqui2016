@@ -57,6 +57,7 @@ int main()
 	insertProcess(&init, 1, pargs);
 	pargs[0] = (void*)"shell";
 	insertProcess(sampleCodeModuleAddress, 1, pargs);
+	setForeground(1);
  	beginScheduler();
 
  	//((EntryPoint)sampleCodeModuleAddress)();
@@ -158,7 +159,7 @@ void setupEverything(){
 
 	initializeMalloc();
 	initIPC();
-
+	initKeyboardDriver();
 	print(logo);
 	print("\n\n\n");
 

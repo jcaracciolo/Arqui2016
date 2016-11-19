@@ -6,6 +6,7 @@
 #include "include/mutex.h"
 #include "include/scheduler.h"
 #include "include/strings.h"
+#include "include/keyboardDriver.h"
 
 extern void * _get_rsp();
 extern void _set_rsp(void * rsp);
@@ -71,6 +72,9 @@ void setForeground(int pid) {
 		if (slot->process->pid == pid) {
 			// new foreground process found
 			foreground = slot;
+			print("\nnew foreground proceed: ");
+			printNum(getForegroundPid());
+			signalCondVar(getSTDINCondVar());
 			if(notPreviouslyLocked) unlockScheduler();
 
 			return;
