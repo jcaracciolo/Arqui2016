@@ -313,9 +313,10 @@ void execute() {
 
 
 	}else if(sscanf("pacman clear %d", shellBuffer, &num) == 1) {
-		//animatePacman(500,500,100);
-        pacmanClear(num);
-		//drawGhost(300,300,100);
+        if(num<1 || num>20)
+            printf("Number muste be between 1 and 20\n");
+        else
+            pacmanClear(num);
 	}
 
 	if (psToFg == 0) {
