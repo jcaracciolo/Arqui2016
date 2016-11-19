@@ -120,16 +120,16 @@ void deletePipe(pipe_t pipe){
 int writePipe(pipe_t pipe,char* msg, uint64_t amount){
     int i;
     lockMutex(pipe->writeMutex);
+    while (pipe->bufferSize >= MINPAGE){
+        waitCondVar(&pipe->writeCondVar,pipe->writeMutex);
+    }
+    lockMutex(pipe->mutex);
     for(i=0;i<amount;i++){
-        while (pipe->bufferSize >= MINPAGE){
-            waitCondVar(&pipe->writeCondVar,pipe->writeMutex);
-        }
-        lockMutex(pipe->mutex);
         pipe->buffer[(pipe->initialIndex + pipe->bufferSize) %MINPAGE]=msg[i];
         pipe->bufferSize ++;
-        signalCondVar(&pipe->readCondVar);
-        unlockMutex(pipe->mutex);
     }
+    signalCondVar(&pipe->readCondVar);
+    unlockMutex(pipe->mutex);
     unlockMutex(pipe->writeMutex);
     return 1;
 }
@@ -137,17 +137,20 @@ int writePipe(pipe_t pipe,char* msg, uint64_t amount){
 int readPipe(pipe_t pipe,char* ans,uint64_t amount){
     int j,i;
     lockMutex(pipe->readMutex);
-    for(j=0;j<amount;j++){
-        while (pipe->bufferSize <= 0){
-            waitCondVar(&pipe->readCondVar,pipe->readMutex);
-        }
-        lockMutex(pipe->mutex);
+    while (pipe->bufferSize <= 0){
+        waitCondVar(&pipe->readCondVar,pipe->readMutex);
+    }
+
+    lockMutex(pipe->mutex);
+    for(j=0;j<amount && pipe->bufferSize>0;j++){
         ans[j]=pipe->buffer[pipe->initialIndex%MINPAGE];
         pipe->initialIndex = (pipe->initialIndex + 1)%MINPAGE;
         pipe->bufferSize--;
-        signalCondVar(&pipe->writeCondVar);
-        unlockMutex(pipe->mutex);
+
     }
+    signalCondVar(&pipe->writeCondVar);
+    unlockMutex(pipe->mutex);
+
     unlockMutex(pipe->readMutex);
     return 1;
 }

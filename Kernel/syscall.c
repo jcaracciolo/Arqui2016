@@ -118,7 +118,7 @@ qword sys_write(qword file, qword buffer, qword size, qword r8, qword r9){
         }
         _setColor(aux);
     }else if(file>2 && file<8){
-        pipe_t pipe=getMyProcessData()->fd[file-3];
+        pipe_t pipe=(getMyProcessData())->fd[file-3];
         writePipe(pipe,buffer,size);
     }
 
@@ -311,7 +311,7 @@ qword sys_myPID(qword ans, qword pid, qword rcx, qword r8, qword r9) {
 
     qword sys_openPipe(qword name, qword ans, qword rcx, qword r8, qword r9) {
         int * a = (int *) ans;
-        *a = addPipe(getPipe((char*)name));
+        *a = addPipe(getPipe((char*)name)) +3;
     return 0;
     }
 

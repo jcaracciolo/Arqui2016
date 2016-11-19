@@ -17,10 +17,6 @@ void unlockScheduler();
 void initializeMutex();
 void unlockAndSleep(int mutex, int pid);
 
-
-
-static int stdinMutex;
-
 #define MALLOCMUTEX "__MALLOC__MUTEX"
 #define PAGESMUTEX "__PAGES__MUTEX"
 

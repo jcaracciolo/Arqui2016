@@ -11,7 +11,7 @@
 #include "include/philosophers.h"
 #include "include/stdlib.h"
 #include "include/prodCons.h"
-
+#include "include/donPepito.h"
 int rand=1;
 
 const char* instructions = " func                - print a simple message (completly useless)\n\
@@ -298,6 +298,10 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"uslessPs";
 		exec(&uslessPs, 1,parg, psToFg);
+	} else if(strcmp(shellBuffer, "pepito") == 0) {
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"PepitoJoseCreator";
+		exec(&pepitoJose, 1,parg, psToFg);
 	} else if(strcmp(shellBuffer, "mt") == 0) {
 		printf("%d<--fd \n",openPipe("hola"));
 		printf("%d<--fd \n",openPipe("hola2"));
