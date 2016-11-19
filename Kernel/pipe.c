@@ -29,9 +29,19 @@ pipe_t createPipe(char* name){
 
     newPipe->mutex=getMutex(mname);
     newPipe->buffer=buddyAllocatePages(1);
-    newPipe->lastIndex=0;
+    newPipe->bufferSize=0;
     newPipe->initialIndex=0;
+
     newPipe->name=malloc(15);
+
+    mname[0]='R';
+    newPipe->readMutex=getMutex(mname);
+    mname[0]='W';
+    newPipe->writeMutex=getMutex(mname);
+
+    initCondVar(&(newPipe->readCondVar));
+    initCondVar(&(newPipe->writeCondVar));
+
     strcpy(newPipe->name,name,15);
     return newPipe;
 }
@@ -109,22 +119,35 @@ void deletePipe(pipe_t pipe){
 
 int writePipe(pipe_t pipe,char* msg, uint64_t amount){
     int i;
-    lockMutex(pipe->mutex);
+    lockMutex(pipe->writeMutex);
     for(i=0;i<amount;i++){
-        pipe->buffer[pipe->lastIndex%MINPAGE]=msg[i];
-        pipe->lastIndex= (pipe->lastIndex+1)%MINPAGE;
+        while (pipe->bufferSize >= MINPAGE){
+            waitCondVar(&pipe->writeCondVar,pipe->writeMutex);
+        }
+        lockMutex(pipe->mutex);
+        pipe->buffer[(pipe->initialIndex + pipe->bufferSize) %MINPAGE]=msg[i];
+        pipe->bufferSize ++;
+        signalCondVar(&pipe->readCondVar);
+        unlockMutex(pipe->mutex);
     }
-    unlockMutex(pipe->mutex);
+    unlockMutex(pipe->writeMutex);
     return 1;
 }
 
 int readPipe(pipe_t pipe,char* ans,uint64_t amount){
-    int i,j;
-    lockMutex(pipe->mutex);
-    for(j=0,i=pipe->initialIndex;j<amount && i!=pipe->lastIndex;i++,j++){
-        ans[j]=pipe->buffer[i%MINPAGE];
+    int j,i;
+    lockMutex(pipe->readMutex);
+    for(j=0;j<amount;j++){
+        while (pipe->bufferSize <= 0){
+            waitCondVar(&pipe->readCondVar,pipe->readMutex);
+        }
+        lockMutex(pipe->mutex);
+        ans[j]=pipe->buffer[pipe->initialIndex%MINPAGE];
+        pipe->initialIndex = (pipe->initialIndex + 1)%MINPAGE;
+        pipe->bufferSize--;
+        signalCondVar(&pipe->writeCondVar);
+        unlockMutex(pipe->mutex);
     }
-    pipe->initialIndex=i;
-    unlockMutex(pipe->mutex);
+    unlockMutex(pipe->readMutex);
     return 1;
 }

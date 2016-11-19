@@ -10,7 +10,7 @@
 #include "include/math.h"
 #include "include/stdvid.h"
 
-#define MAX_PRODUCT_QUEUE_SIZE 30
+#define MAX_PRODUCT_QUEUE_SIZE 10
 
 void producer();
 void consumer();
@@ -20,8 +20,11 @@ int removeFromProductQueue();
 static int queue[MAX_PRODUCT_QUEUE_SIZE];
 static int queueSize;
 static int queueIndex;
-static condVar_t condVar;
-static int mutex;
+static condVar_t readCondVar;
+static condVar_t writeCondVar;
+static int readMutex;
+static int writeMutex;
+static int modifyQueueMutex;
 
 
 
@@ -32,8 +35,11 @@ void producerConsumer(){
 
     queueSize = 0;
     queueIndex =0;
-    mutex = createMutex("prodConsumer");
-    initCondVar(&condVar);
+    readMutex = createMutex("prodConsRead");
+    writeMutex= createMutex("prodConsWrite");
+    modifyQueueMutex= createMutex("prodConsModify");
+    initCondVar(&readCondVar);
+    initCondVar(&writeCondVar);
 
     void** parg = (void**)malloc(sizeof(void*));
     parg[0] = (void*)"producer";
@@ -41,40 +47,50 @@ void producerConsumer(){
     parg[0] = (void*)"consumer";
     exec(&consumer,1,parg, 1);
 
-    drawCFullCircle(100,100,30,0x00EEEEEE);
-    drawCFullCircle(150,100,70,0x00EEEEEE);
+//    drawCFullCircle(100,100,30,0x00EEEEEE);
+//    drawCFullCircle(150,100,70,0x00EEEEEE);
 }
 
 void producer(){
     printf("hi, i am a producer\n");
+
     int i = 0;
+    lockMutex(writeMutex);
     while (i < 50){
+        while (queueSize >= MAX_PRODUCT_QUEUE_SIZE){
+            waitCondVar(&writeCondVar,writeMutex);
+        }
+
         i++;
-        sleep(500);
-        lockMutex(mutex);
+        sleep(200);
         addToProductQueue(i);
         printf("prod %d\n",i);
-        signalCondVar(&condVar);
-        unlockMutex(mutex);
+        signalCondVar(&readCondVar);
     }
+    unlockMutex(writeMutex);
     printf("releasing size: %d, index: %d\n",queueSize,queueIndex);
 }
 
 void consumer(){
     sleep(randBound(5000,15000));
 
-    lockMutex(mutex);
+    lockMutex(readMutex);
     printf("hi, i am a consumer\n");
     while (1){
-        while (queueSize <= 0)waitCondVar(&condVar,mutex);
+        while (queueSize <= 0){
+            waitCondVar(&readCondVar,readMutex);
+        }
 
         printf("cons %d\n", removeFromProductQueue());
+        signalCondVar(&writeCondVar);
+
     }
-    unlockMutex(mutex);
+    unlockMutex(readMutex);
 }
 
 
 void addToProductQueue(int productNum){
+    lockMutex(modifyQueueMutex);
     if(queueSize == MAX_PRODUCT_QUEUE_SIZE) {
         printf("Illegal add state!\n");
         return;
@@ -82,9 +98,11 @@ void addToProductQueue(int productNum){
     int index = (queueIndex + queueSize)%MAX_PRODUCT_QUEUE_SIZE;
     queue[index] = productNum;
     queueSize ++;
+    unlockMutex(modifyQueueMutex);
 }
 
 int removeFromProductQueue(){
+    lockMutex(modifyQueueMutex);
     if(queueSize==0){
         printf("Illegal remove state!\n");
         return -1;
@@ -92,5 +110,6 @@ int removeFromProductQueue(){
     int product = queue[queueIndex];
     queueIndex = (queueIndex + 1) % MAX_PRODUCT_QUEUE_SIZE;
     queueSize --;
+    unlockMutex(modifyQueueMutex);
     return product;
 }

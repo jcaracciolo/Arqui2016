@@ -6,15 +6,19 @@
 #define ARQUI2016_PIPE_H
 
 #include <stdint.h>
-
+#include "condvar.h"
 #define MAX_PIPES 50
 #define PIPES_MUTEX "__PIPES__MUTEX"
 
 typedef struct{
     char* buffer;
-    int lastIndex;
+    int bufferSize;
     int initialIndex;
     int mutex;
+    int readMutex;
+    int writeMutex;
+    condVar_t readCondVar;
+    condVar_t writeCondVar;
     char* name;
 }pipe_s;
 
