@@ -29,5 +29,9 @@ int getCursorPos();
 void drawFractal();
 void drawCEmptyCircle(int x, int y, int radius, qword color);
 void drawCFullCircle(int x, int y, int radius, qword color);
+void drawPacman(int x,int y, int radius,int mouthClosed);
+void animatePacman(int x,int y,int radius);
+
+void drawGhost(int x,int y, int size);
 
 #endif

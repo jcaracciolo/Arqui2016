@@ -134,9 +134,87 @@ void drawCEmptyCircle(int x, int y, int radius, qword color) {
 
 //http://stackoverflow.com/questions/1201200/fast-algorithm-for-drawing-filled-circles
 void drawCFullCircle(int x, int y, int radius, qword color) {
-	int i;
-	for(int tempY=-radius; tempY<=radius; tempY++)
-		for(int tempX=-radius; tempX<=radius; tempX++)
-			if(tempX*tempX+tempY*tempY <= radius*radius)
-				drawCPixel(x+tempX, y+tempY,color);
+//	int i;
+//	for(int tempY=-radius; tempY<=radius; tempY++)
+//		for(int tempX=-radius; tempX<=radius; tempX++)
+//			if(tempX*tempX+tempY*tempY <= radius*radius)
+//				drawCPixel(x+tempX, y+tempY,color);
+	int80(38,x,y,radius,color,0);
+}
+
+void drawPacman(int x,int y, int r,int mouthClosed){
+
+	int mc=mouthClosed;
+	qword color=0xFFEE00;
+	drawCFullCircle(x,y,r,color);
+	drawCSquare(x      ,y-r/mc  ,      r/mc*2 ,r/4,0000);
+	drawCSquare(x+r/4  ,y-2*r/mc  ,  2*r/mc*2 ,r/4,0000);
+	drawCSquare(x+r/2  ,y-3*r/mc,    3*r/mc*2 ,r/4,0000);
+	drawCSquare(x+3*r/4,y-4*r/mc    ,4*r/mc*2 ,r/3,0000);
+	drawCFullCircle(x+r/8,y-(r/2),r/8,0000);
+}
+
+void drawClosePacman(int x,int y,int r){
+	qword color=0xFFEE00;
+	drawCFullCircle(x,y,r,color);
+	drawCFullCircle(x+r/8,y-(r/2),r/8,0000);
+}
+
+
+void animatePacman(int x,int y,int radius){
+	while(1){
+		drawPacman(x,y,radius,6);
+		sleep(500);
+		drawPacman(x,y,radius,12);
+		sleep(500);
+		drawClosePacman(x,y,radius);
+		sleep(500);
+		drawPacman(x,y,radius,12);
+		sleep(500);
+	}
+
+
+}
+
+void drawGhostEyes(int x,int y,int size,int pos){
+	int vec[4][2]={{1,0},{0,1},{-1,0},{0,-1}};
+	drawCFullCircle(x+size/3        ,y+size/3,size/8,0xFFFFFF);
+	drawCFullCircle(x+2*size/3      ,y+size/3,size/8,0xFFFFFF);
+	drawCFullCircle(x+size/3 + vec[pos%4][0]*size/15    ,y+size/3+ vec[pos%4][1]*size/15,size/16,0);
+	drawCFullCircle(x+2*size/3+ vec[pos%4][0]*size/15  ,y+size/3 + vec[pos%4][1]*size/15,size/16,0);
+}
+
+void draw3GhostLegs(int x,int y, int size,qword color){
+	drawCFullCircle(x+size/6  ,y+size,size/6,color);
+	drawCFullCircle(x+size/2  ,y+size,size/6,color);
+	drawCFullCircle(x+5*size/6,y+size,size/6,color);
+}
+
+void draw4GhostLegs(int x,int y, int size,qword color){
+	drawCFullCircle(x+size/8  ,y+size,size/8,color);
+	drawCFullCircle(x+3*size/8,y+size,size/8,color);
+	drawCFullCircle(x+5*size/8,y+size,size/8,color);
+	drawCFullCircle(x+7*size/8,y+size,size/8,color);
+}
+
+void deleteGhostLegs(int x,int y,int size){
+	drawCSquare(x,y+size,size/6+10,size,0);
+}
+
+void drawGhost(int x,int y, int size){
+	qword color=0xFF0000;
+	drawCFullCircle(x+size/2,y+size/2,size/2,color);
+	drawCSquare(x,y+size/2,size/2,size,color);
+	for (int i = 0; i > -1; ++i) {
+		drawGhostEyes(x,y,size,i++%2);
+		draw3GhostLegs(x,y,size,color);
+		sleep(700);
+		deleteGhostLegs(x,y,size);
+		drawGhostEyes(x,y,size,i%2);
+		draw4GhostLegs(x,y,size,color);
+		sleep(700);
+		deleteGhostLegs(x,y,size);
+	}
+
+
 }

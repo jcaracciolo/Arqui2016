@@ -3,13 +3,26 @@
 //http://www.delorie.com/djgpp/doc/ug/graphics/vesa.html
 #include "include/types.h"
 #include "include/fonts.h"
-
-
 #include "include/graphicsDriver.h"
+
+#define SQRT2 1.41421356237
 
 Font fonts[MAX_FONTS];
 int selectedFont = 4;
 
+void cos(float x, float * res){
+    if( x < 0.0f )
+        x = -x;
+    while( M_PI < x )
+        x -= M_2_PI;
+    *res = 1.0f - (x*x/2.0f)*( 1.0f - (x*x/12.0f) * ( 1.0f - (x*x/30.0f) * (1.0f - x*x/56.0f )));
+    return;
+}
+
+void sin(float x, float * res){
+    cos(x-M_PI_2, res);
+    return ;
+}
 
 static Color color = {.r = 0xFF, .g = 0xFF , .b = 0xFF};
 static int hexColor=0;
@@ -244,3 +257,93 @@ void clearScreen(){
 
 
 }
+
+// Quake Inverse Sqrt by John Carmak
+void Sqrt(float x,float* res){
+    float xhalf = 0.5f * x;
+    int i = *(int*)&x;            // store floating-point bits in integer
+    i = 0x5f3759df - (i >> 1);    // initial guess for Newton's method
+    x = *(float*)&i;              // convert new bits into float
+    x = x*(1.5f - xhalf*x*x);     // One round of Newton's method
+    if(x>0){
+
+        *res =1/x;
+    }else{
+        *res=0;
+    }
+    return;
+}
+
+//https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+void _drawCEmptyCircle(int x, int y, int radius) {
+    int deltax = radius;
+    int deltay = 0;
+    int err = 0;
+
+    while (deltax >= deltay)
+    {
+        _drawPixel(x + deltax, y + deltay);
+        _drawPixel(x + deltay, y + deltax);
+        _drawPixel(x - deltay, y + deltax);
+        _drawPixel(x - deltax, y + deltay);
+        _drawPixel(x - deltax, y - deltay);
+        _drawPixel(x - deltay, y - deltax);
+        _drawPixel(x + deltay, y - deltax);
+        _drawPixel(x + deltax, y - deltay);
+
+        deltay += 1;
+        err += 1 + 2*deltay;
+        if (2*(err-deltax) + 1 > 0)
+        {
+            deltax -= 1;
+            err += 1 - 2*deltax;
+        }
+    }
+}
+
+
+
+void _drawCircle(uint32 x, uint32 y, uint32 r){
+    int radius=(int) r;
+    int side=(2*radius)/SQRT2;
+    int hside=side/2;
+    int corte= (radius-side);
+    //top hat
+    for(int tempY=-radius; tempY<=-hside; tempY++)
+		for(int tempX=-radius; tempX<=radius; tempX++)
+			if(tempX*tempX+tempY*tempY <= radius*radius)
+				_drawPixel(x+tempX, y+tempY);
+
+    //Bot hat
+    for(int tempY=hside; tempY<=radius; tempY++)
+        for(int tempX=-radius; tempX<=radius; tempX++)
+            if(tempX*tempX+tempY*tempY <= radius*radius)
+                _drawPixel(x+tempX, y+tempY);
+
+    //Left hat
+    for(int tempY=-radius; tempY<=radius; tempY++)
+        for(int tempX=-radius; tempX<=-hside; tempX++)
+            if(tempX*tempX+tempY*tempY <= radius*radius)
+                _drawPixel(x+tempX, y+tempY);
+
+    //Right hat
+    for(int tempY=-radius; tempY<=radius; tempY++)
+        for(int tempX=hside; tempX<=radius; tempX++)
+            if(tempX*tempX+tempY*tempY <= radius*radius)
+                _drawPixel(x+tempX, y+tempY);
+
+    _drawSquare(x-side/2,y-side/2,side,side);
+
+//    for (int i = side; i < r; ++i) {
+//        _drawCEmptyCircle(x,y,i/2);
+//    }
+}
+
+
+void _drawCCircle(uint32 x, uint32 y, uint32 r, Color c) {
+    Color temp = color;
+    _setColor(c);
+    _drawCircle(x,y,r);
+    _setColor(temp);
+}
+

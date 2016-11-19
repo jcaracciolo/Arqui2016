@@ -312,8 +312,10 @@ void execute() {
         exec(&uslessPs, 1,parg, psToFg);
 
 
-	}else {
-		printf("Command not found: %s\n", shellBuffer);
+	}else if(strcmp(shellBuffer, "Pacman") == 0) {
+		//animatePacman(500,500,100);
+
+		drawGhost(300,300,100);
 	}
 
 	if (psToFg == 0) {

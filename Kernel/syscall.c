@@ -16,7 +16,7 @@
 #include "include/scheduler.h"
 #include "include/condvar.h"
 
-#define SYSTEM_CALL_COUNT 38
+#define SYSTEM_CALL_COUNT 39
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -137,6 +137,11 @@ qword sys_square(qword origX, qword origY, qword height, qword width, qword colo
 
 qword sys_pixel(qword x, qword y, qword color, qword r8, qword r9) {
     _drawCPixel(x, y, hexaToColor(color));
+    return 0;
+}
+
+qword sys_circle(qword x, qword y, qword r, qword color, qword r9) {
+    _drawCCircle(x, y,r, hexaToColor(color));
     return 0;
 }
 
@@ -388,6 +393,9 @@ void setUpSyscalls(){
     sysCalls[35] = &sys_initCondVar;
     sysCalls[36] = &sys_signalCondVar;
     sysCalls[37] = &sys_waitCondVar;
+
+
+    sysCalls[38] = &sys_circle;
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }
