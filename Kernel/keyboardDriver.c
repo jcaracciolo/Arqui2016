@@ -53,6 +53,9 @@ void addToBuffer(){
                         case 0x2E: // C
                             changeProcessState(getForegroundPid(), DEAD);
                             return;
+                        case 0x1F: // S
+                            setForeground(1); //Le da el foreground a la shell
+                            return;
                     }
                 } else {
                     aux = ASCII_VALUE[key];
@@ -68,8 +71,17 @@ void addToBuffer(){
                 buffer[lastIndex]=aux;
                 lastIndex = (lastIndex + 1) % BUFFER_SIZE;
                 bufferEmpty = false;
+                broadcastCondVar(&readSTDINcondVar);
             }
         }
+    }
+}
+
+int getCharsInBuffer(){
+    if(lastIndex >= actualIndex){
+        return lastIndex - actualIndex ;
+    } else {
+        return BUFFER_SIZE - actualIndex + lastIndex;
     }
 }
 
@@ -88,10 +100,9 @@ void readFull(char * buffer, int size){
     int c;
 
     lockMutex(readSTDINMutex);
-    while (getForegroundPid() != getCurrentPid()){
+    while (getForegroundPid() != getCurrentPid() || bufferEmpty == true ){
         waitCondVar(&readSTDINcondVar, readSTDINMutex);
     }
-
     unlockMutex(readSTDINMutex);
     while (i < size - 1 && (c = readBuffer()) != EOF) {
         buffer[i] = (char) c;

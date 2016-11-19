@@ -44,26 +44,19 @@ void philosphers(){
     neighborsMutex = createMutex("philosophersNeighbors");
     safeSpace = createMutex("philosophersSafeSpace");
     for(int i=0; i < 20; i++){
-        addPhilosopher();
+        drawPhilosopher(i,HUNGRY,20);
+//        addPhilosopher();
         //sleep(2000);
     }
-    return;
-    while(1){
+//    return;
+    while(1) {
         int c = getc();
-        printf("%d",c);
-        if(c!=-1) {
-            switch (c) {
-                case 'q':
-                case 'Q':
-                    addPhilosopher();
-                    break;
-                case 'e':
-                case 'E':
-                    removePhilosopher();
-                    break;
-                case 'x':
-                case 'X':
-                    return;
+        if (c != EOF) {
+            if (c == 'q') {
+
+            } else if (c == '\b') {
+            } else {
+                printf("%c",c);
             }
         }
     }

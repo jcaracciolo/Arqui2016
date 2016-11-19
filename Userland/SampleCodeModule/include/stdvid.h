@@ -31,6 +31,11 @@ void drawCEmptyCircle(int x, int y, int radius, qword color);
 void drawCFullCircle(int x, int y, int radius, qword color);
 void drawPacman(int x,int y, int radius,int mouthClosed);
 void animatePacman(int x,int y,int radius);
+void drawClosePacman(int x,int y,int r);
+void draw4GhostLegs(int x,int y, int size,qword color);
+void draw3GhostLegs(int x,int y, int size,qword color);
+void drawGhostEyes(int x,int y,int size,int pos);
+void deleteGhostLegs(int x,int y,int size);
 
 void drawGhost(int x,int y, int size);
 

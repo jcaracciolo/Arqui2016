@@ -41,3 +41,7 @@ void signalCondVar(condVar_t * condVar){
 void waitCondVar(condVar_t * condVar, int mutex){
 	int80(37,(qword) condVar,(qword) mutex,0,0,0);
 }
+
+void broadcastCondVar(condVar_t * condVar){
+	int80(39,(qword) condVar,0,0,0,0);
+}

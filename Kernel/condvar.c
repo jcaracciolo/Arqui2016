@@ -7,6 +7,7 @@
 #include "include/mutex.h"
 #include "include/process.h"
 #include "include/scheduler.h"
+#include "include/videoDriver.h"
 
 void addToCondVarQueue(condVar_t * condVar, int pid);
 int removeFromCondVarQueue(condVar_t * condVar);
@@ -30,6 +31,15 @@ void waitCondVar(condVar_t * condVar, int mutex){
 void signalCondVar(condVar_t * condVar){
     int pid = removeFromCondVarQueue(condVar);
     if(pid != -1) changeProcessState(pid,READY);
+}
+
+void broadcastCondVar(condVar_t * condVar){
+    int notPreviouslyLocked=lockScheduler();
+    int i,prevMax = condVar->queueSize;
+    for (i = 0; i < prevMax;i++){
+        signalCondVar(condVar);
+    }
+    if(notPreviouslyLocked) unlockScheduler();
 }
 
 void addToCondVarQueue(condVar_t * condVar, int pid){

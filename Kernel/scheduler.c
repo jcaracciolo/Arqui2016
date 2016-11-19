@@ -72,8 +72,8 @@ void setForeground(int pid) {
 		if (slot->process->pid == pid) {
 			// new foreground process found
 			foreground = slot;
-			print("\nnew foreground proceed: ");
-			printNum(getForegroundPid());
+//			print("\nnew foreground proceed: ");
+//			printNum(getForegroundPid());
 			signalCondVar(getSTDINCondVar());
 			if(notPreviouslyLocked) unlockScheduler();
 
@@ -97,7 +97,7 @@ void changeProcessState(int pid, processState state) {
 			// process found
 			slot->process->state = state;
 
-			if (slot->process->pid == getForegroundPid()) {
+			if (slot->process->pid == getForegroundPid() && state == DEAD) {
 				setForeground(1);
 //				printAllProcesses();
 			}

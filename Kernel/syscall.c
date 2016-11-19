@@ -16,7 +16,7 @@
 #include "include/liballoc.h"
 #include "include/scheduler.h"
 
-#define SYSTEM_CALL_COUNT 39
+#define SYSTEM_CALL_COUNT 40
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -341,6 +341,12 @@ qword sys_myPID(qword ans, qword pid, qword rcx, qword r8, qword r9) {
         return;
     }
 
+    qword sys_broadcastCondVar(qword condVarArg, qword rdx, qword rcx, qword r8, qword r9) {
+        condVar_t * condVar = (condVar_t *) condVarArg;
+        broadcastCondVar(condVar);
+        return;
+    }
+
 /*--------------------------------------------------------------------*/
 
 void setUpSyscalls(){
@@ -390,6 +396,7 @@ void setUpSyscalls(){
 
 
     sysCalls[38] = &sys_circle;
+    sysCalls[39] = &sys_broadcastCondVar;
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }

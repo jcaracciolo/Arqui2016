@@ -20,5 +20,6 @@ typedef struct {
 void initCondVar(condVar_t * condVar);
 void waitCondVar(condVar_t * condVar, int mutex);
 void signalCondVar(condVar_t * condVar);
+void broadcastCondVar(condVar_t * condVar);
 
 #endif //ARQUI2016_CONDVAR_H
