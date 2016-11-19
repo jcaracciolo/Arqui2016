@@ -28,7 +28,10 @@ const char* instructions = " func                - print a simple message (compl
  paintBg *param*     - paint the console background (only once)\n\
  setupFont *param*   - setup font to write\n\
  ps                  - list all processes\n\
- newps                  - create a useless process\n\
+ newps               - create a useless process\n\
+ philo               - simulation of philosophers problem\n\
+ prod                - simulation of producer-consumer problem\n\
+ pepito              - Don Pepito and Don Jose conversation\n\
  kill *pid* *msg*	- send a message to a process";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -298,10 +301,12 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"uslessPs";
 		exec(&uslessPs, 1,parg, psToFg);
+
 	} else if(strcmp(shellBuffer, "pepito") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"PepitoJoseCreator";
 		exec(&pepitoJose, 1,parg, psToFg);
+
 	} else if(strcmp(shellBuffer, "mt") == 0) {
 		printf("%d<--fd \n",openPipe("hola"));
 		printf("%d<--fd \n",openPipe("hola2"));
@@ -311,12 +316,13 @@ void execute() {
         parg[0] = (void*)"uslessPs";
         exec(&uslessPs, 1,parg, psToFg);
 
-
 	}else if(sscanf("pacman clear %d", shellBuffer, &num) == 1) {
         if(num<1 || num>20)
             printf("Number muste be between 1 and 20\n");
         else
             pacmanClear(num);
+	} else {
+		printf("Command not found.\n");
 	}
 
 	if (psToFg == 0) {
