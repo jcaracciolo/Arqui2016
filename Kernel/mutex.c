@@ -90,6 +90,7 @@ int amIUsing(int index){
     return -1;
 }
 
+
 /*gets or Creates a mutex with the given Name*/
 int getMutex(char* name){
     lockScheduler();
@@ -116,7 +117,6 @@ int getMutex(char* name){
             m->firstIndex=0;
 
             savedMutexes++;
-
         }
     }else if(amIUsing(pos) == -1){
 
@@ -125,14 +125,10 @@ int getMutex(char* name){
             unlockScheduler();
             return -1;
         }
-
-
-
         /* Not Using it */
 //        mutexes[pos].usingPids[mutexes[pos].using]=getCurrentPid();
 //        mutexes[pos].using +=1;
     }
-
     unlockScheduler();
     return pos;
 }
@@ -150,10 +146,7 @@ int nextfree(){
     return -1;
 }
 
-/* release a mutex if it exists*/
-int releaseMutex(char* name){
-    lockScheduler();
-    int pos=whereIs(name);
+int releaseMutexFromPos(int pos){
     if(pos!=-1){
         mutex_t* m=&mutexes[pos];
         if(m->using>1){
@@ -166,8 +159,14 @@ int releaseMutex(char* name){
             savedMutexes-- ;
         }
     }
-    unlockScheduler();
+}
 
+/* release a mutex if it exists*/
+int releaseMutex(char* name){
+    lockScheduler();
+    int pos=whereIs(name);
+    releaseMutexFromPos(pos);
+    unlockScheduler();
     return 0;
 }
 

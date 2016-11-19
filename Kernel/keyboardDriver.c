@@ -1,10 +1,12 @@
-#include "include/types.h"
+
 #include "include/types.h"
 #include "include/videoDriver.h"
+#include "include/condvar.h"
 #include "include/scanCodes.h"
 #include "include/scheduler.h"
 #include "include/process.h"
-
+#include "include/mutex.h"
+#include "include/getTime.h"
 extern char read_key();
 
 #define BUFFER_SIZE 100
@@ -13,6 +15,9 @@ static int buffer[BUFFER_SIZE];
 static int actualIndex=0;
 static int lastIndex=0;
 static boolean bufferEmpty = true;
+
+static condVar_t readSTDINcondVar;
+static int readSTDINMutex;
 
 static boolean lshift= false;
 static boolean rshift=false;
@@ -78,3 +83,29 @@ int readBuffer(){
     return EOF;
 }
 
+void readFull(char * buffer, int size){
+    int i = 0;
+    int c;
+
+    lockMutex(readSTDINMutex);
+    while (getForegroundPid() != getCurrentPid()){
+        waitCondVar(&readSTDINcondVar, readSTDINMutex);
+    }
+
+    unlockMutex(readSTDINMutex);
+    while (i < size - 1 && (c = readBuffer()) != EOF) {
+        buffer[i] = (char) c;
+        i++;
+
+    }
+    buffer[i] = 0;
+}
+
+void initKeyboardDriver(){
+    initCondVar(&readSTDINcondVar);
+    readSTDINMutex = getMutex("readSTDINMutex");
+}
+
+condVar_t * getSTDINCondVar(){
+    return &readSTDINcondVar;
+}

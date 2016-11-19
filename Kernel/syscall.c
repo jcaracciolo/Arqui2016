@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include "include/types.h"
 #include "include/videoDriver.h"
+#include "include/condvar.h"
 #include "include/keyboardDriver.h"
 #include "include/interrupts.h"
 #include "include/defs.h"
@@ -14,7 +15,6 @@
 #include "include/process.h"
 #include "include/liballoc.h"
 #include "include/scheduler.h"
-#include "include/condvar.h"
 
 #define SYSTEM_CALL_COUNT 39
 #define SYSTEM_CALL_START_INDEX 0x80
@@ -22,6 +22,7 @@
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
 static sys sysCalls[SYSTEM_CALL_COUNT];
+static int foregroundMutex;
 
 qword sys_clear(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     clearScreen();
@@ -85,14 +86,7 @@ qword sys_reallocate(qword address, qword size, qword rcx, qword r8, qword r9) {
 
 qword sys_read(qword file, qword buffer, qword size, qword r8, qword r9) {
     if (file == 0) {
-        char *charbuffer = (char *) buffer;
-        int i = 0;
-        int c;
-        while (i < size - 1 && (c = readBuffer()) != EOF) {
-            charbuffer[i] = (char) c;
-            i++;
-        }
-        charbuffer[i] = 0;
+        readFull((char*) buffer, (int) size);
     }else if(file>2 && file<8){
         pipe_t pipe=getMyProcessData()->fd[file-3];
         readPipe(pipe,buffer,size);

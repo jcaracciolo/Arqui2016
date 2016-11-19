@@ -1,10 +1,6 @@
 
-#include "types.h"
-#include <naiveConsole.h>
-#include "defs.h"
-#include "interrupts.h"
-#include "videoDriver.h"
-#include "keyboardDriver.h"
+#include "include/condvar.h"
+#include "include/types.h"
 #include "include/videoDriver.h"
 #include "include/interrupts.h"
 #include "include/defs.h"
@@ -71,7 +67,6 @@ void irqDispatcher(int irq){
 	return;
 }
 
-
 //void timerSleep(){
 //	(*sleepCounter) += 16;	// 1s/60fps = 16ms per frame
 //}
@@ -118,12 +113,6 @@ void sleep(unsigned int time){
 	return;
 }
 
-
-
-
-
-
-
 void executeSchedule() {
 	_change_process();
 
@@ -132,7 +121,6 @@ void executeSchedule() {
 void activateScheduler() {
 	addTimerListener(&executeSchedule, 1);
 }
-
 
 void addTimerListener(timerEventT event, int interval){
 	_cli();
@@ -169,7 +157,6 @@ void setup_IDT_entry (int index, byte selector, qword offset, byte access) {
   idt[index].offset_h = (offset >> 32) & 0xFFFF;
   idt[index].zero_dword = 0;
 }
-
 
 void setup_IDT()
 {
