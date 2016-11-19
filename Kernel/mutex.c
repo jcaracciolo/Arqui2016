@@ -18,8 +18,8 @@ typedef struct {
     qword mutex;
     qword waiting;
     qword using;
-    int lastIndex;
     int firstIndex;
+    int lastIndex;
 }mutex_t;
 
 static mutex_t mutexes[MAX_MUTEXES];
@@ -35,7 +35,7 @@ void initializeMutex(){
 void saveName(int index,char* name){
     if(index<0 || index>=MAX_MUTEXES) return;
     int i;
-    for(i=0;i<MAX_MUTEX_NAME_LENGHT && (*name)!='\0';i++,name++){
+    for(i=0;i<MAX_MUTEX_NAME_LENGHT && *name != '\0' ;i++,name++){
         mutexes[index].name[i]=*name;
     }
     mutexes[index].name[i]='\0';
@@ -122,12 +122,12 @@ int getMutex(char* name){
 
         if(mutexes[pos].using==MAX_MUTEX_PIDS){
             /*No More Place*/
-            unlockScheduler();
+            if(notPreviouslyLocked) unlockScheduler();
             return -1;
         }
         /* Not Using it */
-//        mutexes[pos].usingPids[mutexes[pos].using]=getCurrentPid();
-//        mutexes[pos].using +=1;
+        mutexes[pos].usingPids[mutexes[pos].using]=getCurrentPid();
+        mutexes[pos].using +=1;
     }
 
     if(notPreviouslyLocked) unlockScheduler();
@@ -153,6 +153,7 @@ int releaseMutexFromPos(int pos){
         mutex_t* m=&mutexes[pos];
         if(m->using>1){
             int myPos=amIUsing(pos);
+            if(pos<0) return ;
             m->usingPids[myPos]=-1;
             m->using-=1;
         }else{
@@ -197,6 +198,9 @@ int lockMutex(int mutex){
             _yield();
 
             lockScheduler();
+        }else{
+            print("MAX WAITING QUEUE SIZE ACHIEVED\n");
+
         }
     }
 
@@ -218,9 +222,7 @@ int unlockMutex(int mutex){
         m->waiting-=1;
         changeProcessState(m->queue[m->firstIndex],READY);
         m->firstIndex=(m->firstIndex+1)%MAX_MUTEX_QUEUE_SIZE;
-    }
-
-    if(m->waiting==0){
+    }else{
         m->mutex=0;
     }
 
