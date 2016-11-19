@@ -14,8 +14,8 @@
 #define DEAD 3
 #define SCREEN_CENTER_X 450
 #define SCREEN_CENTER_Y 350
-#define TIME_SCALE 1000
-#define THINKING_TO_EATING_RATIO 2
+#define TIME_SCALE 12000
+#define THINKING_TO_EATING_RATIO 1
 
 #define SAFE lockMutex(safeSpace)
 #define UNSAFE unlockMutex(safeSpace)
@@ -27,6 +27,7 @@ int philAmount = 0;
 int tableRadius = 200;
 int philosopherRadius = 30;
 int safeSpace;
+int step;
 
 void philosophize();
 void addPhilosopher();
@@ -38,27 +39,63 @@ int getPhilosopherX(int id, int currPhil);
 int getPhilosopherY(int id, int currPhil);
 void killPhilosophers(int currAmount);
 void drawMyself(int id);
+void drawPhilosophers(int currPhil);
+//void philosphersSO();
 
+
+void monitor(){
+    int i,cons=0;
+    printf("monitoring");
+    while (1){
+
+        for(i=0;i<philAmount;i++){
+            if(philState[i] == EATING) {
+                if(cons > 0){
+                    printStatus();
+                    sleep(12000);
+                }
+                cons++;
+            } else cons = 0;
+        }
+    }
+}
+
+void printStatus(){
+    int i;
+    for(i=0;i<philAmount;i++){
+        printf("(%d)",philState[i]);
+    }
+}
 void philosphers(){
     clear();
     neighborsMutex = createMutex("philoNeighbors");
-    safeSpace = createMutex("philosophersSafeSpace");
-    for(int i=0; i < 20; i++){
-        drawPhilosopher(i,HUNGRY,20);
-//        addPhilosopher();
+    safeSpace = createMutex("philoSafeSpace");
+    lockMutex(safeSpace);
+
+    void** parg = (void**)malloc(sizeof(void*));
+    parg[0] = (void*)"gedit";
+    exec(&monitor, 1, parg, 0);
+
+    for(int i=0; i < 8; i++){
+//        drawPhilosopher(i,HUNGRY,20);
+        addPhilosopher();
         //sleep(2000);
     }
 //    return;
+    step = 1;
     while(1) {
         int c = getc();
-        if (c != EOF) {
+        unlockMutex(safeSpace);
+        //       if (c != EOF) {
             if (c == 'q') {
-
-            } else if (c == '\b') {
-            } else {
-                printf("%c",c);
+                clear();
+                drawPhilosophers(philAmount);
             }
-        }
+//            } else if (c == '\b') {
+//            } else {
+//                printf("%c",c);
+//            }
+//        }
     }
 }
 
@@ -71,27 +108,29 @@ void removePhilosopher(){
 }
 
 void addPhilosopher(){
-//    if(philAmount!=0) lockMutex(philMutex[0]);
+    if(philAmount!=0) lockMutex(philMutex[0]);
+
     char* mutexName=getMutexName(philAmount);
-//    printf("%s\n", mutexName);
     philMutex[philAmount]=createMutex(mutexName);
     philState[philAmount]=THINKING;
-//    printf("mutex %d\n", philMutex[philAmount]);
-//    printf("Philo %d got %d fork",philAmount,));
-//
+//    clear();
     void** parg = (void**)malloc(sizeof(void*) * 2);
     printf("%s\n",mutexName);
+    printf("mutex %d is %d\n",philAmount,philMutex[philAmount]);
     parg[0] = (void*)mutexName;
     parg[1] = (void*)philAmount;
     lockMutex(neighborsMutex);
-    exec(&philosophize,2,parg, 1);
-    //clear();
-    lockMutex(neighborsMutex);
+    exec(&philosophize,2,parg, 0);
+
+
+    killPhilosophers(philAmount);
     philAmount++;
     unlockMutex(neighborsMutex);
     drawPhilosophers(philAmount);
-   // if(philAmount!=1) unlockMutex(philMutex[0]);
+
+    if(philAmount!=1) unlockMutex(philMutex[0]);
 }
+
 
 void philosophize( int carg, void** args){
     int id=args[1];
@@ -101,28 +140,44 @@ void philosophize( int carg, void** args){
     int n;
 
     while (1){
+
+//        lockMutex(safeSpace);
+
         switch (philState[id]){
             case THINKING:
                 drawMyself(id);
                 sleep(randBound(TIME_SCALE*THINKING_TO_EATING_RATIO,2*TIME_SCALE*THINKING_TO_EATING_RATIO));
                 philState[id] = HUNGRY;
-            break;
+                drawMyself(id);
+//                printf("%d is hungry \n", id);
+
+                break;
             case HUNGRY:
                 drawMyself(id);
                 if(philAmount >1){
-                    lockMutex(neighborsMutex);
+//                    lockMutex(neighborsMutex);
                     left = leftFrom(id);
                     right = rightFrom(id);
-                    unlockMutex(neighborsMutex);
+//                    unlockMutex(neighborsMutex);
 
-                    if(id == philAmount -1) {
-                        lockMutex(philMutex[right]);
+                    if(1) {
+//                        printf("%d try loc %d, %d\n",id, right,left);
+//                        printf("%d try left locked %d\n", id,left);
                         lockMutex(philMutex[left]);
+//                        printf("%d left locked %d\n", id,left);
+                        lockMutex(philMutex[right]);
+//                        printf("%d right locked %d\n", id,right);
                     } else {
-                        lockMutex(philMutex[left]);
+//                        printf("%d try right locked %d\n", id,right);
                         lockMutex(philMutex[right]);
+//                        printf("%d right locked %d\n", id,right);
+                        lockMutex(philMutex[left]);
+//                        printf("%d left locked %d\n", id,left);
                     }
+//                    printf("%d is eating \n", id);
                     philState[id] = EATING;
+                    drawMyself(id);
+
                 }
                 break;
             case EATING:
@@ -131,9 +186,11 @@ void philosophize( int carg, void** args){
 
                 philState[id] = THINKING;
                 drawMyself(id);
-                unlockMutex(philMutex[right]);
+//                printf("%d is thinkin \n", id);
                 unlockMutex(philMutex[left]);
-            break;
+                unlockMutex(philMutex[right]);
+//                printf("%d released %d and %d\n", id,right,left);
+                break;
         }
     }
 }
@@ -216,3 +273,43 @@ void drawPhilosopher(int id, int status, int currPhil){
     drawCFullCircle(getPhilosopherX(id,currPhil),getPhilosopherY(id,currPhil)
             ,philosopherRadius,color);
 }
+
+
+////COPIED PHILOSOPHER IMPLEMENTATION FROM SO
+//int mutexSo;
+//
+//void addPhiloSO(){
+//    char* mutexName=getMutexName(philAmount);
+//    void** parg = (void**)malloc(sizeof(void*) * 2);
+//    parg[0] = (void*)mutexName;
+//    parg[1] = (void*)philAmount;
+//    exec(&philosphizeSO,2,parg, 0);
+//    philAmount++;
+//
+//}
+//
+//void philosphersSO(){
+//    mutexSo = createMutex("neighBors");
+//    philAmount=0;
+//    int i;
+//
+//    for(i=0;i<7;i++){
+//        addPhiloSO();
+//    }
+//}
+//
+//void philosphizeSO(int id){
+//    while(1) {
+//        //Think
+//        //sleep(10);
+//        sleep(randBound(4000, 8000));
+//
+//        takeForks(id);
+//
+//        //Eat
+//        //sleep(10);
+//        sleep(randBound(4000, 8000));
+//
+//        putForks(id);
+//    }
+//}

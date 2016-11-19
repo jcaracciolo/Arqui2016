@@ -33,7 +33,7 @@ void initializeMutex(){
 }
 
 void saveName(int index,char* name){
-    if(index<0 || index>=MAX_MUTEX_NAME_LENGHT) return;
+    if(index<0 || index>=MAX_MUTEXES) return;
     int i;
     for(i=0;i<MAX_MUTEX_NAME_LENGHT && (*name)!='\0';i++,name++){
         mutexes[index].name[i]=*name;
@@ -79,7 +79,7 @@ int whereIs(char* name){
 
 int amIUsing(int index){
 
-    if(index<0 || index>=MAX_MUTEX_NAME_LENGHT || mutexes[index].name[0]=='\0') return -1;
+    if(index<0 || index>=MAX_MUTEXES || mutexes[index].name[0]=='\0') return -1;
 
     int myPid=getCurrentPid();
     for(int i=0;i<mutexes[index].using;i++){
@@ -93,7 +93,7 @@ int amIUsing(int index){
 
 /*gets or Creates a mutex with the given Name*/
 int getMutex(char* name){
-    lockScheduler();
+    int notPreviouslyLocked=lockScheduler();
 
     if(savedMutexes == MAX_MUTEXES) return -1;
     if(*name=='\0') return -1;
@@ -129,7 +129,9 @@ int getMutex(char* name){
 //        mutexes[pos].usingPids[mutexes[pos].using]=getCurrentPid();
 //        mutexes[pos].using +=1;
     }
-    unlockScheduler();
+
+    if(notPreviouslyLocked) unlockScheduler();
+
     return pos;
 }
 
@@ -163,10 +165,13 @@ int releaseMutexFromPos(int pos){
 
 /* release a mutex if it exists*/
 int releaseMutex(char* name){
-    lockScheduler();
+    int notPreviouslyLocked=lockScheduler();
+
     int pos=whereIs(name);
     releaseMutexFromPos(pos);
-    unlockScheduler();
+
+    if(notPreviouslyLocked) unlockScheduler();
+
     return 0;
 }
 
@@ -174,7 +179,8 @@ int releaseMutex(char* name){
 int lockMutex(int mutex){
     if(mutex<0 || mutex >= savedMutexes || mutexes[mutex].name[0]=='\0') return -1;
 
-    lockScheduler();
+    int notPreviouslyLocked=lockScheduler();
+
 
     if (! testAndSet(&(mutexes[mutex].mutex)) ) {
 
@@ -187,11 +193,15 @@ int lockMutex(int mutex){
             m->lastIndex = (m->lastIndex+1)%MAX_MUTEX_QUEUE_SIZE;
             changeProcessState(myPid,BLOCKED);
             unlockScheduler();
+
             _yield();
+
+            lockScheduler();
         }
     }
 
-    unlockScheduler();
+    if(notPreviouslyLocked) unlockScheduler();
+
     return 1;
 }
 
@@ -199,7 +209,9 @@ int lockMutex(int mutex){
 int unlockMutex(int mutex){
     if(mutex<0 || mutex >= savedMutexes || mutexes[mutex].name[0]=='\0') return -1;
 
-    lockScheduler();
+    int notPreviouslyLocked=lockScheduler();
+
+
     mutex_t* m=&mutexes[mutex];
 
     if(m->waiting>0){
@@ -212,7 +224,8 @@ int unlockMutex(int mutex){
         m->mutex=0;
     }
 
-    unlockScheduler();
+    if(notPreviouslyLocked) unlockScheduler();
+
     return 1;
 }
 

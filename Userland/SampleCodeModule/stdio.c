@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include "include/shell.h"
 #include "include/stdlib.h"
+#include "include/sync.h"
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
 
@@ -45,7 +46,8 @@ void changeFont(int n) {
 int printf(const char* format,...){
 	va_list args;
 	va_start( args, format );
-
+	int safe = createMutex("safePrint");
+	lockMutex(safe);
 	int n;
 	char strnum[10];
 	char* str;
@@ -76,7 +78,7 @@ int printf(const char* format,...){
 		format++;
 
 	}
-
+	unlockMutex(safe);
 	return 0;
 
 }

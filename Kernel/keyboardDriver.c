@@ -101,6 +101,7 @@ void readFull(char * buffer, int size){
 
     lockMutex(readSTDINMutex);
     while (getForegroundPid() != getCurrentPid() || bufferEmpty == true ){
+//        print("blocked");
         waitCondVar(&readSTDINcondVar, readSTDINMutex);
     }
     unlockMutex(readSTDINMutex);

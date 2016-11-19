@@ -23,7 +23,7 @@ int releaseMutexFromPos(int pos);
 #define PAGESMUTEX "__PAGES__MUTEX"
 
 #define MAX_MUTEXES 256
-#define MAX_MUTEX_NAME_LENGHT 15
+#define MAX_MUTEX_NAME_LENGHT 17
 #define MAX_MUTEX_QUEUE_SIZE 30
 #define MAX_MUTEX_PIDS 30
 

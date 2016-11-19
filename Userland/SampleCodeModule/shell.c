@@ -255,7 +255,7 @@ void execute() {
 	} else if(strcmp(shellBuffer, "philo") == 0) {
         void** parg = (void**)malloc(sizeof(void*));
         parg[0] = (void*)"philoManager";
-        exec(&philosphers,1,parg, psToFg);
+        exec(&philosphers,1,parg, 1);
 
 	}else if(strcmp(shellBuffer, "prod") == 0) {
         exec(&producerConsumer,0,0, psToFg);
