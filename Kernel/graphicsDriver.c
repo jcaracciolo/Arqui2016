@@ -320,25 +320,24 @@ void _drawCircle(uint32 x, uint32 y, uint32 r){
             if ( aux<=r2 ) {
                 auxX = x + tempX;
                 auxY = y + tempY;
-                if (!inBound(auxX, auxY)) {
-                        break;
+                if (inBound(auxX, auxY)) {
+                    _drawPixel(auxX, auxY);
                 }
-                _drawPixel(auxX, auxY);
             }
         }
     }
 
-    //top hat
+
+    //bot hat
     for(int tempY=hside; tempY<=radius; tempY++) {
         for (int tempX = -radius; tempX <= radius; tempX++) {
             aux=tempX * tempX + tempY * tempY;
             if ( aux<=r2 ) {
                 auxX = x + tempX;
                 auxY = y + tempY;
-                if (!inBound(auxX, auxY)) {
-                    break;
+                if (inBound(auxX, auxY)) {
+                    _drawPixel(auxX, auxY);
                 }
-                _drawPixel(auxX, auxY);
             }
         }
     }
@@ -350,10 +349,9 @@ void _drawCircle(uint32 x, uint32 y, uint32 r){
             if ( aux<=r2 ) {
                 auxX = x + tempX;
                 auxY = y + tempY;
-                if (!inBound(auxX, auxY)) {
-                    break;
+                if (inBound(auxX, auxY)) {
+                    _drawPixel(auxX, auxY);
                 }
-                _drawPixel(auxX, auxY);
             }
         }
     }
@@ -365,13 +363,14 @@ void _drawCircle(uint32 x, uint32 y, uint32 r){
             if ( aux<=r2 ) {
                 auxX = x + tempX;
                 auxY = y + tempY;
-                if (!inBound(auxX, auxY)) {
-                    break;
+                if (inBound(auxX, auxY)) {
+                    _drawPixel(auxX, auxY);
                 }
-                _drawPixel(auxX, auxY);
             }
         }
     }
+
+    _drawSquare(x-side/2,y-side/2,side,side);
 
 
 
@@ -396,7 +395,6 @@ void _drawCircle(uint32 x, uint32 y, uint32 r){
 //            if(tempX*tempX+tempY*tempY <= radius*radius && )
 //                _drawPixel(x+tempX, y+tempY);
 
-    _drawSquare(x-side/2,y-side/2,side,side);
 
 //    for (int i = side; i < r; ++i) {
 //        _drawCEmptyCircle(x,y,i/2);

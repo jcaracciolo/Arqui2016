@@ -312,9 +312,9 @@ void execute() {
         exec(&uslessPs, 1,parg, psToFg);
 
 
-	}else if(strcmp(shellBuffer, "pacman clear") == 0) {
+	}else if(sscanf("pacman clear %d", shellBuffer, &num) == 1) {
 		//animatePacman(500,500,100);
-        pacmanClear();
+        pacmanClear(num);
 		//drawGhost(300,300,100);
 	}
 

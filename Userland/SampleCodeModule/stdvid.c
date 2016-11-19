@@ -219,20 +219,26 @@ void drawGhost(int x,int y, int size){
 
 }
 
-void pacmanClear() {
-    int size=1024/4;
+void pacmanClear(int cant) {
+    int size=1024/4/cant;
 
-    for (int j = 0; j < 800; j+=size) {
-        for (int i = 0; i < 1024; i+=size/4) {
-            drawPacman(i+size/2,j+size/2,size/2,6);
-//            sleep(50);
-            drawPacman(i+size/2,j+size/2,size/2,12);
-//            sleep(50);
-            drawClosePacman(i+size/2,j+size/2,size/2);
-//            sleep(50);
-            drawPacman(i+size/2,j+size/2,size/2,12);
-//            sleep(50);
-            drawCSquare(i,j,size+1,size+1,0);
+    for (int j = 0; j+size/2 < (800-size); j+=cant*size) {
+        for (int i = -50; i < 1024; i+=size/4) {
+                for (int k = 0; k < cant; ++k)
+                drawPacman(i+size/2,j+size/2+k*size,size/2,6);
+                sleep(100/cant);
+                 for (int k = 0; k < cant; ++k)
+                drawPacman(i+size/2,j+size/2+k*size,size/2,12);
+                sleep(100/cant);
+                for (int k = 0; k < cant; ++k)
+                drawClosePacman(i+size/2,j+size/2+k*size,size/2);
+                sleep(100/cant);
+                for (int k = 0; k < cant; ++k)
+                drawPacman(i+size/2,j+size/2+k*size,size/2,12);
+                sleep(100/cant);
+                for (int k = 0; k < cant; ++k)
+                drawCSquare(i,j+k*size,size+1,size+1,0);
+
         }
     }
 
