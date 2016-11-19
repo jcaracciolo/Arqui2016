@@ -12,13 +12,11 @@ int donJose();
 
 int pepitoJose(){
     void** parg = (void**)malloc(sizeof(void*) * 2);
-    int a=5;
-    while(a--){
-        parg[0] = (void*)"donPepito";
-        exec(&donPepito, 1, parg, 1);
-        parg[0] = (void*)"donJose";
-        exec(&donJose, 1, parg, 1);
-    }
+    parg[0] = (void*)"donPepito";
+    exec(&donPepito, 1, parg, 1);
+    parg[0] = (void*)"donJose";
+    exec(&donJose, 1, parg, 1);
+
 }
 
 int donPepito(){

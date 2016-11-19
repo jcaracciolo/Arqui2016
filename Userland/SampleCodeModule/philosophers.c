@@ -41,7 +41,7 @@ void drawMyself(int id);
 
 void philosphers(){
     clear();
-    neighborsMutex = createMutex("philosophersNeighbors");
+    neighborsMutex = createMutex("philoNeighbors");
     safeSpace = createMutex("philosophersSafeSpace");
     for(int i=0; i < 20; i++){
         drawPhilosopher(i,HUNGRY,20);
@@ -71,7 +71,7 @@ void removePhilosopher(){
 }
 
 void addPhilosopher(){
-    if(philAmount!=0) lockMutex(philMutex[0]);
+//    if(philAmount!=0) lockMutex(philMutex[0]);
     char* mutexName=getMutexName(philAmount);
 //    printf("%s\n", mutexName);
     philMutex[philAmount]=createMutex(mutexName);
@@ -83,16 +83,14 @@ void addPhilosopher(){
     printf("%s\n",mutexName);
     parg[0] = (void*)mutexName;
     parg[1] = (void*)philAmount;
-//    lockMutex(philMutex[philAmount]);
     lockMutex(neighborsMutex);
     exec(&philosophize,2,parg, 1);
-//    killPhilosophers(philAmount);
-    clear();
+    //clear();
     lockMutex(neighborsMutex);
     philAmount++;
     unlockMutex(neighborsMutex);
     drawPhilosophers(philAmount);
-    if(philAmount!=1) unlockMutex(philMutex[0]);
+   // if(philAmount!=1) unlockMutex(philMutex[0]);
 }
 
 void philosophize( int carg, void** args){

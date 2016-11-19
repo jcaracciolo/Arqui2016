@@ -38,5 +38,6 @@ void drawGhostEyes(int x,int y,int size,int pos);
 void deleteGhostLegs(int x,int y,int size);
 
 void drawGhost(int x,int y, int size);
+void pacmanClear();
 
 #endif

@@ -147,9 +147,9 @@ void drawPacman(int x,int y, int r,int mouthClosed){
 	int mc=mouthClosed;
 	qword color=0xFFEE00;
 	drawCFullCircle(x,y,r,color);
-	drawCSquare(x      ,y-r/mc  ,      r/mc*2 ,r/4,0000);
-	drawCSquare(x+r/4  ,y-2*r/mc  ,  2*r/mc*2 ,r/4,0000);
-	drawCSquare(x+r/2  ,y-3*r/mc,    3*r/mc*2 ,r/4,0000);
+	drawCSquare(x      ,y-r/mc  ,      r/mc*2 ,r/4+1,0000);
+	drawCSquare(x+r/4  ,y-2*r/mc  ,  2*r/mc*2 ,r/4+1,0000);
+	drawCSquare(x+r/2  ,y-3*r/mc,    3*r/mc*2 ,r/4+1,0000);
 	drawCSquare(x+3*r/4,y-4*r/mc    ,4*r/mc*2 ,r/3,0000);
 	drawCFullCircle(x+r/8,y-(r/2),r/8,0000);
 }
@@ -215,6 +215,29 @@ void drawGhost(int x,int y, int size){
 		sleep(700);
 		deleteGhostLegs(x,y,size);
 	}
+
+
+}
+
+void pacmanClear() {
+    int size=1024/4;
+
+    for (int j = 0; j < 800; j+=size) {
+        for (int i = 0; i < 1024; i+=size/4) {
+            drawPacman(i+size/2,j+size/2,size/2,6);
+//            sleep(50);
+            drawPacman(i+size/2,j+size/2,size/2,12);
+//            sleep(50);
+            drawClosePacman(i+size/2,j+size/2,size/2);
+//            sleep(50);
+            drawPacman(i+size/2,j+size/2,size/2,12);
+//            sleep(50);
+            drawCSquare(i,j,size+1,size+1,0);
+        }
+    }
+
+    clear();
+
 
 
 }

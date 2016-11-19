@@ -4,6 +4,7 @@
 #include "include/types.h"
 #include "include/fonts.h"
 #include "include/graphicsDriver.h"
+#define INBOUND(x,y) ((x)>0 && (x)<inf->Xres && (y)>0 && (y)<inf->Yres)
 
 #define SQRT2 1.41421356237
 
@@ -308,29 +309,92 @@ void _drawCircle(uint32 x, uint32 y, uint32 r){
     int side=(2*radius)/SQRT2;
     int hside=side/2;
     int corte= (radius-side);
+    int aux;
+    int auxX;
+    int auxY;
+    int r2=radius*radius;
     //top hat
-    for(int tempY=-radius; tempY<=-hside; tempY++)
-		for(int tempX=-radius; tempX<=radius; tempX++)
-			if(tempX*tempX+tempY*tempY <= radius*radius)
-				_drawPixel(x+tempX, y+tempY);
+    for(int tempY=-radius; tempY<=-hside; tempY++) {
+        for (int tempX = -radius; tempX <= radius; tempX++) {
+            aux=tempX * tempX + tempY * tempY;
+            if ( aux<=r2 ) {
+                auxX = x + tempX;
+                auxY = y + tempY;
+                if (!inBound(auxX, auxY)) {
+                        break;
+                }
+                _drawPixel(auxX, auxY);
+            }
+        }
+    }
 
-    //Bot hat
-    for(int tempY=hside; tempY<=radius; tempY++)
-        for(int tempX=-radius; tempX<=radius; tempX++)
-            if(tempX*tempX+tempY*tempY <= radius*radius)
-                _drawPixel(x+tempX, y+tempY);
+    //top hat
+    for(int tempY=hside; tempY<=radius; tempY++) {
+        for (int tempX = -radius; tempX <= radius; tempX++) {
+            aux=tempX * tempX + tempY * tempY;
+            if ( aux<=r2 ) {
+                auxX = x + tempX;
+                auxY = y + tempY;
+                if (!inBound(auxX, auxY)) {
+                    break;
+                }
+                _drawPixel(auxX, auxY);
+            }
+        }
+    }
 
-    //Left hat
-    for(int tempY=-radius; tempY<=radius; tempY++)
-        for(int tempX=-radius; tempX<=-hside; tempX++)
-            if(tempX*tempX+tempY*tempY <= radius*radius)
-                _drawPixel(x+tempX, y+tempY);
+    //top hat
+    for(int tempY=-radius; tempY<=radius; tempY++) {
+        for (int tempX = -radius; tempX <= -hside; tempX++) {
+            aux=tempX * tempX + tempY * tempY;
+            if ( aux<=r2 ) {
+                auxX = x + tempX;
+                auxY = y + tempY;
+                if (!inBound(auxX, auxY)) {
+                    break;
+                }
+                _drawPixel(auxX, auxY);
+            }
+        }
+    }
 
-    //Right hat
-    for(int tempY=-radius; tempY<=radius; tempY++)
-        for(int tempX=hside; tempX<=radius; tempX++)
-            if(tempX*tempX+tempY*tempY <= radius*radius)
-                _drawPixel(x+tempX, y+tempY);
+    //top hat
+    for(int tempY=-radius; tempY<=radius; tempY++) {
+        for (int tempX = hside; tempX <= radius; tempX++) {
+            aux=tempX * tempX + tempY * tempY;
+            if ( aux<=r2 ) {
+                auxX = x + tempX;
+                auxY = y + tempY;
+                if (!inBound(auxX, auxY)) {
+                    break;
+                }
+                _drawPixel(auxX, auxY);
+            }
+        }
+    }
+
+
+
+
+
+
+//    //Bot hat
+//    for(int tempY=hside; tempY<=radius; tempY++)
+//        for(int tempX=-radius; tempX<=radius; tempX++)
+//            if(tempX*tempX+tempY*tempY <= radius*radius)
+//                _drawPixel(x+tempX, y+tempY);
+//
+//    //Left hat
+//    for(int tempY=-radius; tempY<=radius; tempY++)
+//        for(int tempX=-radius; tempX<=-hside; tempX++)
+//            if(tempX*tempX+tempY*tempY <= radius*radius)
+//                _drawPixel(x+tempX, y+tempY);
+//
+//    //Right hat
+//    for(int tempY=-radius; tempY<=radius; tempY++)
+//        for(int tempX=hside; tempX<=radius; tempX++)
+//            if(tempX*tempX+tempY*tempY <= radius*radius && )
+//                _drawPixel(x+tempX, y+tempY);
 
     _drawSquare(x-side/2,y-side/2,side,side);
 
