@@ -49,7 +49,6 @@ static condVar_t writeCondVar;
 static int readMutex;
 static int writeMutex;
 static int modifyQueueMutex;
-static int animateQueueMutex;
 static int frame;
 static int producerRest;
 static int consumerRest;
@@ -65,7 +64,6 @@ void producerConsumer(){
     readMutex = createMutex("prodConsRead");
     writeMutex= createMutex("prodConsWrite");
     modifyQueueMutex= createMutex("prodConsModify");
-    animateQueueMutex= createMutex("prodConsAnim");
     initCondVar(&readCondVar);
     initCondVar(&writeCondVar);
     clear();
@@ -84,7 +82,11 @@ void producerConsumer(){
 
 
 
-
+    deleteInstructions();
+    printf("Welcome the PACMAN! His bloodlust for ghost ectoplasm is endless.\n");
+    printf("Press 'q' to refresh the screen.\n Press 'd' to speed up ghost breeding and 'a' slow it down\n");
+    printf("Press 'c' to speed up PACMANS hunger and 'z' slow it down\n");
+    printf("Press 'e' to EXIT the PACMAN feast\n");
     while(1) {
         int c = getc();
         if (c != EOF) {
