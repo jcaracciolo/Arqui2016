@@ -155,7 +155,7 @@ void addPhilosopher(){
 
 void philosophize( int carg, void** args){
     int id=args[1];
-    printf("Philo %d is born pid: %d\n",id,getPID());
+    printf("Philo %d is born pid: %d\n",id,philPID[id]);
     int left;
     int right;
     int n;
