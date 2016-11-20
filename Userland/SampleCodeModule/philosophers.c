@@ -27,7 +27,7 @@ int philAmount = 0;
 int tableRadius = 200;
 int philosopherRadius = 30;
 int safeSpace;
-int step;
+boolean deleteLast;
 
 void philosophize();
 void addPhilosopher();
@@ -40,19 +40,20 @@ int getPhilosopherY(int id, int currPhil);
 void killPhilosophers(int currAmount);
 void drawMyself(int id);
 void drawPhilosophers(int currPhil);
-//void philosphersSO();
+void seppuku(int left, int right);
 
 
 void monitor(){
     int i,cons=0;
-    printf("monitoring");
+//    printf("monitoring");
     while (1){
 
         for(i=0;i<philAmount;i++){
             if(philState[i] == EATING) {
                 if(cons > 0){
-                    printStatus();
+//                    printStatus();
                     sleep(12000);
+                    printError("There are 2 philosophers sharing!\n");
                 }
                 cons++;
             } else cons = 0;
@@ -66,6 +67,7 @@ void printStatus(){
         printf("(%d)",philState[i]);
     }
 }
+
 void philosphers(){
     clear();
     neighborsMutex = createMutex("philoNeighbors");
@@ -76,35 +78,34 @@ void philosphers(){
     parg[0] = (void*)"gedit";
     exec(&monitor, 1, parg, 0);
 
-    for(int i=0; i < 8; i++){
-//        drawPhilosopher(i,HUNGRY,20);
+    for(int i=0; i < 16; i++){
         addPhilosopher();
-        //sleep(2000);
     }
-//    return;
-    step = 1;
+    printf("Welcome the philosophers! They will be starving for your entertainment.\n");
+    printf("Press 'q' to refresh the screen.\n Press 'a' to add philosophers and 'd' to remove them\n");
+
     while(1) {
         int c = getc();
         unlockMutex(safeSpace);
-        //       if (c != EOF) {
+        if (c != EOF) {
             if (c == 'q') {
                 clear();
                 drawPhilosophers(philAmount);
+            } else if (c == 'a') {
+                printf("adding philosopher, please wait\n");
+                addPhilosopher();
+            } else if (c == 'd') {
+                printf("removing philosopher, please wait\n");
+                removePhilosopher();
             }
-//            } else if (c == '\b') {
-//            } else {
-//                printf("%c",c);
-//            }
-//        }
+        }
     }
 }
 
 
 
 void removePhilosopher(){
-    clear();
-    philAmount--;
-    drawPhilosophers(philAmount);
+    deleteLast = true;
 }
 
 void addPhilosopher(){
@@ -115,8 +116,8 @@ void addPhilosopher(){
     philState[philAmount]=THINKING;
 //    clear();
     void** parg = (void**)malloc(sizeof(void*) * 2);
-    printf("%s\n",mutexName);
-    printf("mutex %d is %d\n",philAmount,philMutex[philAmount]);
+//    printf("%s\n",mutexName);
+//    printf("mutex %d is %d\n",philAmount,philMutex[philAmount]);
     parg[0] = (void*)mutexName;
     parg[1] = (void*)philAmount;
     lockMutex(neighborsMutex);
@@ -134,7 +135,7 @@ void addPhilosopher(){
 
 void philosophize( int carg, void** args){
     int id=args[1];
-    printf("Philo %d is born\n",id);
+//    printf("Philo %d is born\n",id);
     int left;
     int right;
     int n;
@@ -149,35 +150,27 @@ void philosophize( int carg, void** args){
                 sleep(randBound(TIME_SCALE*THINKING_TO_EATING_RATIO,2*TIME_SCALE*THINKING_TO_EATING_RATIO));
                 philState[id] = HUNGRY;
                 drawMyself(id);
-//                printf("%d is hungry \n", id);
 
                 break;
             case HUNGRY:
                 drawMyself(id);
                 if(philAmount >1){
-//                    lockMutex(neighborsMutex);
+                    lockMutex(neighborsMutex);
                     left = leftFrom(id);
                     right = rightFrom(id);
-//                    unlockMutex(neighborsMutex);
+                    unlockMutex(neighborsMutex);
 
-                    if(1) {
-//                        printf("%d try loc %d, %d\n",id, right,left);
-//                        printf("%d try left locked %d\n", id,left);
+                    if(id == philAmount -1) {
                         lockMutex(philMutex[left]);
-//                        printf("%d left locked %d\n", id,left);
                         lockMutex(philMutex[right]);
-//                        printf("%d right locked %d\n", id,right);
+
+                        if(deleteLast == true) seppuku(left,right);
                     } else {
-//                        printf("%d try right locked %d\n", id,right);
                         lockMutex(philMutex[right]);
-//                        printf("%d right locked %d\n", id,right);
                         lockMutex(philMutex[left]);
-//                        printf("%d left locked %d\n", id,left);
                     }
-//                    printf("%d is eating \n", id);
                     philState[id] = EATING;
                     drawMyself(id);
-
                 }
                 break;
             case EATING:
@@ -186,15 +179,24 @@ void philosophize( int carg, void** args){
 
                 philState[id] = THINKING;
                 drawMyself(id);
-//                printf("%d is thinkin \n", id);
                 unlockMutex(philMutex[left]);
                 unlockMutex(philMutex[right]);
-//                printf("%d released %d and %d\n", id,right,left);
                 break;
         }
     }
 }
 
+void seppuku(int left, int right){
+    lockMutex(neighborsMutex);
+    killPhilosophers(philAmount);
+    philAmount--;
+    drawPhilosophers(philAmount);
+    deleteLast = false;
+    unlockMutex(philMutex[left]);
+    unlockMutex(philMutex[right]);
+
+    unlockMutex(neighborsMutex);
+}
 
 int leftFrom(int index){
   return index;
@@ -274,42 +276,3 @@ void drawPhilosopher(int id, int status, int currPhil){
             ,philosopherRadius,color);
 }
 
-
-////COPIED PHILOSOPHER IMPLEMENTATION FROM SO
-//int mutexSo;
-//
-//void addPhiloSO(){
-//    char* mutexName=getMutexName(philAmount);
-//    void** parg = (void**)malloc(sizeof(void*) * 2);
-//    parg[0] = (void*)mutexName;
-//    parg[1] = (void*)philAmount;
-//    exec(&philosphizeSO,2,parg, 0);
-//    philAmount++;
-//
-//}
-//
-//void philosphersSO(){
-//    mutexSo = createMutex("neighBors");
-//    philAmount=0;
-//    int i;
-//
-//    for(i=0;i<7;i++){
-//        addPhiloSO();
-//    }
-//}
-//
-//void philosphizeSO(int id){
-//    while(1) {
-//        //Think
-//        //sleep(10);
-//        sleep(randBound(4000, 8000));
-//
-//        takeForks(id);
-//
-//        //Eat
-//        //sleep(10);
-//        sleep(randBound(4000, 8000));
-//
-//        putForks(id);
-//    }
-//}
