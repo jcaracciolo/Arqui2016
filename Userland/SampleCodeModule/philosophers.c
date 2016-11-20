@@ -93,7 +93,6 @@ void philosphers(){
     deleteLast=false;
     neighborsMutex = createMutex("philoNeighbors");
     safeSpace = createMutex("philoSafeSpace");
-    lockMutex(safeSpace);
 
     void** parg = (void**)malloc(sizeof(void*));
     parg[0] = (void*)"philosopherMonitor";
@@ -111,7 +110,6 @@ void philosphers(){
 
     while(1) {
         int c = getc();
-        unlockMutex(safeSpace);
         if (c != EOF) {
             if (c == 'q') {
                 clear();
@@ -144,6 +142,13 @@ void philosphers(){
 
 void removePhilosopher(){
     deleteLast = true;
+    lockMutex(safeSpace);
+    lockMutex(neighborsMutex);
+    if(philState[philAmount-1] == THINKING){
+        kill(philPID[philAmount-1],2);
+    }
+    unlockMutex(neighborsMutex);
+    unlockMutex(safeSpace);
 }
 
 void addPhilosopher(){
@@ -187,11 +192,13 @@ void philosophize( int carg, void** args){
                 drawMyself(id);
                 sleep(randBound(TIME_SCALE*THINKING_TO_EATING_RATIO,2*TIME_SCALE*THINKING_TO_EATING_RATIO));
                 philState[id] = HUNGRY;
+                lockMutex(safeSpace);
                 drawMyself(id);
 
                 break;
             case HUNGRY:
                 drawMyself(id);
+                unlockMutex(safeSpace);
                 if(philAmount >1){
                     lockMutex(neighborsMutex);
                     left = leftFrom(id);
