@@ -22,6 +22,7 @@
 
 int philState[MAX_PHILOSOPHERS];
 int philMutex[MAX_PHILOSOPHERS];
+int philPID[MAX_PHILOSOPHERS];
 int neighborsMutex;
 int philAmount = 0;
 int tableRadius = 200;
@@ -40,7 +41,7 @@ int getPhilosopherY(int id, int currPhil);
 void killPhilosophers(int currAmount);
 void drawMyself(int id);
 void drawPhilosophers(int currPhil);
-void seppuku(int left, int right);
+void seppuku(int id,int left, int right);
 
 
 void monitor(){
@@ -68,6 +69,21 @@ void printStatus(){
     }
 }
 
+void sendPhilosophersHome(int monitorPID){
+    int i;
+    kill(monitorPID,0);
+    lockMutex(neighborsMutex);
+    for (i=0;i<philAmount;i++){
+        kill(philPID[i],0);
+    }
+    for (i=0;i<philAmount;i++){
+        releaseMutex(philMutex[i]);
+    }
+    unlockMutex(neighborsMutex);
+    releaseMutex(neighborsMutex);
+    releaseMutex(safeSpace);
+}
+
 void philosphers(){
     clear();
     neighborsMutex = createMutex("philoNeighbors");
@@ -75,14 +91,16 @@ void philosphers(){
     lockMutex(safeSpace);
 
     void** parg = (void**)malloc(sizeof(void*));
-    parg[0] = (void*)"gedit";
-    exec(&monitor, 1, parg, 0);
+    parg[0] = (void*)"philosopherMonitor";
+    int monitorPID = exec(&monitor, 1, parg, 0);
 
-    for(int i=0; i < 16; i++){
+    for(int i=0; i < 8; i++){
         addPhilosopher();
     }
+
     printf("Welcome the philosophers! They will be starving for your entertainment.\n");
     printf("Press 'q' to refresh the screen.\n Press 'a' to add philosophers and 'd' to remove them\n");
+    printf("Press 'e' to EXIT and let the philosophers continue with their nihilist thoughts\n");
 
     while(1) {
         int c = getc();
@@ -97,6 +115,8 @@ void philosphers(){
             } else if (c == 'd') {
                 printf("removing philosopher, please wait\n");
                 removePhilosopher();
+            }else if (c == 'e') {
+                sendPhilosophersHome(monitorPID);
             }
         }
     }
@@ -121,7 +141,7 @@ void addPhilosopher(){
     parg[0] = (void*)mutexName;
     parg[1] = (void*)philAmount;
     lockMutex(neighborsMutex);
-    exec(&philosophize,2,parg, 0);
+    philPID[philAmount]=exec(&philosophize,2,parg, 0);
 
 
     killPhilosophers(philAmount);
@@ -135,7 +155,7 @@ void addPhilosopher(){
 
 void philosophize( int carg, void** args){
     int id=args[1];
-//    printf("Philo %d is born\n",id);
+    printf("Philo %d is born pid: %d\n",id,getPID());
     int left;
     int right;
     int n;
@@ -164,7 +184,7 @@ void philosophize( int carg, void** args){
                         lockMutex(philMutex[left]);
                         lockMutex(philMutex[right]);
 
-                        if(deleteLast == true) seppuku(left,right);
+                        if(deleteLast == true) seppuku(id,left,right);
                     } else {
                         lockMutex(philMutex[right]);
                         lockMutex(philMutex[left]);
@@ -186,7 +206,9 @@ void philosophize( int carg, void** args){
     }
 }
 
-void seppuku(int left, int right){
+void seppuku(int id, int left, int right){
+
+//    printf("killing philo %d, pid:%d\n",id,philPID[id]);
     lockMutex(neighborsMutex);
     killPhilosophers(philAmount);
     philAmount--;
@@ -194,8 +216,11 @@ void seppuku(int left, int right){
     deleteLast = false;
     unlockMutex(philMutex[left]);
     unlockMutex(philMutex[right]);
-
+    releaseMutex(left>right?philMutex[left]:philMutex[right]);
     unlockMutex(neighborsMutex);
+//    printf("killing %d, philo %d",getPID(),philAmount+1);
+    printf("killed pid:%d, philo %d\n",philPID[id],id);
+    kill(philPID[id],0);
 }
 
 int leftFrom(int index){

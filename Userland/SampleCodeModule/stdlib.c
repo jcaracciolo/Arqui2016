@@ -66,5 +66,6 @@ void ps() {
 }
 
 void kill(int pid, int msg) {
+//	printf("someones is killing %d with %d",pid,msg);
 	int80(29, pid, msg, 0, 0, 0);
 }

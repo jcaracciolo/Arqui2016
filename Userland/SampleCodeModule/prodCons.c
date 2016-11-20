@@ -69,13 +69,29 @@ void producerConsumer(){
     exec(&consumer,1,parg, 1);
     parg[0] = (void*)"pacmanTick";
     exec(&animate,1,parg, 1);
-//
-//    int i=0;
-//    for(i=0;i < MAX_PRODUCT_QUEUE_SIZE;i++){
-//        drawCFullCircle(getXFromQueue(i),getYFromQueue(i),20,0x00B22222);
+
+
+    printf("Welcome the PACMAN! His bloodlust for ghost ectoplasm is endless.\n");
+    printf("Press 'q' to clear the screen.\n Press 'a' to speed up ghost breeding and 'd' slow it down\n");
+    printf("Press 'z' to speed up PACMANS hunger and 'c' slow it down\n");
+    printf("Press 'e' to EXIT the PACMAN feast\n");
+
+
+//    while(1) {
+//        int c = getc();
+//        unlockMutex(safeSpace);
+//        if (c != EOF) {
+//            if (c == 'q') {
+//                clear();
+//            } else if (c == 'e') {
+//                printf("adding philosopher, please wait\n");
+//                addPhilosopher();
+//            } else if (c == 'd') {
+//                printf("removing philosopher, please wait\n");
+//                removePhilosopher();
+//            }
+//        }
 //    }
-//    drawCFullCircle(100,100,30,0x00EEEEEE);
-//    drawCFullCircle(150,100,70,0x00EEEEEE);
 }
 
 void producer(){
