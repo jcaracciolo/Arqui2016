@@ -13,9 +13,9 @@ int donJose();
 int pepitoJose(){
     void** parg = (void**)malloc(sizeof(void*) * 2);
     parg[0] = (void*)"donPepito";
-    exec(&donPepito, 1, parg, 1);
+    exec(&donPepito, 1, parg, 0);
     parg[0] = (void*)"donJose";
-    exec(&donJose, 1, parg, 1);
+    exec(&donJose, 1, parg, 0);
 
 }
 

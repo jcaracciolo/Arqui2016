@@ -124,9 +124,7 @@ void printInstructions() {
 }
 
 void callRunGedit() {
-	lockMutex(createMutex("shell"));
 	runGedit();
-	unlockMutex(createMutex("shell"));
 }
 
 void callPaintLoop() {
@@ -266,8 +264,6 @@ void execute() {
 			int pid = exec(&drawFractalc, 1, parg, psToFg);
 			sleep(500);
 		}
-
-		//clear();
 	
 	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill, &msg)==2){
 		void** parg = (void**)malloc(sizeof(void*) * 3);
@@ -289,7 +285,7 @@ void execute() {
 	} else if(strcmp(shellBuffer, "philo") == 0) {
         void** parg = (void**)malloc(sizeof(void*));
         parg[0] = (void*)"philoManager";
-        exec(&philosphers,1,parg, 1);
+        exec(&philosphers,1,parg, psToFg);
 
 	}else if(strcmp(shellBuffer, "prod") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
@@ -300,10 +296,6 @@ void execute() {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"gedit";
 		exec(&callRunGedit, 1, parg, psToFg);
-		int n = 400000;
-		while (n--);
-		lockMutex(createMutex("shell"));
-		unlockMutex(createMutex("shell"));
 
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
@@ -350,7 +342,13 @@ void execute() {
             pacmanClear(num);
 	}  else if(strcmp(shellBuffer, "ipcs") == 0) {
         printIPCs();
-    } else {
+    } else if(sscanf("fg %i",shellBuffer, &num)==1) {
+		void** parg = (void**)malloc(sizeof(void*) * 2);
+		parg[0] = (void*)"giveForeground";
+		parg[1] = (void*)num;
+		parg[2] = (void*)3;
+		exec(&callKill, 3, parg, psToFg);
+	} else {
 		printf("Command not found.\n");
 	}
 
