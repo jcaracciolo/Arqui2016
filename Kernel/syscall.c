@@ -301,8 +301,8 @@ qword sys_leave(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
     return 0;
 }
 
-qword sys_myPID(qword ans, qword pid, qword rcx, qword r8, qword r9) {
-    int * retPid = (int *) pid;
+qword sys_myPID(qword ans, qword rdx, qword rcx, qword r8, qword r9) {
+    int * retPid = (int *) ans;
     *retPid = getCurrentPid();
     return 0;
 }
