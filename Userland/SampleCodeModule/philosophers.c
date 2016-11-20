@@ -90,6 +90,7 @@ void sendPhilosophersHome(int monitorPID){
 void philosphers(){
     clear();
     philAmount=0;
+    deleteLast=false;
     neighborsMutex = createMutex("philoNeighbors");
     safeSpace = createMutex("philoSafeSpace");
     lockMutex(safeSpace);

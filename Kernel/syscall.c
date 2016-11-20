@@ -227,7 +227,7 @@ qword sys_createMutex(qword name, qword mutex, qword rcx, qword r8, qword r9) {
 qword sys_releaseMutex(qword mutex, qword ret, qword rcx, qword r8, qword r9) {
     int * retVal = (int *) ret;
     int mutexCode = (int ) mutex;
-    *retVal = releaseMutex(mutexCode);
+    *retVal = releaseMutexFromPos(mutexCode);
     return 0;
 }
 
