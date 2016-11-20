@@ -158,7 +158,7 @@ int releaseMutexFromPos(int pos){
             m->using-=1;
         }else{
             mutexes[pos].name[0]='\0';
-            mutexes[pos].mutex=1;
+            mutexes[pos].mutex=0;
             savedMutexes-- ;
         }
     }

@@ -54,6 +54,9 @@ static int producerRest;
 static int consumerRest;
 
 
+#define PRODCONSREAD "prodConsRead"
+#define PRODCONSWRITE "prodConsWrite"
+#define PRODCONSMODIFY "prodConsModify"
 
 void producerConsumer(){
     sleep(200);
@@ -61,9 +64,9 @@ void producerConsumer(){
 
     queueSize = 0;
     queueIndex =0;
-    readMutex = createMutex("prodConsRead");
-    writeMutex= createMutex("prodConsWrite");
-    modifyQueueMutex= createMutex("prodConsModify");
+    readMutex = createMutex(PRODCONSREAD);
+    writeMutex= createMutex(PRODCONSWRITE);
+    modifyQueueMutex= createMutex(PRODCONSMODIFY);
     initCondVar(&readCondVar);
     initCondVar(&writeCondVar);
     clear();
@@ -121,13 +124,21 @@ void producerConsumer(){
             } else if (c == 'e') {
                 printf("Closing down, please wait\n");
                 exitProducerConsumer(prodID,consID,tickID);
+                clear();
+                return;
             }
         }
     }
 }
 
 void exitProducerConsumer(int prodPID, int consPID, int tickPID){
-
+    kill(prodPID,0);
+    kill(consPID,0);
+    kill(tickPID,0);
+    releaseMutex(writeMutex);
+    releaseMutex(readMutex);
+    releaseMutex(modifyQueueMutex);
+    return;
 }
 
 

@@ -258,6 +258,8 @@ void execute() {
         exec(&philosphers,1,parg, 1);
 
 	}else if(strcmp(shellBuffer, "prod") == 0) {
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"prodConsManager";
         exec(&producerConsumer,0,0, psToFg);
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {

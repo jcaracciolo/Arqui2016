@@ -7,7 +7,7 @@
 
 #include <stdint.h>
 #include "condvar.h"
-#define MAX_PIPES 50
+#define MAX_PIPES 100
 #define PIPES_MUTEX "__PIPES__MUTEX"
 
 typedef struct{

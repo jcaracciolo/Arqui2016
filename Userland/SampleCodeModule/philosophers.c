@@ -23,6 +23,7 @@
 int philState[MAX_PHILOSOPHERS];
 int philMutex[MAX_PHILOSOPHERS];
 int philPID[MAX_PHILOSOPHERS];
+
 int neighborsMutex;
 int philAmount = 0;
 int tableRadius = 200;
@@ -86,6 +87,7 @@ void sendPhilosophersHome(int monitorPID){
 
 void philosphers(){
     clear();
+    philAmount=0;
     neighborsMutex = createMutex("philoNeighbors");
     safeSpace = createMutex("philoSafeSpace");
     lockMutex(safeSpace);
@@ -98,6 +100,8 @@ void philosphers(){
         addPhilosopher();
     }
 
+    clear();
+    drawPhilosophers(philAmount);
     printf("Welcome the philosophers! They will be starving for your entertainment.\n");
     printf("Press 'q' to refresh the screen.\n Press 'a' to add philosophers and 'd' to remove them\n");
     printf("Press 'e' to EXIT and let the philosophers continue with their nihilist thoughts\n");
@@ -117,6 +121,8 @@ void philosphers(){
                 removePhilosopher();
             }else if (c == 'e') {
                 sendPhilosophersHome(monitorPID);
+                clear();
+                return;
             }
         }
     }
@@ -155,7 +161,7 @@ void addPhilosopher(){
 
 void philosophize( int carg, void** args){
     int id=args[1];
-    printf("Philo %d is born pid: %d\n",id,philPID[id]);
+    //printf("Philo %d is born pid: %d\n",id,philPID[id]);
     int left;
     int right;
     int n;
