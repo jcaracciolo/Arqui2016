@@ -13,6 +13,17 @@
 static pipe_t pipes[MAX_PIPES];
 static int pipeMutex;
 
+int getPipesNames(ipcs* ans,int cant){
+    int j;
+    int i;
+    for (i = 0,j=0; j < cant && i<MAX_PIPES; ++i) {
+        if(pipes[i]!=(pipe_t )0){
+            strcpy(ans->pipesNames[j],pipes[i]->name,MAX_PIPE_NAME);
+            j++;
+        }
+    }
+    return j;
+}
 
 void initIPC(){
     for (int i = 0; i < MAX_PIPES; ++i) {
@@ -22,17 +33,20 @@ void initIPC(){
 }
 
 pipe_t createPipe(char* name){
-    char* mname[16]={'p','_','\0'};
-    strcpy(mname+2,name,13);
+    if(name[0]=='\0') return (pipe_t)0;
+    char mname[16]={'p','_'};
+    strcpy(mname+1,name,13);
     mname[15]='\0';
+    print(mname);
     pipe_t newPipe= malloc(sizeof(*newPipe));
+    newPipe->name=malloc(MAX_PIPE_NAME+1);
+    strcpy(newPipe->name,name,MAX_PIPE_NAME);
 
     newPipe->mutex=getMutex(mname);
     newPipe->buffer=buddyAllocatePages(1);
     newPipe->bufferSize=0;
     newPipe->initialIndex=0;
 
-    newPipe->name=malloc(15);
 
     mname[0]='R';
     newPipe->readMutex=getMutex(mname);
@@ -42,7 +56,6 @@ pipe_t createPipe(char* name){
     initCondVar(&(newPipe->readCondVar));
     initCondVar(&(newPipe->writeCondVar));
 
-    strcpy(newPipe->name,name,15);
     return newPipe;
 }
 

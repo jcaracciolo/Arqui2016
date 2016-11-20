@@ -2,6 +2,7 @@
 #include "include/shell.h";
 #include "include/types.h"
 #include "include/stdio.h"
+#include "include/IPCstructs.h"
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
@@ -29,6 +30,9 @@ void free(void * p){
 	int80(2, p, 0, 0, 0, 0);
 }
 
+void getIpcs(ipcs * ans,int mutexes,int pipes, int* cantMutexes, int* cantPipes){
+	int80(40, ans, mutexes, pipes, cantMutexes, cantPipes);
+}
 int openPipe(char * name){
 	int fd;
 	int80(33, name, &fd, 0, 0, 0);

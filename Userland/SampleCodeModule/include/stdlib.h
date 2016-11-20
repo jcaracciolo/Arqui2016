@@ -1,6 +1,7 @@
 #ifndef STDLIB_H
 #define STDLIB_H
 
+#include "IPCstructs.h"
 int isAlpha(char c);
 
 void* malloc(int bytes);
@@ -24,4 +25,6 @@ int getPID();
 void closePipe(char * name);
 
 int openPipe(char * name);
+
+void getIpcs(ipcs * ans,int mutexes,int pipes, int* cantMutexes, int* cantPipes);
 #endif

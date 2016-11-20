@@ -15,8 +15,9 @@
 #include "include/process.h"
 #include "include/liballoc.h"
 #include "include/scheduler.h"
+#include "include/IPCstructs.h"
 
-#define SYSTEM_CALL_COUNT 40
+#define SYSTEM_CALL_COUNT 41
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -347,6 +348,15 @@ qword sys_myPID(qword ans, qword pid, qword rcx, qword r8, qword r9) {
         return;
     }
 
+    qword sys_ipcs(qword pipcs, qword mutexes, qword pipes, qword ansMutexes, qword ansPipes) {
+        int* ansM = ( int* )ansMutexes;
+        int* ansP = ( int* )ansPipes;
+        ipcs * ans = (ipcs*) pipcs;
+        *ansM = getMuxeseNames(ans,mutexes);
+        *ansP = getPipesNames(ans,pipes);
+        return;
+    }
+
 /*--------------------------------------------------------------------*/
 
 void setUpSyscalls(){
@@ -397,6 +407,8 @@ void setUpSyscalls(){
 
     sysCalls[38] = &sys_circle;
     sysCalls[39] = &sys_broadcastCondVar;
+
+    sysCalls[40] = &sys_ipcs;
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }

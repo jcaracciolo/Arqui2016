@@ -5,6 +5,9 @@
 #ifndef ARQUI2016_MUTEX_H
 #define ARQUI2016_MUTEX_H
 
+
+#include "IPCstructs.h"
+
 int getMutex(char* name);
 int releaseMutex(char* name);
 int lockMutex(int mutex);
@@ -18,6 +21,8 @@ void initializeMutex();
 void unlockAndSleep(int mutex, int pid);
 
 int releaseMutexFromPos(int pos);
+
+int getMuxeseNames(ipcs* ans, int cant);
 
 #define MALLOCMUTEX "__MALLOC__MUTEX"
 #define PAGESMUTEX "__PAGES__MUTEX"

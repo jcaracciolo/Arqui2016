@@ -8,6 +8,7 @@
 #include "include/scheduler.h"
 #include "include/process.h"
 #include "include/videoDriver.h"
+#include "include/IPCstructs.h"
 #define NULL  (char*)0
 
 
@@ -30,6 +31,18 @@ void initializeMutex(){
     for(int i=0;i<MAX_MUTEXES;i++){
         mutexes[i].name[0]=='\0';
     }
+}
+
+int getMuxeseNames(ipcs* ans, int cant){
+    int j;
+    int i;
+    for (i = 0,j=0; j < cant && i<MAX_MUTEXES; ++i) {
+        if(mutexes[i].name[0]!='\0'){
+            strcpy(ans->mutexNames[j],mutexes[i].name,MAX_MUTEX_NAME_LENGHT);
+            j++;
+        }
+    }
+    return j;
 }
 
 void saveName(int index,char* name){

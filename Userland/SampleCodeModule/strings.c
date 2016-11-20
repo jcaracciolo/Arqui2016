@@ -50,13 +50,14 @@ void toUpper(char* str) {
 	}
 }
 
-void strcpy(char* str1,const char* str2, int length) {
+int strcpy(char* str1, const char* str2, int length) {
 	int i;
-	for (i = 0; i < length; i++) {
+	for (i = 0; i < length && str2[i]!='\0'; i++) {
 		str1[i] = str2[i];
 	}
+	if(i!=length) str1[i]='\0';
+	return i;
 }
-
 int strcmp(const char* str1, const char* str2) {
 	while (*str1 != '\0') {
 		if (*str2 == '\0') return -1;

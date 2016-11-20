@@ -7,14 +7,16 @@
 
 #define MAX_COND_VAR_QUEUE_SIZE 50
 
+void yield();
+
 int createMutex(char* name);
 
 int lockMutex(int mutex);
 
 int unlockMutex(int mutex);
 
-int releaseMutex(int mutex);
 
+int releaseMutex(int mutex);
 
 typedef struct {
     int queue[MAX_COND_VAR_QUEUE_SIZE];
@@ -22,7 +24,6 @@ typedef struct {
     int queueIndex;
     int mutex;
 }condVar_t;
-
 void initCondVar(condVar_t * condVar);
 
 void waitCondVar(condVar_t * condVar, int mutex);

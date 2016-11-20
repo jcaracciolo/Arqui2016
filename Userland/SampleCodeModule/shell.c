@@ -1,4 +1,5 @@
 #include "include/shell.h"
+#include "include/IPCstructs.h"
 #include "types.h"
 #include "include/stdio.h"
 #include "include/strings.h"
@@ -168,11 +169,45 @@ void callKill(int cargs, void ** pargs) {
 }
 
 void uslessPs(){
-    printf("%d<--fd \n",openPipe("hola"));
-    char buffa[6]={0};
-    read(3,&buffa,5);
-    printf("%s -- mypid: %d",buffa,getPID());
-	while(1);
+    printf("Dont mind me, im just gonna be here for a while");
+	while(1){
+        yield();
+    }
+}
+
+void printIPCs(){
+    ipcs ans;
+    int cantM;
+    int cantP;
+
+    ans.mutexNames=malloc(256* sizeof(*ans.mutexNames));
+    ans.pipesNames=malloc(256* sizeof(*ans.pipesNames));
+    for (int i = 0; i < 256; ++i) {
+        ans.mutexNames[i]=malloc(16);
+        ans.pipesNames[i]=malloc(16);
+    }
+
+    getIpcs(&ans,256,256,&cantM,&cantP);
+
+    printf("MUTEXES:\n");
+    for (int k = 0; k < cantM; ++k) {
+        printf("    %s\n",ans.mutexNames[k]);
+    }
+    printf("PIPES:\n");
+    for (int k = 0; k < cantP; ++k) {
+        printf("    %s\n",ans.pipesNames[k]);
+    }
+
+
+    for (int j = 0; j < 256 ; ++j) {
+        free(ans.mutexNames[j]);
+        free(ans.pipesNames[j]);
+    }
+    free(ans.mutexNames);
+    free(ans.pipesNames);
+
+
+
 }
 
 void execute() {
@@ -313,7 +348,9 @@ void execute() {
             printf("Number muste be between 1 and 20\n");
         else
             pacmanClear(num);
-	} else {
+	}  else if(strcmp(shellBuffer, "ipcs") == 0) {
+        printIPCs();
+    } else {
 		printf("Command not found.\n");
 	}
 
