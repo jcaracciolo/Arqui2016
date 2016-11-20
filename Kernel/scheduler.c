@@ -90,7 +90,8 @@ void setForeground(int pid) {
 void changeProcessState(int pid, processState state) {
 
 	int i = 0;
-    int notPreviouslyLocked=lockScheduler();
+	if(pid==0 || pid==1 && state==DEAD) return;
+	int notPreviouslyLocked=lockScheduler();
     processSlot * slot = current;
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
