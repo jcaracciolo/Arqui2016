@@ -146,20 +146,21 @@ void setupEverything(){
 	setup_IDT();
 	print("  Setting up System Calls.....\n");
 	setUpSyscalls();
-    print("  Activating scheduler...\n\n");
-    //activateScheduler(); //MUST BE THE FIRST LISTENER
+    print("  Activating process juggler...\n");
 	print("  Initializing super fast memory allocation system.....\n");
 	initializeHeap();
     print("  Giving listeners ears.....\n");
 	addTimerListener(&blinkCursor,750);
-	print("  Initializing synchornization\n");
+	print("  Initializing Critical Zone access exclusion\n");
 	initializeMutex();
 	print("  Overclocking to 60fps.....\n     (we cant see more than 24fps anyways)/s.....\n");
 	decreaseTimerTick();
-
+	print("  Initializing memory distribution system\n");
 	initializeMalloc();
+	print(" No more lonely process, creating IPC\n");
 	initIPC();
 	initKeyboardDriver();
+	print("  Initializing\n\n");
 	print(logo);
 	print("\n\n\n");
 

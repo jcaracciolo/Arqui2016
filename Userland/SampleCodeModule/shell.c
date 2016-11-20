@@ -91,10 +91,8 @@ void drawFractal() {
 }
 
 void drawFractalc() {
-
 	rand+=rand*3^getSeconds()*500;
 	drawCFractalEquilateral(150,768,768,9,rand);
-	printf("\n\n\n\n");
 }
 
 void func() {
@@ -156,7 +154,7 @@ void callChangeFont(int carg, void ** pargs) {
  *	parg[1]: msg
  */
 void callEcho(int carg, void ** pargs) {
-	printf(pargs[1]);
+	printf("%s",pargs[1]);
 	printf("\n");
 }
 
@@ -196,9 +194,10 @@ void execute() {
 		exec(&func, 1, parg, psToFg);
 
 	} else if (strcmp(shellBuffer, "clear") == 0) {
-		void** parg = (void**)malloc(sizeof(void*));
-		parg[0] = (void*)"clear";
-		exec(&clearScreen, 1, parg, psToFg);
+//		void** parg = (void**)malloc(sizeof(void*));
+//		parg[0] = (void*)"clear";
+//		exec(&clearScreen, 1, parg, psToFg);
+		clear();
 
 	} else if(strcmp(shellBuffer, "time") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
@@ -260,7 +259,7 @@ void execute() {
 	}else if(strcmp(shellBuffer, "prod") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"prodConsManager";
-        exec(&producerConsumer,0,0, psToFg);
+        exec(&producerConsumer,1,parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
@@ -289,11 +288,11 @@ void execute() {
 		exec(callChangeFont, 2, parg, psToFg);
 
 	}else if(sscanf("echo %s",shellBuffer,arr)==1) {
-		void** parg = (void**)malloc(sizeof(void*) * 2);
-		parg[0] = (void*)"echo";
-		parg[1] = (void*)arr;
-		exec(&callEcho, 2, parg, psToFg);
-
+//		void** parg = (void**)malloc(sizeof(void*) * 2);
+//		parg[0] = (void*)"echo";
+//		parg[1] = (void*)arr;
+//		exec(&callEcho, 2, parg, psToFg);
+		printf("%s\n",arr);
 	} else if(strcmp(shellBuffer, "ps") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"ps";
@@ -309,16 +308,7 @@ void execute() {
 		parg[0] = (void*)"PepitoJoseCreator";
 		exec(&pepitoJose, 1,parg, psToFg);
 
-	} else if(strcmp(shellBuffer, "mt") == 0) {
-		printf("%d<--fd \n",openPipe("hola"));
-		printf("%d<--fd \n",openPipe("hola2"));
-		printf("%d<--fd \n",openPipe("hola3"));
-		write(3,"AAAAA",5);
-        void** parg = (void**)malloc(sizeof(void*));
-        parg[0] = (void*)"uslessPs";
-        exec(&uslessPs, 1,parg, psToFg);
-
-	}else if(sscanf("pacman clear %d", shellBuffer, &num) == 1) {
+	} else if(sscanf("pacman clear %d", shellBuffer, &num) == 1) {
         if(num<1 || num>20)
             printf("Number muste be between 1 and 20\n");
         else

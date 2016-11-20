@@ -113,7 +113,7 @@ void producerConsumer(){
                 deleteInstructions();
                 printf("Giving pacman more pills...\n");
                 if(consumerRest>=2) consumerRest--;
-                else printf("MIN speed reached");
+                else printf("MAX speed reached");
 
             } else if (c == 'z') {
                 deleteInstructions();
