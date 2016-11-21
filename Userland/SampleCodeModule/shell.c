@@ -39,7 +39,8 @@ const char* instructions =
  isRunning *param*   - check if a process is running\n\
  fg *pid*  			 - gives foreground to a custom process\n\
  pacman clear *cant* - pacmans will help you to clear the screen\n\
- kill *pid* *msg*	- send a message to a process";
+ kill *pid* *msg*	- send a message to a process\n\
+ memory              - Shows memory used\n";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
 
