@@ -156,10 +156,14 @@ void philosphers(){
                     printf("Philosopher added! Total: %d\n",philAmount);
                 }
             } else if (c == 'd') {
-                deleteInstructionsPhilo();
-                printf("Removing philosopher, please wait.\nPhilosophers are prone to steal forks when they leave.\n");
-                printf("We have to be careful when we let them go.\n");
-                removePhilosopher();
+                if(philAmount<3){
+                    printf("There cant be less philosophers");
+                }else {
+                    deleteInstructionsPhilo();
+                    printf("Removing philosopher, please wait.\nPhilosophers are prone to steal forks when they leave.\n");
+                    printf("We have to be careful when we let them go.\n");
+                    removePhilosopher();
+                }
             }else if (c == 'e') {
                 sendPhilosophersHome();
                 clear();
@@ -172,13 +176,6 @@ void philosphers(){
 
 void removePhilosopher(){
     deleteLast = 1;
-    lockMutex(safeSpace);
-    lockMutex(neighborsMutex);
-//    if(philState[philAmount-1] == THINKING){
-//        kill(philPID[philAmount-1],2);
-//    }
-    unlockMutex(neighborsMutex);
-    unlockMutex(safeSpace);
 }
 
 void addPhilosopher(){
@@ -234,7 +231,6 @@ void seppuku(int id){
 
 //    printf("killing philo %d, pid:%d\n",id,philPID[id]);
     lockMutex(neighborsMutex);
-    int pid=philPID[id];
     int pleft=left(id);
     int pright=right(id);
     philAmount--;
@@ -245,27 +241,27 @@ void seppuku(int id){
     deleteLast = 0;
     unlockMutex(philMutex[pleft]);
     unlockMutex(philMutex[pright]);
-    releaseMutex(pleft>pright?philMutex[pleft]:philMutex[pright]);
+    releaseMutex(philMutex[id]);
     unlockMutex(neighborsMutex);
 //    printf("killing %d, philo %d",getPID(),philAmount+1);
     printf("Kicked philo %d out safely\n",id);
-    kill(pid,0);
+    kill(philPID[id],0);
 }
 
 char * getMutexName(int philNumber){
-  char * mutexName = (char*) malloc(16);
-  char* base = "philo";
-  if(philAmount > 9) {
-    strcpy(mutexName,base,5);
-    mutexName[5] = (philNumber/10)+'0';
-    mutexName[6] = (philNumber%10)+'0';
-    mutexName[7] = '\0';
-  }else {
-    strcpy(mutexName,base,5);
-    mutexName[5] = philNumber+'0';
-    mutexName[6] = '\0';
-  }
-  return mutexName;
+    char * mutexName = (char*) malloc(16);
+    char* base = "philo";
+    if(philAmount > 9) {
+        strcpy(mutexName,base,5);
+        mutexName[5] = (philNumber/10)+'0';
+        mutexName[6] = (philNumber%10)+'0';
+        mutexName[7] = '\0';
+    }else {
+        strcpy(mutexName,base,5);
+        mutexName[5] = philNumber+'0';
+        mutexName[6] = '\0';
+    }
+    return mutexName;
 }
 
 void killPhilosophers(int currPhil){

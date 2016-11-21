@@ -116,6 +116,7 @@ void changeProcessState(int pid, processState state) {
 		if (slot->process->pid == pid) {
 			// process found
 			if(slot->process->state == DEAD){
+                if(notPreviouslyLocked) unlockScheduler();
 				return;
 			}
 			slot->process->state = state;
