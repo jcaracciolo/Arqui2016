@@ -13,7 +13,7 @@
 #define EATING 2
 #define DEAD 3
 #define SCREEN_CENTER_X 450
-#define SCREEN_CENTER_Y 400
+#define SCREEN_CENTER_Y 425
 #define TIME_SCALE 12000
 #define THINKING_TO_EATING_RATIO 1
 #define MAX_PHIL_RADIUS 50
@@ -48,6 +48,7 @@ void seppuku(int id,int left, int right);
 void deleteInstructionsPhilo();
 void deletePhiloGrafics();
 int getPhilRadius();
+void printInstructionsPhilo();
 
 
 void monitor(){
@@ -63,7 +64,11 @@ void monitor(){
                     unlockMutex(neighborsMutex);
                     sleep(12000);
                     lockMutex(neighborsMutex);
-                    printError("There are 2 philosophers sharing!\n");
+                    deletePhiloGrafics();
+                    drawPhilosophers(philAmount);
+//                    setCursorPos(0);
+//                    printInstructionsPhilo();
+//                    printError("There are 2 philosophers sharing!\n");
                 }
                 cons++;
             } else cons = 0;
@@ -81,7 +86,7 @@ void printStatus(){
 
 void sendPhilosophersHome(int monitorPID){
     int i;
-    kill(monitorPID,0);
+//    kill(monitorPID,0);
     lockMutex(neighborsMutex);
     for (i=0;i<philAmount;i++){
         kill(philPID[i],0);
@@ -95,6 +100,13 @@ void sendPhilosophersHome(int monitorPID){
     philAmount=0;
 }
 
+void printInstructionsPhilo(){
+    printf("Welcome the philosophers! They will be starving for your entertainment.\n");
+    printf("Press 'q' to refresh the screen.\nPress 'a' to add philosophers and 'd' to remove them.\n");
+    printf("Press 'e' to EXIT and let the philosophers continue with their nihilist thoughts.\n");
+    printf("A YELLOW philosopher is THINKING, a RED one is HUNGRY and a PURPLE one is eating\n");
+}
+
 void philosphers(){
     clear();
     philAmount=0;
@@ -104,17 +116,16 @@ void philosphers(){
 
     void** parg = (void**)malloc(sizeof(void*));
     parg[0] = (void*)"philosopherMonitor";
-    int monitorPID = exec(&monitor, 1, parg, 0);
+//    int monitorPID = exec(&monitor, 1, parg, 0);
+    int monitorPID = -1;
 
-    for(int i=0; i < 8; i++){
+    for(int i=0; i < 1; i++){
         addPhilosopher();
     }
 
     clear();
     drawPhilosophers(philAmount);
-    printf("Welcome the philosophers! They will be starving for your entertainment.\n");
-    printf("Press 'q' to refresh the screen.\nPress 'a' to add philosophers and 'd' to remove them.\n");
-    printf("Press 'e' to EXIT and let the philosophers continue with their nihilist thoughts.\n");
+    printInstructionsPhilo();
 
     while(1) {
         int c = getc();
@@ -122,10 +133,7 @@ void philosphers(){
             if (c == 'q') {
                 clear();
                 drawPhilosophers(philAmount);
-                printf("Welcome the philosophers! They will be starving for your entertainment.\n");
-                printf("Press 'q' to refresh the screen.\nPress 'a' to add philosophers and 'd' to remove them.\n");
-                printf("Press 'e' to EXIT and let the philosophers continue with their nihilist thoughts.\n");
-
+                printInstructionsPhilo();
             } else if (c == 'a') {
                 deleteInstructionsPhilo();
                 if(philAmount >= MAX_PHILOSOPHERS){
@@ -172,9 +180,8 @@ void addPhilosopher(){
     philMutex[philAmount]=createMutex(mutexName);
     philState[philAmount]=THINKING;
 //    clear();
+    printf("Phil %d, mut:%d",philAmount,philMutex[philAmount]);
     void** parg = (void**)malloc(sizeof(void*) * 2);
-//    printf("%s\n",mutexName);
-//    printf("mutex %d is %d\n",philAmount,philMutex[philAmount]);
     parg[0] = (void*)mutexName;
     parg[1] = (void*)philAmount;
     philPID[philAmount]=exec(&philosophize,2,parg, 0);
@@ -213,13 +220,13 @@ void philosophize( int carg, void** args){
                 drawMyself(id);
                 sleep(randBound(TIME_SCALE*THINKING_TO_EATING_RATIO,2*TIME_SCALE*THINKING_TO_EATING_RATIO));
                 philState[id] = HUNGRY;
-                lockMutex(safeSpace);
+//                lockMutex(safeSpace);
                 drawMyself(id);
 
                 break;
             case HUNGRY:
                 drawMyself(id);
-                unlockMutex(safeSpace);
+//                unlockMutex(safeSpace);
                 if(philAmount >1){
                     lockMutex(neighborsMutex);
                     left = leftFrom(id);
@@ -229,7 +236,6 @@ void philosophize( int carg, void** args){
                     if(id == philAmount -1) {
                         lockMutex(philMutex[left]);
                         lockMutex(philMutex[right]);
-
                         if(deleteLast == true ) seppuku(id,left,right);
                     } else {
                         lockMutex(philMutex[right]);
@@ -247,18 +253,18 @@ void philosophize( int carg, void** args){
                 drawMyself(id);
                 unlockMutex(philMutex[left]);
                 unlockMutex(philMutex[right]);
+                philState[id] = THINKING;
                 break;
         }
     }
 }
 
 void seppuku(int id, int left, int right){
-
 //    printf("killing philo %d, pid:%d\n",id,philPID[id]);
     lockMutex(neighborsMutex);
-    philAmount--;    deletePhiloGrafics();
+    philAmount--;
+    deletePhiloGrafics();
     philosopherRadius = getPhilRadius();
-
     drawPhilosophers(philAmount);
     deleteLast = false;
     unlockMutex(philMutex[left]);
