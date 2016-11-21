@@ -115,6 +115,9 @@ void changeProcessState(int pid, processState state) {
 	for (; i < cantProcesses; i++) {
 		if (slot->process->pid == pid) {
 			// process found
+			if(slot->process->state == DEAD){
+				return;
+			}
 			slot->process->state = state;
 
 			if (slot->process->pid == getForegroundPid() && state == DEAD) {

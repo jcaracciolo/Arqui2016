@@ -234,6 +234,7 @@ void seppuku(int id){
 
 //    printf("killing philo %d, pid:%d\n",id,philPID[id]);
     lockMutex(neighborsMutex);
+    int pid=philPID[id];
     int pleft=left(id);
     int pright=right(id);
     philAmount--;
@@ -248,7 +249,7 @@ void seppuku(int id){
     unlockMutex(neighborsMutex);
 //    printf("killing %d, philo %d",getPID(),philAmount+1);
     printf("Kicked philo %d out safely\n",id);
-    kill(philPID[id],0);
+    kill(pid,0);
 }
 
 char * getMutexName(int philNumber){
