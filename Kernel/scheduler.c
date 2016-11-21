@@ -19,7 +19,7 @@ static processSlot * foreground = NULL;
 static int cantProcesses = 0;
 
 static int amountFreeableProcess=0;
-static processSlot * processToFree[100];
+static processSlot * processToFree[500];
 
 int debug=0;
 
@@ -271,6 +271,7 @@ void * next_process(int current_rsp) {
     int ans=current->process->stack_pointer;
     unlockScheduler();
 
+	freeWaitingProcess();
     return ans;
 }
 

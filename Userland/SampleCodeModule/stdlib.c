@@ -58,6 +58,11 @@ void setConsoleSize() {
 	int80(17,&ROWS,&COLS,0,0,0);
 }
 
+void getMemoryUsed() {
+	int memory;
+	int80(42,&memory,0,0,0,0);
+	printf("MEMORY USED: %d\n",memory);
+}
 int exec(void * entry_point, int cargs, void ** pargs, int giveFg) {
 	int pid;
 	int80(27, entry_point, &pid, cargs, pargs, 0);

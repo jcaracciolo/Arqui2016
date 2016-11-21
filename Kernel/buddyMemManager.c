@@ -7,6 +7,7 @@
 #include "include/videoDriver.h"
 #include "include/lib.h"
 #include "include/mutex.h"
+#include "include/scheduler.h"
 #define NULL ((void*)0)
 
 /* Initializing heap*/
@@ -83,6 +84,7 @@ void* buddyAllocatePages(uint64_t pages){
 
 void* buddyReallocatePages(void* address,uint64_t pages){
     if( buddyFree(address) != -1){
+
 
         void* ans = buddyAllocatePages(pages);
         if(ans!=NULL && ans!=address){
@@ -220,6 +222,27 @@ int buddyFree(void* address){
 
     return ans;
 
+}
+
+
+int searchMemoryUp(int i, uint16_t level){
+    if(i<1) return 0;
+    if(heap[i]==0){
+        return pow2(level-1);
+    }else if(AMILEFT(i)){
+        return searchMemoryUp(PARENT(i),level+1);
+    }else{
+        return 0;
+    }
+}
+
+
+int getMemoryUsed(){
+    int acu=0;
+    for (int i = heapSize/2 + 1; i < MAXHEAPSIZE; ++i) {
+        acu+=searchMemoryUp(i,1);
+    }
+    return acu*MINPAGE;
 }
 
 int searchUp(int i, uint16_t level){

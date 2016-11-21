@@ -32,4 +32,6 @@ void isRunning(int cargs, void ** pargs);
 
 int isRunningSync(char* psName);
 
+void getMemoryUsed();
+
 #endif

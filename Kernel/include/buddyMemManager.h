@@ -23,6 +23,8 @@ uint16_t myMask(uint16_t n);
 int isPowerOfTwo (uint64_t x);
 uint64_t roundUpPower2(uint64_t v);
 
+int getMemoryUsed();
+
 
 #define MAXHEAPSIZE (MAXMEMORY/MINPAGE)*2-1
 

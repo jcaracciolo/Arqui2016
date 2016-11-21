@@ -172,6 +172,15 @@ void callKill(int cargs, void ** pargs) {
 	kill(pargs[1], pargs[2]);
 }
 
+void multifractal(){
+	for(int i=0;i<50;i++) {
+		void** parg = (void**)malloc(sizeof(void*));
+		parg[0] = (void*)"colorfractal";
+		int pid = exec(&drawFractalc, 1, parg, 0);
+		sleep(500);
+	}
+}
+
 void uslessPs(){
     printf("Dont mind me, im just gonna be here for a while");
 	while(1){
@@ -264,12 +273,9 @@ void execute() {
 
 	} else if(strcmp(shellBuffer, "multifractal") == 0) {
 		clear();
-		for(int i=0;i<50;i++) {
-			void** parg = (void**)malloc(sizeof(void*));
-			parg[0] = (void*)"colorfractal";
-			int pid = exec(&drawFractalc, 1, parg, psToFg);
-			sleep(500);
-		}
+		void** parg = (void**)malloc(sizeof(void*) * 1);
+		parg[0] = (void*)"multifractal";
+		exec(&multifractal, 1, parg, psToFg);
 	
 	} else if(sscanf("kill %d %d",shellBuffer,&pidToKill, &msg)==2){
 		void** parg = (void**)malloc(sizeof(void*) * 3);
@@ -369,7 +375,12 @@ void execute() {
 		parg[0] = (void*)"isRunning";
 		parg[1] = (void*)array;
 		exec(&isRunning, 2, parg, psToFg);
-	} else {
+	} else if(strcmp(shellBuffer, "memory") == 0) {
+        void** parg = (void**)malloc(sizeof(void*));
+        parg[0] = (void*)"MemoryUsed";
+        exec(&getMemoryUsed, 1, parg, psToFg);
+        free(parg);
+    }  else {
 		printf("Command not found.\n");
 	}
 

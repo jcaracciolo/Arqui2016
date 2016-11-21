@@ -17,7 +17,7 @@
 #include "include/scheduler.h"
 #include "include/IPCstructs.h"
 
-#define SYSTEM_CALL_COUNT 42
+#define SYSTEM_CALL_COUNT 43
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -275,10 +275,6 @@ qword sys_yield(qword rsi, qword rdx, qword rcx, qword r8, qword r9) {
 //TODO fix this
 qword sys_kill(qword pid, qword msg, qword rcx, qword r8, qword r9) {
     switch(msg) {
-        case -1:
-            // kill current process
-            changeProcessState(getCurrentPid(), DEAD);
-            break;
         case 0:
             // kill custom process
             changeProcessState(pid, DEAD);
@@ -355,13 +351,19 @@ qword sys_myPID(qword ans, qword rdx, qword rcx, qword r8, qword r9) {
     }
 
     qword sys_ipcs(qword pipcs, qword mutexes, qword pipes, qword ansMutexes, qword ansPipes) {
-        int* ansM = ( int* )ansMutexes;
-        int* ansP = ( int* )ansPipes;
-        ipcs * ans = (ipcs*) pipcs;
-        *ansM = getMuxeseNames(ans,mutexes);
-        *ansP = getPipesNames(ans,pipes);
+        int *ansM = (int *) ansMutexes;
+        int *ansP = (int *) ansPipes;
+        ipcs *ans = (ipcs *) pipcs;
+        *ansM = getMuxeseNames(ans, mutexes);
+        *ansP = getPipesNames(ans, pipes);
         return;
     }
+
+qword sys_memoryUsed(qword ans, qword rdx, qword rcx, qword r8, qword r9) {
+    int* ansM = ( int* )ans;
+    *ansM = getMemoryUsed();
+    return;
+}
 
 /*--------------------------------------------------------------------*/
 
@@ -416,6 +418,8 @@ void setUpSyscalls(){
 
     sysCalls[40] = &sys_ipcs;
     sysCalls[41] = &sys_isRunning;
+
+    sysCalls[42] = &sys_memoryUsed;
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }
