@@ -113,7 +113,7 @@ void philosphers(){
     clear();
     drawPhilosophers(philAmount);
     printf("Welcome the philosophers! They will be starving for your entertainment.\n");
-    printf("Press 'q' to refresh the screen.\n Press 'a' to add philosophers and 'd' to remove them.\n");
+    printf("Press 'q' to refresh the screen.\nPress 'a' to add philosophers and 'd' to remove them.\n");
     printf("Press 'e' to EXIT and let the philosophers continue with their nihilist thoughts.\n");
 
     while(1) {
@@ -123,7 +123,7 @@ void philosphers(){
                 clear();
                 drawPhilosophers(philAmount);
                 printf("Welcome the philosophers! They will be starving for your entertainment.\n");
-                printf("Press 'q' to refresh the screen.\n Press 'a' to add philosophers and 'd' to remove them.\n");
+                printf("Press 'q' to refresh the screen.\nPress 'a' to add philosophers and 'd' to remove them.\n");
                 printf("Press 'e' to EXIT and let the philosophers continue with their nihilist thoughts.\n");
 
             } else if (c == 'a') {

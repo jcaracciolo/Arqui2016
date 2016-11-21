@@ -87,7 +87,7 @@ void producerConsumer(){
 
     deleteInstructions();
     printf("Welcome the PACMAN! His bloodlust for ghost ectoplasm is endless.\n");
-    printf("Press 'q' to refresh the screen.\n Press 'd' to speed up ghost breeding and 'a' slow it down\n");
+    printf("Press 'q' to refresh the screen.\nPress 'd' to speed up ghost breeding and 'a' slow it down\n");
     printf("Press 'c' to speed up PACMANS hunger and 'z' slow it down\n");
     printf("Press 'e' to EXIT the PACMAN feast\n");
     while(1) {
@@ -96,7 +96,7 @@ void producerConsumer(){
             if (c == 'q') {
                 deleteInstructions();
                 printf("Welcome the PACMAN! His bloodlust for ghost ectoplasm is endless.\n");
-                printf("Press 'q' to refresh the screen.\n Press 'd' to speed up ghost breeding and 'a' slow it down\n");
+                printf("Press 'q' to refresh the screen.\nPress 'd' to speed up ghost breeding and 'a' slow it down\n");
                 printf("Press 'c' to speed up PACMANS hunger and 'z' slow it down\n");
                 printf("Press 'e' to EXIT the PACMAN feast\n");
             } else if (c == 'd') {
@@ -143,7 +143,6 @@ void exitProducerConsumer(int prodPID, int consPID, int tickPID){
 
 
 void producer(){
-    printf("hi, i am a producer\n");
 
     int i = 0;
     lockMutex(writeMutex);
@@ -166,7 +165,6 @@ void producer(){
 void consumer(){
 
     lockMutex(readMutex);
-    printf("hi, i am a consumer\n");
     while (1){
         while (queueSize <= 0){
             waitCondVar(&readCondVar,readMutex);

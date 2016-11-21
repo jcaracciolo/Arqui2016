@@ -15,7 +15,9 @@
 #include "include/donPepito.h"
 int rand=1;
 
-const char* instructions = " func                - print a simple message (completly useless)\n\
+const char* instructions =
+" help		          - display all available commands\n\
+ func                - print a simple message (completly useless)\n\
  echo *param*        - prints message on console\n\
  clear               - clears the screen\n\
  time                - get current system time\n\
@@ -29,11 +31,14 @@ const char* instructions = " func                - print a simple message (compl
  paintBg *param*     - paint the console background (only once)\n\
  setupFont *param*   - setup font to write\n\
  ps                  - list all processes\n\
+ ipcs                - list all open mutexes and pipes\n\
  newps               - create a useless process\n\
  philo               - simulation of philosophers problem\n\
  prod                - simulation of producer-consumer problem\n\
  pepito              - Don Pepito and Don Jose conversation\n\
  isRunning *param*   - check if a process is running\n\
+ fg *pid*  			 - gives foreground to a custom process\n\
+ pacman clear *cant* - pacmans will help you to clear the screen\n\
  kill *pid* *msg*	- send a message to a process";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
