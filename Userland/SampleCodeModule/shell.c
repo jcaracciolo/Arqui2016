@@ -289,20 +289,26 @@ void execute() {
 		exec(&playStarWars, 1, parg, psToFg);
 
 	} else if(strcmp(shellBuffer, "philo") == 0) {
-        void** parg = (void**)malloc(sizeof(void*));
-        parg[0] = (void*)"philoManager";
-        exec(&philosphers,1,parg, psToFg);
+		if(isRunningSync("philoManager")) {
+			printf("Philo already running...\n");
+		}else{
+			void** parg = (void**)malloc(sizeof(void*));
+			parg[0] = (void*)"philoManager";
+			exec(&philosphers,1,parg, psToFg);
+		}
 
 	}else if(strcmp(shellBuffer, "prod") == 0) {
-		void** parg = (void**)malloc(sizeof(void*));
-		parg[0] = (void*)"prodConsManager";
-        exec(&producerConsumer,1,parg, psToFg);
-
+		if(isRunningSync("prodConsManager")) {
+			printf("Producer-Consumer already running...\n");
+		}else{
+			void** parg = (void**)malloc(sizeof(void*));
+			parg[0] = (void*)"prodConsManager";
+			exec(&producerConsumer,1,parg, psToFg);
+		}
 	} else if(strcmp(shellBuffer, "gedit") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"gedit";
 		exec(&callRunGedit, 1, parg, psToFg);
-
 	} else if(strcmp(shellBuffer, "paint") == 0) {
 		void** parg = (void**)malloc(sizeof(void*));
 		parg[0] = (void*)"paint";

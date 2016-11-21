@@ -48,6 +48,11 @@ int getPID(){
 	int80(32, &pid, 0, 0, 0, 0);
 	return pid;}
 
+int isRunningSync(char* psName){
+	int ret;
+	int80(41, psName, &ret, 0, 0, 0);
+	return ret;
+}
 
 void setConsoleSize() {
 	int80(17,&ROWS,&COLS,0,0,0);
