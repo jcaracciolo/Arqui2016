@@ -33,6 +33,7 @@ const char* instructions = " func                - print a simple message (compl
  philo               - simulation of philosophers problem\n\
  prod                - simulation of producer-consumer problem\n\
  pepito              - Don Pepito and Don Jose conversation\n\
+ isRunning *param*   - check if a process is running\n\
  kill *pid* *msg*	- send a message to a process";
 
 extern void int80(qword rdi, qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -343,11 +344,20 @@ void execute() {
 	}  else if(strcmp(shellBuffer, "ipcs") == 0) {
         printIPCs();
     } else if(sscanf("fg %i",shellBuffer, &num)==1) {
-		void** parg = (void**)malloc(sizeof(void*) * 2);
+		void** parg = (void**)malloc(sizeof(void*) * 3);
 		parg[0] = (void*)"giveForeground";
 		parg[1] = (void*)num;
 		parg[2] = (void*)3;
 		exec(&callKill, 3, parg, psToFg);
+
+	} else if(sscanf("isRunning %s",shellBuffer, arr)==1) {
+		char * array = malloc(strlen(arr));	// <---- Necesita hacer malloc si no el parámetro se pierde a veces en exec
+		strcpy(array, arr, 100);
+
+		void** parg = (void**)malloc(sizeof(void*) * 2);
+		parg[0] = (void*)"isRunning";
+		parg[1] = (void*)array;
+		exec(&isRunning, 2, parg, psToFg);
 	} else {
 		printf("Command not found.\n");
 	}
@@ -355,6 +365,7 @@ void execute() {
 	if (psToFg == 0) {
 		shellBuffer--;
 	}
+	sleep(200);
 	printf("  >>");
 	cleanBuffer();
 }

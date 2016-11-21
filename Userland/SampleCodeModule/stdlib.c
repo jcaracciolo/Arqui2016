@@ -73,3 +73,11 @@ void kill(int pid, int msg) {
 //	printf("someones is killing %d with %d",pid,msg);
 	int80(29, pid, msg, 0, 0, 0);
 }
+
+
+void isRunning(int cargs, void ** pargs) {
+	char * psName = (((char**)pargs)[1]);
+	int ret;
+	int80(41, psName, &ret, 0, 0, 0);
+	printf("%s\n", ret == 0 ? "No" : "Yes");
+}

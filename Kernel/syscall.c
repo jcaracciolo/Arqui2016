@@ -17,7 +17,7 @@
 #include "include/scheduler.h"
 #include "include/IPCstructs.h"
 
-#define SYSTEM_CALL_COUNT 41
+#define SYSTEM_CALL_COUNT 42
 #define SYSTEM_CALL_START_INDEX 0x80
 
 typedef qword (*sys)(qword rsi, qword rdx, qword rcx, qword r8, qword r9);
@@ -217,6 +217,12 @@ qword sys_getConsoleSize(qword rows, qword cols, qword rcx, qword r8, qword r9) 
     return 0;
 }
 
+qword sys_isRunning(char * name, qword ret, qword rcx, qword r8, qword r9) {
+    int * pret = (int*) ret;
+    *pret = isRunning(name);
+    return 0;
+}
+
 
 /*------------------------MUTEX ----------------------*/
 qword sys_createMutex(qword name, qword mutex, qword rcx, qword r8, qword r9) {
@@ -409,6 +415,7 @@ void setUpSyscalls(){
     sysCalls[39] = &sys_broadcastCondVar;
 
     sysCalls[40] = &sys_ipcs;
+    sysCalls[41] = &sys_isRunning;
 
     setup_IDT_entry (SYSTEM_CALL_START_INDEX, 0x08, (qword)&_irq80Handler, ACS_INT);
 }

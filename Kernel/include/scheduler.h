@@ -36,4 +36,6 @@ process* getMyProcessData();
 
 void changeProcessState(int pid, processState state);
 
+int isRunning(char * name);
+
 #endif

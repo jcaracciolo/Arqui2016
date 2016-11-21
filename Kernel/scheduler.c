@@ -87,6 +87,25 @@ void setForeground(int pid) {
 	return;
 }
 
+int isRunning(char * name) {
+	int i = 0;
+	int notPreviouslyLocked=lockScheduler();
+
+	processSlot * slot = current;
+	for (; i < cantProcesses; i++) {
+		if (strcmp(slot->process->descr, name) == 0) {
+			// process is already running
+			if(notPreviouslyLocked) unlockScheduler();
+			return 1;
+		}
+		slot = slot->next;
+	}
+	// pid does not exists
+	if(notPreviouslyLocked) unlockScheduler();
+
+	return 0;
+}
+
 void changeProcessState(int pid, processState state) {
 
 	int i = 0;

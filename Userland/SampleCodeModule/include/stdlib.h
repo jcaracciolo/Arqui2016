@@ -27,4 +27,7 @@ void closePipe(char * name);
 int openPipe(char * name);
 
 void getIpcs(ipcs * ans,int mutexes,int pipes, int* cantMutexes, int* cantPipes);
+
+void isRunning(int cargs, void ** pargs);
+
 #endif
