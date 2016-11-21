@@ -209,7 +209,7 @@ void printIPCs(){
 }
 
 void execute() {
-	char arr[100];
+	char arr[100] = {0};
 	int number = 0;
 
 
