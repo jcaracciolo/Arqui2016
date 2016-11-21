@@ -7,7 +7,7 @@
 #include "include/math.h"
 #include "include/stdtime.h"
 
-#define MAX_PHILOSOPHERS 50
+#define MAX_PHILOSOPHERS 40
 #define THINKING 0
 #define HUNGRY 1
 #define EATING 2
@@ -16,6 +16,8 @@
 #define SCREEN_CENTER_Y 400
 #define TIME_SCALE 12000
 #define THINKING_TO_EATING_RATIO 1
+#define MAX_PHIL_RADIUS 50
+#define MIN_PHIL_RADIUS 5
 
 #define SAFE lockMutex(safeSpace)
 #define UNSAFE unlockMutex(safeSpace)
@@ -26,7 +28,7 @@ int philPID[MAX_PHILOSOPHERS];
 
 int neighborsMutex;
 int philAmount = 0;
-int tableRadius = 200;
+int tableRadius = 275;
 int philosopherRadius = 40;
 int safeSpace;
 boolean deleteLast;
@@ -44,23 +46,29 @@ void drawMyself(int id);
 void drawPhilosophers(int currPhil);
 void seppuku(int id,int left, int right);
 void deleteInstructionsPhilo();
+void deletePhiloGrafics();
+int getPhilRadius();
 
 
 void monitor(){
     int i,cons=0;
 //    printf("monitoring");
     while (1){
-
+        cons=0;
+        lockMutex(neighborsMutex);
         for(i=0;i<philAmount;i++){
             if(philState[i] == EATING) {
                 if(cons > 0){
 //                    printStatus();
+                    unlockMutex(neighborsMutex);
                     sleep(12000);
+                    lockMutex(neighborsMutex);
                     printError("There are 2 philosophers sharing!\n");
                 }
                 cons++;
             } else cons = 0;
         }
+        unlockMutex(neighborsMutex);
     }
 }
 
@@ -120,9 +128,14 @@ void philosphers(){
 
             } else if (c == 'a') {
                 deleteInstructionsPhilo();
-                printf("Adding philosopher, please wait.\n");
-                addPhilosopher();
-                printf("Philosopher added! Total: %d\n",philAmount);
+                if(philAmount >= MAX_PHILOSOPHERS){
+                    printf("There is not enough food for the philosophers.\nThey do not like sharing.\n");
+                    printf("You cant add more philosophers.");
+                } else{
+                    printf("Adding philosopher, please wait.\n");
+                    addPhilosopher();
+                    printf("Philosopher added! Total: %d\n",philAmount);
+                }
             } else if (c == 'd') {
                 deleteInstructionsPhilo();
                 printf("Removing philosopher, please wait.\nPhilosophers are prone to steal forks when they leave.\n");
@@ -167,14 +180,22 @@ void addPhilosopher(){
     philPID[philAmount]=exec(&philosophize,2,parg, 0);
 
 
-    killPhilosophers(philAmount);
+//    killPhilosophers(philAmount);
     philAmount++;
+    philosopherRadius = getPhilRadius();
+    deletePhiloGrafics();
     drawPhilosophers(philAmount);
     unlockMutex(neighborsMutex);
 
     if(philAmount!=1) unlockMutex(philMutex[0]);
 }
 
+int getPhilRadius(){
+    int x = (2*3.14*tableRadius)/(philAmount*2);
+    if(x > MAX_PHIL_RADIUS) return MAX_PHIL_RADIUS;
+    if( x < MIN_PHIL_RADIUS) return MIN_PHIL_RADIUS;
+    return x;
+}
 
 void philosophize( int carg, void** args){
     int id=args[1];
@@ -209,7 +230,7 @@ void philosophize( int carg, void** args){
                         lockMutex(philMutex[left]);
                         lockMutex(philMutex[right]);
 
-                        if(deleteLast == true) seppuku(id,left,right);
+                        if(deleteLast == true ) seppuku(id,left,right);
                     } else {
                         lockMutex(philMutex[right]);
                         lockMutex(philMutex[left]);
@@ -235,8 +256,9 @@ void seppuku(int id, int left, int right){
 
 //    printf("killing philo %d, pid:%d\n",id,philPID[id]);
     lockMutex(neighborsMutex);
-    killPhilosophers(philAmount);
-    philAmount--;
+    philAmount--;    deletePhiloGrafics();
+    philosopherRadius = getPhilRadius();
+
     drawPhilosophers(philAmount);
     deleteLast = false;
     unlockMutex(philMutex[left]);
@@ -329,4 +351,7 @@ void drawPhilosopher(int id, int status, int currPhil){
 void deleteInstructionsPhilo(){
     setCursorPos(0);
     drawCSquare(0,0,SCREEN_CENTER_Y-tableRadius-philosopherRadius,1000,0x000000);
+}
+void deletePhiloGrafics(){
+    drawCSquare(0,SCREEN_CENTER_Y-tableRadius-philosopherRadius,(tableRadius+philosopherRadius)*2+20,1000,0x000000);
 }
